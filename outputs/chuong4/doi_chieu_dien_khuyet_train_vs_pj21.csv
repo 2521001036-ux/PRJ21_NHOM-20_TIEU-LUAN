@@ -1,0 +1,23 @@
+﻿bien,nhom,chien_luoc,o_khuyet_train,ty_le_khuyet_train_pct,o_khuyet_test,ty_le_khuyet_test_pct,gia_tri_hoc_tren_train,gia_tri_toan_tap_pj21,khop_100_pct
+Gender,Phân loại,Mode trên Train,7646,8.025358706034238,1871,7.855073680675091,Female,Female,True
+Customer Type,Phân loại,Hằng số 'Unknown',32406,34.01383392986471,8002,33.595029178387,Unknown,Unknown,True
+Type of Travel,Phân loại,Hằng số 'Unknown',36477,38.28681788124652,9130,38.33074436374323,Unknown,Unknown,True
+Class,Phân loại,Mode trên Train,7248,7.607611810271535,1865,7.829883706284899,Business,Business,True
+Age,Định lượng vận hành,Trung vị trên Train,7180,7.53623796878444,1832,7.691338847138838,40.0,40.0,True
+Flight Distance,Định lượng vận hành,Trung vị trên Train,18281,19.188017591552693,4510,18.93446408329485,849.0,846.0,False
+Departure Delay,Định lượng vận hành,Trung vị trên Train,33223,34.87136964302583,8191,34.38851337167807,0.0,0.0,True
+Arrival Delay,Định lượng vận hành,Trung vị trên Train,6419,6.737480713318569,1619,6.797094756286998,0.0,0.0,True
+Departure and Arrival Time Convenience,"Điểm dịch vụ [0, 5]",Trung vị trên Train,9872,10.361802399420613,2510,10.537805953230613,3.0,3.0,True
+Ease of Online Booking,"Điểm dịch vụ [0, 5]",Trung vị trên Train,28228,29.62854113967231,7195,30.206977622906084,3.0,3.0,True
+Check-in Service,"Điểm dịch vụ [0, 5]",Trung vị trên Train,11132,11.684317697563843,2816,11.822494647130442,3.0,3.0,True
+Online Boarding,"Điểm dịch vụ [0, 5]",Trung vị trên Train,25572,26.840762860411658,6386,26.810529409295103,3.0,3.0,True
+Gate Location,"Điểm dịch vụ [0, 5]",Trung vị trên Train,21305,22.36205430709645,5366,22.52823376296234,3.0,3.0,True
+On-board Service,"Điểm dịch vụ [0, 5]",Trung vị trên Train,7561,7.936141404175371,1939,8.140560057097275,4.0,4.0,True
+Seat Comfort,"Điểm dịch vụ [0, 5]",Trung vị trên Train,13655,14.332497139798264,3464,14.543011881271253,4.0,4.0,True
+Leg Room Service,"Điểm dịch vụ [0, 5]",Trung vị trên Train,6626,6.954751083727814,1712,7.187539359334985,4.0,4.0,True
+Cleanliness,"Điểm dịch vụ [0, 5]",Trung vị trên Train,30702,32.225289431423384,7739,32.49086863428355,3.0,3.0,True
+Food and Drink,"Điểm dịch vụ [0, 5]",Trung vị trên Train,25523,26.78933170992831,6379,26.78114110583988,3.0,3.0,True
+In-flight Service,"Điểm dịch vụ [0, 5]",Trung vị trên Train,8765,9.199878244623346,2278,9.563793610143163,4.0,4.0,True
+In-flight Wifi Service,"Điểm dịch vụ [0, 5]",Trung vị trên Train,18688,19.61521102515928,4630,19.4382635710987,3.0,3.0,True
+In-flight Entertainment,"Điểm dịch vụ [0, 5]",Trung vị trên Train,9375,9.840143587375227,2308,9.689743482094126,4.0,4.0,True
+Baggage Handling,"Điểm dịch vụ [0, 5]",Trung vị trên Train,21107,22.154230474531083,5261,22.087409211133966,4.0,4.0,True

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRJ 21 · Dashboard Thuyết Trình Chương 3 (Làm sạch & EDA)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ── Thanh điều hướng & điều khiển thuyết trình ── -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-badge">PRJ 21</span>
+      <div class="brand-text">
+        <span class="brand-title">Chương 3 · Làm sạch &amp; EDA</span>
+        <span class="brand-sub">Airline Passenger Satisfaction</span>
+      </div>
+    </div>
+
+    <nav class="nav-pills" aria-label="Điều hướng 6 phần">
+      <button type="button" class="nav-pill active" data-section="1">① Tổng quan</button>
+      <button type="button" class="nav-pill" data-section="2">② Quy trình làm sạch</button>
+      <button type="button" class="nav-pill" data-section="3">③ Kiểm toán 24 biến</button>
+      <button type="button" class="nav-pill" data-section="4">④ Ví dụ thực tế</button>
+      <button type="button" class="nav-pill" data-section="5">⑤ Khám phá dữ liệu</button>
+      <button type="button" class="nav-pill" data-section="6">⑥ Nguồn &amp; Kiểm chứng</button>
+    </nav>
+
+    <div class="controls">
+      <span class="slide-counter" id="slideCounter" title="Vị trí phần hiện tại">1/6</span>
+      <button type="button" class="ctrl-btn" id="btnPrev" title="Phím ←">← Trước</button>
+      <button type="button" class="ctrl-btn" id="btnNext" title="Phím →">Tiếp →</button>
+      <button type="button" class="ctrl-btn" id="btnAutoPlay">▶ Tự chạy</button>
+      <button type="button" class="ctrl-btn" id="btnPresent">Chế độ thuyết trình</button>
+      <button type="button" class="ctrl-btn" id="btnFullscreen">Toàn màn hình</button>
+    </div>
+  </header>
+
+  <main class="main-stage">
+    <!-- ═══════════════ PHẦN ① TỔNG QUAN ═══════════════ -->
+    <section class="section-panel active" data-section="1" id="sec-1">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h1>① TỔNG QUAN DỮ LIỆU &amp; KẾT QUẢ LÀM SẠCH CHƯƠNG 3</h1>
+          <p>Đối chiếu quy mô trước → sau làm sạch giữa <code>Data/raw/Du lieu khong sach.csv</code> và <code>Data/processed/PJ21.csv</code>.</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn btn-source" data-open-source="1">🔎 Xem nguồn</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Sàng lọc biến mục tiêu <code>Satisfaction</code> từ dữ liệu bẩn</div>
+          <div class="card-sub">Tính trên toàn bộ tập thô <code>Du lieu khong sach.csv</code> (n = 129.880 dòng)</div>
+          <div class="chart-box" id="chartScreening"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Cơ cấu nhãn <code>Satisfaction</code> sau làm sạch</div>
+          <div class="card-sub">Tính trên tập sạch chuẩn <code>PJ21.csv</code> (n = 119.092 dòng có nhãn quan sát thực tế)</div>
+          <div class="chart-box" id="chartLabels"></div>
+        </div>
+      </div>
+
+      <div class="callout emerald">
+        <strong>Tối ưu bộ nhớ DataFrame:</strong> Dung lượng trong RAM giảm từ <strong>151,36 MiB</strong> (bảng chuỗi thô) → <strong>51,47 MiB</strong> (<code>PJ21.csv</code> nạp mặc định) → <strong>3,41 MiB</strong> sau chuyển <code>category</code> &amp; hạ bậc số nguyên (<strong>tiết kiệm 93,38%</strong> mà không thay đổi bất kỳ giá trị nào).
+      </div>
+    </section>
+
+    <!-- ═══════════════ PHẦN ② QUY TRÌNH LÀM SẠCH ═══════════════ -->
+    <section class="section-panel" data-section="2" id="sec-2">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h1>② QUY TRÌNH LÀM SẠCH DỮ LIỆU (6 BƯỚC THỰC TẾ)</h1>
+          <p>Trình bày đúng thứ tự triển khai trong <code>lam_sach_du_lieu.py</code> (đồng bộ <code>clean_data.ipynb</code>) và <code>nhật ký làm việc.md</code>. Bấm từng bước để bung/thu gọn.</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn btn-primary" id="btnDemoSteps">▶ Trình diễn kết quả đã tính</button>
+          <button type="button" class="btn btn-outline" id="btnExpandAll">Mở tất cả</button>
+          <button type="button" class="btn btn-outline" id="btnCollapseAll">Thu gọn tất cả</button>
+          <button type="button" class="btn btn-source" data-open-source="2">🔎 Xem nguồn</button>
+        </div>
+      </div>
+
+      <div class="demo-status-bar">
+        <span id="demoStatusText" style="font-weight:700;font-size:0.88rem;color:#0f172a;">Sẵn sàng trình diễn 6 bước quy trình làm sạch đã kiểm chứng.</span>
+        <div class="demo-progress-track"><div class="demo-progress-fill" id="demoProgressFill"></div></div>
+      </div>
+
+      <div class="steps-list" id="stepsList"></div>
+    </section>
+
+    <!-- ═══════════════ PHẦN ③ KIỂM TOÁN 24 BIẾN ═══════════════ -->
+    <section class="section-panel" data-section="3" id="sec-3">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h1>③ KIỂM TOÁN CHẤT LƯỢNG ĐẦY ĐỦ 24 BIẾN (TRƯỚC – SAU LÀM SẠCH)</h1>
+          <p>Quét thực tế từng ô bằng <code>kiem_toan_tung_o()</code>; khớp 100% giữa <code>kiem_tra_chat_luong.csv</code> và <code>Bao_cao_lam_sach_du_lieu.csv</code>.</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn btn-primary" id="btnDownloadCSV">⬇ Tải CSV bảng đang lọc</button>
+          <button type="button" class="btn btn-source" data-open-source="3">🔎 Xem nguồn</button>
+        </div>
+      </div>
+
+      <div class="concept-bar">
+        <div class="concept-item">
+          <div><strong>Lượt lỗi</strong> (một ô có thể mắc &gt;1 lỗi)</div>
+          <div class="c-val">957.918 lượt lỗi</div>
+          <div style="color:#64748b;">Gồm 37.748 ô trùng ĐD &amp; Ngoài miền</div>
+        </div>
+        <div class="concept-item">
+          <div><strong>Ô lỗi duy nhất</strong> (mỗi ô chỉ tính 1 lần)</div>
+          <div class="c-val">920.170 ô</div>
+          <div style="color:#64748b;">= 957.918 − 37.748 (29,52% số ô raw)</div>
+        </div>
+        <div class="concept-item">
+          <div><strong>Ô lỗi thuộc dòng bị loại</strong></div>
+          <div class="c-val">83.037 ô</div>
+          <div style="color:#64748b;">Nằm trên 10.788 dòng thiếu Satisfaction</div>
+        </div>
+        <div class="concept-item">
+          <div><strong>Ô được sửa trên dòng giữ lại</strong></div>
+          <div class="c-val">837.133 ô</div>
+          <div style="color:#64748b;">Trên 119.092 dòng → <strong>0 ô lỗi sau xử lý</strong></div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <input type="text" id="auditSearchInput" class="input-search" placeholder="Tìm tên biến hoặc nhóm biến..." aria-label="Tìm tên biến" />
+          <select id="auditFilterSelect" class="select-box" aria-label="Lọc theo loại lỗi">
+            <option value="all">Bộ lọc: Tất cả 24 biến</option>
+            <option value="missing">Có lỗi thiếu (gồm mã ẩn)</option>
+            <option value="format">Có lỗi sai định dạng</option>
+            <option value="outlier">Có lỗi ngoài miền BOUNDS</option>
+            <option value="overlap">Có ô trùng 2 lỗi (ĐD &amp; NM)</option>
+            <option value="imputed">Có ô điền khuyết / Unknown</option>
+          </select>
+          <span id="auditCountLabel" class="badge badge-blue">Đang hiển thị 24/24 biến</span>
+        </div>
+        <span style="font-size:0.82rem;color:#92400e;font-weight:600;">⚠ Lưu ý: Không cộng dồn các nhóm lỗi chồng lặp (Thiếu + Sai ĐD + Ngoài miền = Lượt lỗi ≠ Ô lỗi duy nhất).</span>
+      </div>
+
+      <div class="table-scroll-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Biến</th>
+              <th>Nhóm</th>
+              <th class="num">Thiếu (trước)</th>
+              <th class="num">Sai ĐD</th>
+              <th class="num">Ngoài miền</th>
+              <th class="num">Trùng 2 lỗi</th>
+              <th class="num">Tổng lượt lỗi</th>
+              <th class="num">Ô lỗi duy nhất</th>
+              <th class="num">Thuộc dòng loại</th>
+              <th class="num">Sửa dòng giữ lại</th>
+              <th>Giá trị điền (Số ô)</th>
+              <th class="num">Lỗi sau</th>
+            </tr>
+          </thead>
+          <tbody id="auditTbody"></tbody>
+          <tfoot id="auditTfoot"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ PHẦN ④ VÍ DỤ THỰC TẾ ═══════════════ -->
+    <section class="section-panel" data-section="4" id="sec-4">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h1>④ VÍ DỤ BẢN GHI THỰC TẾ TRƯỚC – SAU LÀM SẠCH</h1>
+          <p>100% bản ghi thật, ghép 1–1 bằng khóa số nguyên <code>ID</code> duy nhất (không ghép theo số thứ tự dòng). Phân biệt rõ <strong>Chuẩn hóa</strong> và <strong>Điền khuyết</strong>.</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn btn-source" data-open-source="4">🔎 Xem nguồn</button>
+        </div>
+      </div>
+
+      <div class="quick-chips" id="exampleQuickChips"></div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <label for="exampleVarSelect" style="font-weight:700;font-size:0.88rem;">Chọn biến (24 biến):</label>
+          <select id="exampleVarSelect" class="select-box"></select>
+          <select id="exampleActionSelect" class="select-box" aria-label="Lọc cách xử lý">
+            <option value="all">Tất cả cách xử lý</option>
+            <option value="Chuẩn hóa">Chỉ xem: Chuẩn hóa</option>
+            <option value="Điền khuyết">Chỉ xem: Điền khuyết</option>
+            <option value="Gán nhãn Unknown">Chỉ xem: Gán nhãn Unknown</option>
+            <option value="Loại dòng thiếu nhãn">Chỉ xem: Loại dòng thiếu nhãn</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="callout" id="exampleVarNote" style="margin-top:0;margin-bottom:12px;"></div>
+
+      <div class="table-scroll-wrap" style="max-height:390px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="num" style="width:110px;">ID (Khóa 1–1)</th>
+              <th style="width:210px;">Giá trị trước (Raw)</th>
+              <th style="width:230px;">Giá trị sau (PJ21.csv)</th>
+              <th style="width:170px;">Cách xử lý</th>
+              <th>Căn cứ quy tắc thực tế</th>
+            </tr>
+          </thead>
+          <tbody id="examplesTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ PHẦN ⑤ KHÁM PHÁ DỮ LIỆU (EDA) ═══════════════ -->
+    <section class="section-panel" data-section="5" id="sec-5">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h1>⑤ KHÁM PHÁ DỮ LIỆU (EDA) &amp; ĐỐI CHIẾU ĐỘ NHẠY CHƯƠNG 3</h1>
+          <p>Trả lời sơ bộ RQ1 (Phân khúc), RQ2 (Độ trễ) và RQ3 (14 điểm chạm dịch vụ). Đổi chế độ để xem tác động của ô điền khuyết và mã điểm <code>0</code>.</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn btn-source" data-open-source="5">🔎 Xem nguồn</button>
+        </div>
+      </div>
+
+      <div class="subtabs">
+        <button type="button" class="subtab active" data-eda-tab="segments">RQ1 · Phân khúc hành khách</button>
+        <button type="button" class="subtab" data-eda-tab="delays">RQ2 · Độ trễ khởi hành &amp; đến</button>
+        <button type="button" class="subtab" data-eda-tab="spearman">RQ3 · Tương quan Spearman (14 dịch vụ)</button>
+      </div>
+
+      <!-- Tab 5A: Segments -->
+      <div class="eda-pane card" data-eda-pane="segments">
+        <div class="eda-controls">
+          <div class="toolbar-left">
+            <label for="segVarSelect" style="font-weight:700;font-size:0.88rem;">Biến phân khúc:</label>
+            <select id="segVarSelect" class="select-box">
+              <option value="Class">Class (Hạng ghế)</option>
+              <option value="Type of Travel">Type of Travel (Mục đích chuyến đi)</option>
+              <option value="Customer Type">Customer Type (Loại khách hàng)</option>
+              <option value="Gender">Gender (Giới tính)</option>
+            </select>
+          </div>
+          <div class="toggle-group" role="group" aria-label="Chế độ mẫu phân khúc">
+            <button type="button" class="toggle-btn active" data-seg-mode="full">Toàn tập PJ21.csv (n = 119.092)</button>
+            <button type="button" class="toggle-btn" data-seg-mode="observed">Chỉ ô quan sát được</button>
+          </div>
+        </div>
+        <div class="card-title" id="segChartTitle"></div>
+        <div class="stat-strip" id="segStatsStrip"></div>
+        <div class="chart-box" id="segChartBox"></div>
+        <div class="callout" id="segNoteBox"></div>
+      </div>
+
+      <!-- Tab 5B: Delays -->
+      <div class="eda-pane card" data-eda-pane="delays" style="display:none;">
+        <div class="eda-controls">
+          <div class="toolbar-left">
+            <label for="delayVarSelect" style="font-weight:700;font-size:0.88rem;">Chiều độ trễ:</label>
+            <select id="delayVarSelect" class="select-box">
+              <option value="Departure Delay">Departure Delay (Độ trễ khởi hành)</option>
+              <option value="Arrival Delay">Arrival Delay (Độ trễ đến)</option>
+            </select>
+          </div>
+          <div class="toggle-group" role="group" aria-label="Chế độ mẫu độ trễ">
+            <button type="button" class="toggle-btn active" data-delay-mode="full">Toàn tập PJ21.csv (n = 119.092)</button>
+            <button type="button" class="toggle-btn" data-delay-mode="observed">Chỉ ô quan sát được</button>
+          </div>
+        </div>
+        <div class="card-title" id="delayChartTitle"></div>
+        <div class="stat-strip" id="delayStatsStrip"></div>
+        <div class="chart-box" id="delayChartBox"></div>
+        <div class="callout amber" id="delayNoteBox"></div>
+      </div>
+
+      <!-- Tab 5C: Spearman -->
+      <div class="eda-pane card" data-eda-pane="spearman" style="display:none;">
+        <div class="eda-controls">
+          <span style="font-weight:700;font-size:0.88rem;">Phương án xử lý mã 0 &amp; ô điền khuyết (theo Bảng 3.9 Chương 3):</span>
+          <div class="toggle-group" role="group" aria-label="Phương án Spearman">
+            <button type="button" class="toggle-btn active" data-spearman-mode="keep0">Giữ mã 0 (PJ21.csv)</button>
+            <button type="button" class="toggle-btn" data-spearman-mode="drop0">Loại mã 0 (PJ21.csv)</button>
+            <button type="button" class="toggle-btn" data-spearman-mode="obs">Chỉ ô quan sát trước điền</button>
+          </div>
+        </div>
+        <div class="card-title" id="spearmanChartTitle"></div>
+        <div class="chart-box" id="spearmanChartBox"></div>
+        <div class="callout" id="spearmanNoteBox"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ PHẦN ⑥ NGUỒN VÀ KIỂM CHỨNG ═══════════════ -->
+    <section class="section-panel" data-section="6" id="sec-6">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h1>⑥ NGUỒN DỮ LIỆU, MÃ BĂM SHA-256 &amp; KIỂM CHỨNG ĐỐI CHIẾU</h1>
+          <p>Hồ sơ truy vết nguồn gốc cho toàn bộ 6 phần thuyết trình, kiểm tra đối chiếu tổng và ghi nhận minh bạch các phần chưa xác minh.</p>
+        </div>
+      </div>
+
+      <div class="reconcile-grid" id="reconcileGrid"></div>
+
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">Bảng đối chiếu nguồn và quy tắc tính toán</div>
+        <div class="table-scroll-wrap" style="max-height:240px;margin-top:8px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Chỉ số / Bảng / Biểu đồ</th>
+                <th>Tệp nguồn</th>
+                <th>Vị trí hoặc quy tắc tính</th>
+                <th>Phạm vi kiểm tra</th>
+              </tr>
+            </thead>
+            <tbody id="traceTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Mã băm SHA-256 thực tế của 12 tệp nguồn đã sử dụng</div>
+          <div class="table-scroll-wrap" style="max-height:240px;margin-top:8px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tệp nguồn</th>
+                  <th>Vai trò</th>
+                  <th class="num">Kích thước</th>
+                  <th>SHA-256</th>
+                </tr>
+              </thead>
+              <tbody id="shaTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Các hạng mục chưa xác minh &amp; giới hạn dữ liệu</div>
+          <div class="card-sub">Ghi nhận minh bạch theo Chương 3 và nhật ký kiểm toán 18/11/2026</div>
+          <ul id="unverifiedList" style="padding-left:18px;font-size:0.86rem;color:#334155;"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Modal "Xem nguồn" dùng chung cho các phần ①–⑤ ── -->
+  <div class="modal-backdrop" id="sourceModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 id="modalTitle" style="font-size:1.12rem;font-weight:800;color:#0f172a;">Nguồn căn cứ</h2>
+        <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Đóng">✕</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Đóng gói dữ liệu cục bộ để chạy 100% ngoại tuyến qua file:// -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

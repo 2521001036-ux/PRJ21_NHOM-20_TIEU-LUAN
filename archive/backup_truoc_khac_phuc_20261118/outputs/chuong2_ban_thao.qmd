@@ -1,0 +1,325 @@
+---
+lang: vi
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    theme: none
+    highlight-style: none
+number-sections: false
+execute:
+  echo: false
+---
+
+# Chương 2. Cơ sở lý thuyết và phương pháp nghiên cứu {#sec-chuong2}
+
+Chương này trình bày nền tảng lý thuyết về chất lượng dịch vụ và sự hài lòng của hành khách hàng không; tổng hợp các nghiên cứu thực nghiệm có liên quan; xác lập quy trình nghiên cứu dữ liệu; giải thích các phương pháp thống kê, thuật toán học máy và công cụ lập trình được sử dụng. Nội dung được đối chiếu với câu hỏi nghiên cứu RQ1–RQ5 ở Chương 1, các phân tích đã thực hiện ở Chương 3 và định hướng giải pháp ở Chương 5. Phương pháp mô hình hóa là thiết kế dành cho Chương 4, chưa phải kết quả thực nghiệm đã hoàn thành. Mục tiêu xuyên suốt là tạo cơ sở khoa học để phân tích những yếu tố dịch vụ có khả năng phân biệt hành khách hài lòng và chưa hài lòng, từ đó hỗ trợ quyết định cải thiện dịch vụ của doanh nghiệp hàng không.
+
+---
+
+## 2.1. Cơ sở lý thuyết chuyên ngành liên quan
+
+### 2.1.1. Khái niệm dịch vụ hàng không và đặc điểm của dịch vụ hàng không
+
+Dịch vụ hàng không là tổng hợp các hoạt động được doanh nghiệp hàng không và các đơn vị liên quan cung cấp nhằm đáp ứng nhu cầu di chuyển bằng đường hàng không của hành khách. Dịch vụ không chỉ giới hạn ở việc vận chuyển hành khách từ điểm đi đến điểm đến mà còn bao gồm các hoạt động trước chuyến bay, trong chuyến bay và sau chuyến bay.
+
+* **Giai đoạn trước chuyến bay:** Hành khách tương tác với hệ thống đặt vé, lựa chọn hành trình, mua dịch vụ bổ trợ, làm thủ tục trực tuyến hoặc tại sân bay.
+* **Giai đoạn tại sân bay và lên máy bay:** Các điểm chạm bao gồm làm thủ tục check-in, tìm kiếm cổng khởi hành, kiểm tra an ninh, hướng dẫn lên máy bay và xử lý hành lý.
+* **Giai đoạn trong chuyến bay:** Hành khách đánh giá sự thoải mái của ghế, không gian để chân, vệ sinh khoang, chất lượng suất ăn, dịch vụ của tiếp viên, kết nối Wi-Fi và giải trí trên chuyến bay.
+* **Giai đoạn sau chuyến bay:** Việc nhận hành lý, hỗ trợ khiếu nại và xử lý gián đoạn tiếp tục ảnh hưởng đến đánh giá tổng thể.
+
+Dịch vụ hàng không mang 4 đặc điểm cốt lõi của ngành dịch vụ nói chung:
+
+1. **Tính vô hình (Intangibility):** Trước khi sử dụng, hành khách khó đánh giá đầy đủ chất lượng chuyến bay như cách đánh giá một sản phẩm hữu hình.
+2. **Tính không đồng nhất (Heterogeneity):** Trải nghiệm có thể thay đổi theo chuyến bay, loại tàu bay, thời điểm, nhân viên, điều kiện khai thác và mật độ hành khách.
+3. **Tính không thể tách rời (Inseparability):** Quá trình cung ứng và tiêu dùng diễn ra đồng thời; phần lớn trải nghiệm được hình thành ngay trong quá trình dịch vụ diễn ra.
+4. **Tính không lưu trữ (Perishability):** Ghế trống trên một chuyến bay đã khởi hành không thể được lưu kho để bán vào thời điểm khác.
+
+Những đặc điểm này khiến việc quản trị chất lượng dịch vụ phải dựa trên giám sát liên tục, dữ liệu vận hành và phản hồi thực tế của hành khách. Trong nghiên cứu này, dịch vụ hàng không được tiếp cận thông qua các đánh giá cụ thể của hành khách về các thuộc tính dịch vụ và thông tin chuyến bay, cho phép lượng hóa các khái niệm quản trị thành các biến số có thể phân tích bằng thống kê và học máy.
+
+### 2.1.2. Khái niệm chất lượng dịch vụ và mô hình SERVQUAL
+
+Chất lượng dịch vụ thường được hiểu là đánh giá tổng thể của khách hàng về mức độ xuất sắc hoặc phù hợp của dịch vụ mà họ nhận được. Parasuraman, Zeithaml và Berry (1988) phát triển thang đo SERVQUAL gồm 22 biến quan sát, tập trung vào 5 phương diện:
+
+1. **Độ tin cậy (Reliability):** Thực hiện đúng cam kết, cung cấp thông tin chính xác và duy trì quy trình ổn định.
+2. **Khả năng đáp ứng (Responsiveness):** Tốc độ hỗ trợ, hướng dẫn và giải quyết yêu cầu của hành khách.
+3. **Sự đảm bảo (Assurance):** Năng lực chuyên môn, thái độ chuyên nghiệp và cảm giác an tâm mang lại cho hành khách.
+4. **Sự đồng cảm (Empathy):** Khả năng quan tâm, thấu hiểu và nhận biết các nhu cầu khác biệt của hành khách.
+5. **Phương tiện hữu hình (Tangibles):** Ghế ngồi, khoang hành khách, thiết bị, khu vực cổng và các điều kiện vật chất khác.
+
+:::{.callout-note}
+### Lưu ý về phạm vi áp dụng SERVQUAL trong đề tài
+Cần phân biệt rõ giữa việc sử dụng SERVQUAL làm nền tảng lý thuyết và việc áp dụng nguyên bản thang đo SERVQUAL. Tệp dữ liệu của đề tài không có đầy đủ cặp câu hỏi về kỳ vọng và cảm nhận, cũng không đo trực tiếp 5 cấu phần bằng bộ 22 câu hỏi SERVQUAL nguyên bản. Nghiên cứu không tuyên bố đã đo lường SERVQUAL theo đúng quy trình gốc. Thay vào đó, các khái niệm về chất lượng dịch vụ được dùng để giải thích ý nghĩa quản trị của các biến đánh giá dịch vụ đang có trong dữ liệu, chẳng hạn `Seat Comfort`, `Check-in Service`, `Online Boarding`, `Cleanliness` và `In-flight Wifi Service`.
+:::
+
+### 2.1.3. Khái niệm sự hài lòng của hành khách
+
+Sự hài lòng của khách hàng là trạng thái đánh giá hình thành sau khi khách hàng trải nghiệm và so sánh kết quả nhận được với kỳ vọng hoặc tiêu chuẩn cá nhân. Khi trải nghiệm thực tế đáp ứng hoặc vượt kỳ vọng, khách hàng có xu hướng hình thành đánh giá tích cực; ngược lại, khoảng cách giữa kỳ vọng và trải nghiệm có thể dẫn đến không hài lòng. Trong hàng không, sự hài lòng là đánh giá tổng hợp, chịu ảnh hưởng đồng thời bởi chất lượng dịch vụ tại sân bay, trải nghiệm trên máy bay, tính thuận tiện của hành trình và các yếu tố vận hành như chậm chuyến.
+
+Sự hài lòng có ý nghĩa vượt ra ngoài cảm xúc sau một chuyến bay: đây là tín hiệu quản trị giúp doanh nghiệp nhận diện điểm mạnh, điểm yếu của quy trình phục vụ. Về mặt hành vi, sự hài lòng có thể liên quan đến ý định tiếp tục lựa chọn hãng, mức độ sẵn sàng giới thiệu và khả năng duy trì quan hệ khách hàng. 
+
+:::{.callout-warning}
+### Giới hạn diễn giải biến kết quả
+Dữ liệu của đề tài chỉ có biến kết quả `Satisfaction` phản ánh trạng thái hài lòng tổng thể; dữ liệu không trực tiếp đo ý định mua lại, lòng trung thành hoặc hành vi giới thiệu. Vì vậy, các kết quả của mô hình chỉ cho phép dự đoán/nhận diện trạng thái hài lòng, không được diễn giải thành bằng chứng trực tiếp về lòng trung thành.
+:::
+
+### 2.1.4. Các điểm chạm dịch vụ (Service Touchpoints) trong hành trình hành khách
+
+Điểm chạm dịch vụ là những thời điểm hoặc kênh mà hành khách tương tác với hãng hàng không, sân bay hoặc hệ thống cung ứng dịch vụ. Mỗi điểm chạm tạo ra một phần trải nghiệm và có thể ảnh hưởng đến đánh giá tổng thể. Đối với đề tài PRJ-21, các biến dịch vụ có thể được nhóm thành những cụm nghiệp vụ tiêu biểu sau:
+
+: Phân nhóm các điểm chạm dịch vụ trong hành trình hành khách {#tbl-touchpoints}
+
+| Nhóm điểm chạm | Các biến tiêu biểu trong dữ liệu | Ý nghĩa quản trị |
+| :--- | :--- | :--- |
+| **Đặt vé và dịch vụ số** | `Ease of Online Booking`; `In-flight Wifi Service`; `Online Boarding` | Đánh giá mức thuận tiện của nền tảng số, khả năng tự phục vụ và kết nối trong chuyến bay. |
+| **Dịch vụ mặt đất** | `Check-in Service`; `Gate Location`; `Baggage Handling` | Phản ánh trải nghiệm tại sân bay, khả năng tìm cổng, làm thủ tục và xử lý hành lý. |
+| **Trải nghiệm trên khoang** | `Seat Comfort`; `Leg Room Service`; `On-board Service`; `Cleanliness`; `Food and Drink`; `In-flight Service`; `In-flight Entertainment` | Đánh giá tiện nghi, vệ sinh, phục vụ và các tiện ích trong suốt chuyến bay. |
+| **Tính thuận tiện và vận hành chuyến bay** | `Departure and Arrival Time Convenience`; `Departure Delay`; `Arrival Delay`; `Flight Distance` | Phản ánh sự phù hợp của lịch trình, độ đúng giờ và đặc điểm hành trình. |
+| **Đặc điểm hành khách và chuyến đi** | `Age`; `Gender`; `Customer Type`; `Type of Travel`; `Class` | Dùng để phân tích sự khác biệt giữa các phân khúc hành khách. |
+
+Việc phân nhóm này là cách tổ chức biến phục vụ phân tích, không phải kết quả của kiểm định nhân tố. Một biến có thể phản ánh nhiều khía cạnh trải nghiệm và tác động của nó có thể khác nhau giữa các nhóm hành khách (ví dụ: tầm quan trọng của Wi-Fi khác nhau giữa khách công tác và du lịch; mức nhạy cảm trễ chuyến khác nhau giữa khách nối chuyến và bay thẳng).
+
+### 2.1.5. Mối quan hệ giữa chất lượng dịch vụ, trải nghiệm và sự hài lòng
+
+Về mặt khái niệm, chất lượng dịch vụ cảm nhận là một trong những tiền đề quan trọng của sự hài lòng. Hành khách hình thành đánh giá từ nhiều thuộc tính riêng lẻ, sau đó tổng hợp thành nhận định chung về chuyến đi:
+* Các thuộc tính mang tính chức năng (làm thủ tục nhanh, xử lý hành lý chuẩn xác).
+* Các thuộc tính mang tính vật chất (độ êm ái của ghế, độ sạch sẽ).
+* Các thuộc tính mang tính trải nghiệm (thái độ phục vụ, ẩm thực, giải trí).
+* Các chỉ báo vận hành (độ trễ chuyến bay, độ thuận tiện giờ bay).
+
+:::{.callout-important}
+### Bản chất tương quan thay vì nhân quả
+Mô hình nghiên cứu xem đặc điểm hành khách, đánh giá điểm chạm dịch vụ và chỉ báo vận hành là nhóm biến đầu vào ($X$); trạng thái hài lòng tổng thể là biến kết quả ($Y$). Đây là mô hình dự đoán và khám phá dữ liệu, không mặc nhiên chứng minh quan hệ nhân quả. Thuộc tính có độ quan trọng cao (High Feature Importance) nghĩa là thuộc tính đó đóng góp nhiều vào khả năng phân biệt lớp trong mô hình, không khẳng định việc thay đổi đơn lẻ thuộc tính đó chắc chắn gây ra mức tăng hài lòng tương ứng.
+:::
+
+---
+
+## 2.2. Tổng quan các nghiên cứu thực nghiệm trước đây
+
+### 2.2.1. Nghiên cứu về các yếu tố quyết định sự hài lòng trong dịch vụ hàng không
+
+* **Park và cộng sự (2019):** Phân tích dữ liệu phản hồi quy mô lớn của hơn 133.000 khách hàng. Nghiên cứu cho thấy các giá trị cảm xúc của khách hàng có vai trò đáng kể trong đánh giá hài lòng và ghi nhận sự khác biệt rõ nét giữa dịch vụ của hãng hàng không giá rẻ (LCC) và hãng truyền thống (FSC).
+* **Noviantoro và Huang (2022):** Áp dụng phương pháp khai phá dữ liệu để nghiên cứu sự hài lòng của hành khách hàng không. Kết quả xác định các thuộc tính cần ưu tiên cải thiện gồm: làm thủ tục lên máy bay trực tuyến/qua thiết bị di động (`Online Boarding`), Wi-Fi trên chuyến bay (`In-flight Wifi Service`), xử lý hành lý (`Baggage Handling`) và giải trí trên chuyến bay (`In-flight Entertainment`).
+* **Jiang, Zhang, Li và Zhang (2022):** Sử dụng bộ dữ liệu khảo sát hành khách hàng không công khai trên Kaggle và đề xuất quy trình kết hợp Random Forest với Recursive Feature Elimination và Logistic Regression (RF-RFE-LR). Kết quả cho thấy Random Forest sau bước lựa chọn đặc trưng đạt hiệu năng phân loại vượt trội, là tài liệu tham khảo trực tiếp cho đề tài về xử lý dữ liệu lớn và giải thích tầm quan trọng của biến.
+* **Le và cộng sự (2023):** Khảo sát 367 hành khách Korean Air tại thị trường Việt Nam bằng mô hình PLS-SEM. Kết quả chỉ ra hình ảnh thương hiệu, niềm tin, dịch vụ trên chuyến bay và chất lượng dịch vụ cảm nhận có tác động tích cực đến sự hài lòng, trong khi yếu tố giá vé và an toàn không mang ý nghĩa thống kê trong mẫu khảo sát này.
+* **Eshaghi, Afshardoost, Lohmann và Moyle (2024):** Thực hiện phân tích gộp (meta-analysis) trên 95 nghiên cứu thực nghiệm. Kết quả khẳng định chất lượng dịch vụ cảm nhận và giá trị cảm nhận tác động tích cực đến sự hài lòng, trong đó dịch vụ trên chuyến bay là một trong những chiều cạnh có ảnh hưởng lớn nhất.
+
+### 2.2.2. Bảng tổng hợp các nghiên cứu tiêu biểu
+
+: Tổng hợp các nghiên cứu thực nghiệm tiêu biểu về sự hài lòng hành khách hàng không {#tbl-literature}
+
+| Tác giả, năm | Dữ liệu và phương pháp | Kết quả/đóng góp chính | Liên hệ với đề tài |
+| :--- | :--- | :--- | :--- |
+| **Park et al. (2019)** | Hơn 133.000 phản hồi khách hàng; phân tích dữ liệu phản hồi quy mô lớn. | Giá trị cảm xúc có vai trò đáng kể; có khác biệt giữa hãng giá rẻ và hãng cao cấp. | Nhấn mạnh cần xem xét trải nghiệm tổng thể và khác biệt phân khúc. |
+| **Noviantoro & Huang (2022)** | Dữ liệu hành khách hàng không; phương pháp khai phá dữ liệu. | Online/mobile boarding, Wi-Fi, xử lý hành lý và giải trí trên chuyến bay là các thuộc tính cần ưu tiên cải thiện. | Tương ứng trực tiếp với các biến dịch vụ trong tệp dữ liệu `Data/processed/PJ21.csv`. |
+| **Jiang et al. (2022)** | Bộ dữ liệu Kaggle; RF-RFE-LR, so sánh các mô hình phân loại. | Random Forest kết hợp lựa chọn đặc trưng cho kết quả dự đoán tốt; xác định biến quan trọng. | Cơ sở tham khảo cho thuật toán Random Forest Classifier và Feature Importance. |
+| **Le et al. (2023)** | Khảo sát 367 hành khách Korean Air; mô hình cấu trúc PLS-SEM. | Hình ảnh thương hiệu, niềm tin, dịch vụ trên chuyến bay và chất lượng cảm nhận liên hệ với hài lòng. | Cung cấp nghiên cứu bối cảnh Việt Nam; gợi ý vai trò đa chiều của trải nghiệm. |
+| **Eshaghi et al. (2024)** | Meta-analysis gồm 95 nghiên cứu thực nghiệm. | Chất lượng dịch vụ và giá trị cảm nhận tác động tích cực đến hài lòng; dịch vụ trên khoang có vai trò nổi bật. | Củng cố nền tảng lý thuyết và tránh khái quát hóa từ một mẫu đơn lẻ. |
+
+### 2.2.3. Khoảng trống nghiên cứu và định hướng kế thừa
+
+Từ tổng quan nghiên cứu, có 3 định hướng nổi bật:
+1. Sự hài lòng là kết quả đa chiều của nhiều yếu tố chất lượng, cảm xúc và đặc điểm hành khách.
+2. Các mô hình cấu trúc (PLS-SEM) phù hợp giải thích khái niệm tiềm ẩn, trong khi mô hình máy học phân loại (Classification) phù hợp dự đoán nhãn hài lòng từ dữ liệu lớn.
+3. Thứ tự quan trọng của thuộc tính dịch vụ phụ thuộc vào phân khúc, thị trường và bối cảnh vận hành.
+
+Đề tài PRJ-21 kế thừa hướng tiếp cận định lượng và khai phá dữ liệu, dự kiến so sánh **Logistic Regression, Decision Tree và Random Forest** theo RQ4. Kết quả EDA và phân tích độ quan trọng của đặc trưng được kết hợp để xây dựng định hướng quản trị ở Chương 5; không mặc định mô hình nào tốt nhất trước thực nghiệm. Các phát hiện trong tài liệu tham khảo không được xem là kết quả của dữ liệu nhóm.
+
+---
+
+## 2.3. Quy trình nghiên cứu dữ liệu (Data Science Workflow)
+
+### 2.3.1. Lựa chọn quy trình CRISP-DM
+
+Nghiên cứu sử dụng quy trình **CRISP-DM** (*Cross-Industry Standard Process for Data Mining*) làm khung định hướng chuẩn mực (Schröer, Kruse & Gómez, 2021). Trong đề tài, sáu pha của CRISP-DM được vận dụng thành bảy bước công việc dưới đây. Đây là cách tổ chức triển khai, không phải tuyên bố CRISP-DM nguyên bản có bảy pha; bước khuyến nghị chưa đồng nghĩa triển khai hệ thống thực tế:
+
+: Quy trình nghiên cứu dữ liệu 7 giai đoạn phái sinh từ CRISP-DM {#tbl-workflow}
+
+| Giai đoạn | Nội dung thực hiện | Sản phẩm đầu ra dự kiến |
+| :---: | :--- | :--- |
+| **1. Business Understanding** | Xác định vấn đề quản trị, mục tiêu nghiên cứu, câu hỏi nghiên cứu, biến mục tiêu và tiêu chí thành công. | Bản mô tả bài toán; xác định `Satisfaction` là biến $Y$; xác định nhóm biến $X$. |
+| **2. Data Acquisition & Integration** | Tiếp nhận dữ liệu, xác định nguồn, kiểm tra cấu trúc và tích hợp các tệp nếu có. | Bảng dữ liệu phân tích thống nhất; mô tả số dòng, số cột và kiểu dữ liệu. |
+| **3. Data Cleaning & Preprocessing** | Kiểm tra thiếu, trùng lặp, kiểu dữ liệu, giá trị bất thường và tính hợp lệ của các trường. | Bộ dữ liệu sạch, có quy tắc xử lý minh bạch được ghi nhận. |
+| **4. Exploratory Data Analysis (EDA)** | Thống kê mô tả, phân phối, tương quan, so sánh nhóm và trực quan hóa. | Bảng thống kê, biểu đồ phân phối và insight sơ bộ. |
+| **5. Feature Engineering & Preparation** | Chọn/tạo biến, mã hóa biến phân loại, chia train/test và xây dựng pipeline. | Ma trận đặc trưng phù hợp để huấn luyện, hạn chế rò rỉ dữ liệu. |
+| **6. Statistical Modeling & Machine Learning** | Thực hiện kiểm định phù hợp, huấn luyện mô hình phân loại và tinh chỉnh tham số. | Mô hình dự đoán `Satisfaction` và kết quả huấn luyện. |
+| **7. Evaluation & Recommendations** | Đánh giá mô hình trên tập kiểm tra, giải thích biến quan trọng và chuyển hóa thành khuyến nghị. | Báo cáo chỉ số đánh giá, Feature Importance, giới hạn và đề xuất quản trị. |
+
+### 2.3.2. Xác định bài toán nghiên cứu và các biến
+
+* **Biến mục tiêu ($Y$):** `Satisfaction` có hai nhãn: `"Satisfied"` (Hài lòng) và `"Neutral or Dissatisfied"` (Trung lập hoặc Không hài lòng). Đây là bài toán **học có giám sát (Supervised Learning)** dạng **phân loại nhị phân (Binary Classification)**.
+* **Các nhóm biến giải thích ($X$):**
+  1. *Đặc điểm hành khách:* `Gender`, `Age`, `Customer Type`.
+  2. *Đặc điểm chuyến bay:* `Type of Travel`, `Class`, `Flight Distance`.
+  3. *Chỉ báo vận hành:* `Departure Delay`, `Arrival Delay`.
+  4. *Đánh giá điểm chạm dịch vụ:* `Check-in Service`, `Online Boarding`, `Seat Comfort`, `Food and Drink`, `In-flight Wifi Service`, v.v.
+* **Xử lý biến định danh:** Cột `ID` dùng truy vết và ghép bảng, không đưa vào tập đặc trưng dự báo. ID duy nhất trong bảng không chứng minh mỗi hành khách chỉ được khảo sát một lần.
+
+### 2.3.3. Phạm vi dữ liệu và kiểm soát chất lượng
+
+Hồ sơ Chương 3 ghi nhận dữ liệu bẩn và bảng sau điền khuyết ban đầu có 129.880 dòng, 24 cột. Trong đó, 119.092 dòng có nhãn diễn giải được từ dữ liệu bẩn và 10.788 dòng có nhãn không diễn giải được trước điền khuyết. Tập phân tích liên hệ với nhãn loại nhóm 10.788 dòng này; không xem nhãn điền mode là kết quả khảo sát.
+
+Tệp hiện có `Data/processed/PJ21.csv` được kiểm tra ngày 17/11/2026: 119.092 dòng, 24 cột, gồm 51.740 nhãn Satisfied và 67.352 nhãn Neutral or Dissatisfied, không còn ô thiếu theo `isna()`. Chương 3 và mã phân tích cũ còn ghi tên `Data/processed/Du lieu da lam sach.csv`; vì vậy cần phân biệt kết quả lịch sử của bảng 129.880 dòng với tệp hiện tại. Số dòng và phân bố nhãn trùng khớp chưa đủ chứng minh mọi giá trị giống phiên bản trước.
+
+Các nguyên tắc kiểm soát gồm:
+
+- Chuẩn hóa chuỗi, mã thiếu ẩn và kiểu dữ liệu theo quy tắc được ghi lại; kiểm tra ID và dòng trùng. Không tự coi trị tuyệt đối hoặc phép chia 10 là cách sửa đúng mọi lỗi số.
+- Phân biệt nhãn quan sát được với nhãn được điền; không dùng nhãn mục tiêu điền khuyết để huấn luyện hoặc đánh giá chính thức.
+- Theo Chương 3, bảng phục vụ EDA đã được điền trên toàn bộ dữ liệu: biến phân loại bằng mode, tuổi và khoảng cách bằng trung vị theo nhóm, điểm dịch vụ bằng mode theo Class; hai độ trễ được điền từ nhau hoặc bằng 0 khi cùng thiếu. Các quy tắc này có thể làm thay đổi phân phối và tương quan.
+- Chưa xác minh ý nghĩa điểm dịch vụ 0; giữ mã này trong mô tả chính và phân tích độ nhạy khi loại riêng theo từng tiêu chí. Không khẳng định 0 là “không sử dụng” hoặc “rất không hài lòng”.
+- Gắn cờ ngoại lai bằng IQR; không tự động loại chỉ vì nằm ngoài râu hộp. Các độ trễ cực đoan vẫn cần xác minh; đơn vị khoảng cách chưa được xác nhận.
+- Với Chương 4, xây lại đầu vào từ dữ liệu bẩn, giữ cờ thiếu và nhãn quan sát được, chia dữ liệu trước khi học mọi thống kê điền khuyết. Bảng đã điền toàn bộ chỉ phù hợp cho phân tích có nêu giới hạn; không đủ cơ sở để tuyên bố đánh giá ML không rò rỉ.
+
+### 2.3.4. Liên kết câu hỏi nghiên cứu với các chương
+
+| Câu hỏi | Phương pháp | Vị trí và trạng thái |
+|---|---|---|
+| RQ1: khác biệt phân khúc | Bảng tỷ lệ theo Class, Customer Type, Type of Travel; Chi-square cho Class và nhãn | Chương 3 đã có kết quả thăm dò |
+| RQ2: độ trễ và hài lòng | Nhóm độ trễ, trung vị, Mann–Whitney U | Chương 3 đã có kết quả thăm dò |
+| RQ3: điểm chạm dịch vụ | Spearman và độ nhạy đối với mã 0 | Chương 3 đã có kết quả; cần đối chiếu mô hình |
+| RQ4: khả năng dự đoán | So sánh ba mô hình, ma trận nhầm lẫn, Accuracy, Precision, Recall, F1 và ROC-AUC | Thiết kế cho Chương 4; chưa có kết quả xác nhận |
+| RQ5: đề xuất quản trị | Tổng hợp EDA, kết quả mô hình và giới hạn dữ liệu | Chương 5 đang là định hướng chờ hoàn thiện |
+
+Không đặt trước một mức Accuracy rồi coi đó là kết quả. Tiêu chí lựa chọn mô hình phải xét hiệu năng từng lớp và sai số có ý nghĩa quản trị. Với lớp dương là Satisfied, trường hợp thực tế trung lập/không hài lòng nhưng dự đoán hài lòng là **False Positive**, không phải False Negative.
+
+---
+
+## 2.4. Các phương pháp thống kê và Thuật toán Học máy ứng dụng
+
+### 2.4.1. Thống kê mô tả
+
+Thống kê mô tả giúp tóm lược các đặc trưng định lượng và tần suất phân loại:
+
+* **Trung bình mẫu (Sample Mean):**
+  $$\bar{x} = (x_1 + \cdots + x_n)/n$$
+* **Độ lệch chuẩn mẫu (Sample Standard Deviation):** là căn bậc hai của phương sai mẫu:
+  $$s^2 = \sum (x_i - \bar{x})^2/(n - 1)$$
+
+Trung vị (`Median`) và khoảng tứ phân vị (`IQR`) được dùng bổ trợ để kiểm soát độ lệch do các giá trị cực trị ở cự ly bay hoặc thời gian trễ chuyến.
+
+### 2.4.2. Tương quan thứ hạng và trực quan hóa
+
+Chương 3 dùng hệ số **Spearman**, tức tương quan Pearson giữa thứ hạng của hai biến, để khảo sát liên hệ đơn điệu giữa 14 điểm dịch vụ và nhãn hài lòng mã hóa 0/1. Cách này phù hợp với điểm thứ bậc và giảm phụ thuộc vào trị số cực đoan. Hệ số nằm trong khoảng −1 đến 1, không chứng minh quan hệ nhân quả. Khi có hạng bằng nhau, sử dụng thứ hạng trung bình.
+
+Phân tích chính giữ điểm 0; phân tích độ nhạy bỏ 0 riêng theo từng tiêu chí nên cỡ mẫu có thể khác nhau. Heatmap thể hiện ma trận Spearman; biểu đồ cột thể hiện tỷ lệ theo phân khúc và nhóm độ trễ; histogram và boxplot hỗ trợ mô tả phân phối. Pearson không phải hệ số dùng cho heatmap hiện tại.
+
+### 2.4.3. Kiểm định giả thuyết và cường độ liên hệ
+
+Hai phép kiểm định đã triển khai ở Chương 3 dùng mức ý nghĩa 5%:
+
+- **Chi-square:** kiểm định H₀ rằng Class và Satisfaction độc lập. Chỉ dùng dòng có cả hạng vé và nhãn diễn giải được từ dữ liệu bẩn, kiểm tra tần số kỳ vọng; bổ sung Cramér’s V để mô tả cường độ liên hệ.
+- **Mann–Whitney U hai phía:** so sánh phân phối độ trễ đến giữa hai nhóm nhãn quan sát được. H₀ là hai phân phối giống nhau; không mặc định đây là kiểm định hai trung vị nếu hình dạng phân phối khác nhau. Báo cáo thêm rank-biserial với quy ước dấu được nêu rõ.
+
+Khi xem hai phép kiểm định là một họ, có thể đối chiếu ngưỡng Bonferroni 0,025. P-value rất nhỏ không đồng nghĩa ý nghĩa quản trị lớn và không báo cáo p = 0 do làm tròn số. Tính độc lập giữa các hành khách chưa được xác nhận, các đặc trưng vẫn có giá trị điền và độ trễ cực đoan, nên suy luận có tính thăm dò. T-test và ANOVA không được trình bày như các kiểm định đã thực hiện trong project này. Diễn giải Mann–Whitney được đối chiếu với [tài liệu SciPy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html).
+
+### 2.4.4. Bài toán phân loại và học có giám sát
+
+Mô hình phân loại nhị phân được biểu diễn dưới dạng hàm toán học:
+$$\hat{Y} = f(X; \theta)$$
+
+Trong đó $X$ là ma trận đặc trưng, $\theta$ là tập tham số được tối ưu hóa qua dữ liệu huấn luyện, và $\hat{Y} \in \{0, 1\}$ là trạng thái nhãn dự đoán.
+
+### 2.4.5. Các mô hình phân loại dự kiến so sánh
+
+**Logistic Regression** là mô hình tham chiếu, biểu diễn xác suất hài lòng qua hàm logistic của tổ hợp tuyến tính các đặc trưng. Cần mã hóa biến danh nghĩa, chuẩn hóa biến số trong Pipeline và kiểm soát regularization. Hệ số phản ánh liên hệ có điều kiện trong mô hình, không tự có ý nghĩa nhân quả.
+
+**Decision Tree** phân chia không gian đặc trưng thành các vùng dự đoán bằng các điều kiện ở nút. Mô hình có thể biểu diễn quan hệ phi tuyến, nhưng dễ quá khớp; độ sâu cây và số mẫu tối thiểu ở lá cần được lựa chọn trên dữ liệu huấn luyện.
+
+**Random Forest Classifier** kết hợp nhiều cây để giảm phương sai so với một cây riêng lẻ.
+
+**Random Forest** (Breiman, 2001) là thuật toán học tổ hợp (*Ensemble Learning*) dựa trên cơ chế đóng bao (*Bagging*) và không gian con ngẫu nhiên (*Random Subspace*):
+
+1. Rút mẫu có hoàn lại (*Bootstrap sampling*) từ tập huấn luyện để xây dựng $B$ cây quyết định với các nguồn ngẫu nhiên khác nhau.
+2. Tại mỗi nút của mỗi cây, chỉ một tập con ngẫu nhiên $m < M$ đặc trưng được xem xét để tìm điểm phân chia tối ưu.
+3. Trong `RandomForestClassifier` của scikit-learn, lấy trung bình xác suất dự đoán của các cây rồi chọn lớp có xác suất trung bình lớn nhất. Cần phân biệt cách triển khai này với biểu diễn bỏ phiếu cứng trong một số mô tả tổng quát.
+
+Ưu điểm nổi bật của Random Forest là kiểm soát phương sai (*Variance Reduction*), có thể giảm nguy cơ quá khớp so với một cây đơn nhưng không loại bỏ hoàn toàn quá khớp, làm việc hiệu quả với dữ liệu phi tuyến và xuất được độ quan trọng của đặc trưng (*Feature Importance*).
+
+### 2.4.6. Mã hóa biến phân loại và chuẩn bị đặc trưng
+
+* **One-Hot Encoding:** Chuyển đổi các biến danh nghĩa (`Gender`, `Customer Type`, `Type of Travel`, `Class`) thành các cột nhị phân 0/1 mà không tạo ra quan hệ thứ bậc giả tạo.
+* **StandardScaler:** Chuẩn hóa biến định lượng theo trung bình và độ lệch chuẩn học từ Train, chủ yếu phục vụ Logistic Regression; các mô hình cây thường không cần bước này. Phép biến đổi không làm dữ liệu trở thành phân phối chuẩn:
+  $$z = (x - \mu)/\sigma$$
+
+### 2.4.7. Chia tập huấn luyện và tập kiểm tra; phòng tránh rò rỉ dữ liệu
+
+* Tỷ lệ phân chia dự kiến: **80% Huấn luyện (Train set)** và **20% Kiểm tra (Test set)**.
+* Sử dụng `stratify=y` để giữ tỷ lệ lớp xấp xỉ dữ liệu đầu vào ở hai tập; phân tầng không làm hai lớp trở nên cân bằng.
+* **Phòng chống rò rỉ dữ liệu (Data Leakage):** Bộ điền khuyết, `StandardScaler` và `OneHotEncoder` chỉ được `fit_transform` trên tập Train, sau đó áp dụng `transform` trên tập Test.
+
+Chọn siêu tham số bằng cross-validation trên Train, đặt toàn bộ tiền xử lý trong Pipeline của từng fold; không dùng Test để chọn mô hình hoặc ngưỡng. Dự kiến dùng `random_state=42` cho các bước ngẫu nhiên. Ba mô hình phải dùng cùng cách chia và tập nhãn hợp lệ. Chỉ báo cáo hiệu năng sau khi hoàn tất quy trình này.
+
+### 2.4.8. Các chỉ số đánh giá mô hình phân loại
+
+Quy ước Satisfied = 1 (lớp dương), Neutral or Dissatisfied = 0. TP là hài lòng được dự đoán đúng; TN là lớp 0 được dự đoán đúng; FP là lớp 0 bị dự đoán thành hài lòng; FN là hài lòng bị dự đoán thành lớp 0. Dựa trên ma trận nhầm lẫn (*Confusion Matrix*), các chỉ số hiệu năng được định nghĩa như sau:
+
+: Các chỉ số đánh giá hiệu năng mô hình phân loại nhị phân {#tbl-metrics}
+
+| Chỉ số | Công thức toán học | Ý nghĩa nghiệp vụ |
+| :--- | :---: | :--- |
+| **Accuracy** | (TP + TN) / (TP + TN + FP + FN) | Tỷ lệ dự đoán đúng trên toàn bộ tập dữ liệu. |
+| **Precision** | TP / (TP + FP) | Trong các trường hợp mô hình báo Hài lòng, có bao nhiêu phần trăm là đúng thực tế. |
+| **Recall** | TP / (TP + FN) | Tỷ lệ hành khách thực tế Hài lòng được mô hình phát hiện thành công. |
+| **F1-score** | 2 × Precision × Recall / (Precision + Recall) | Trung bình điều hòa giữa Precision và Recall; cần báo cáo thêm theo từng lớp và macro-F1. |
+| **ROC-AUC** | $\text{Area Under the ROC Curve}$ | Khả năng phân biệt giữa 2 lớp trên mọi ngưỡng xác suất (0 đến 1). |
+
+### 2.4.9. Phân tích Feature Importance và diễn giải mô hình
+
+Dự kiến sử dụng thước đo suy giảm độ hỗn tạp (*MDI - Mean Decrease in Impurity*) hoặc *Permutation Importance* để xếp hạng đóng góp của từng điểm chạm dịch vụ. MDI có thể thiên về biến nhiều giá trị; các biến tương quan cũng ảnh hưởng cách phân bổ mức quan trọng. Permutation Importance cần thực hiện trên dữ liệu đánh giá phù hợp và ghi rõ chỉ số bị suy giảm. Xếp hạng chỉ là căn cứ xem xét cùng EDA, chi phí và khả năng can thiệp; chưa chứng minh hiệu quả đầu tư. Theo [tài liệu scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html), mô hình rừng tổng hợp xác suất của các cây; cần ghi phiên bản thư viện khi tái lập.
+
+---
+
+## 2.5. Môi trường thực nghiệm và Công cụ lập trình Python
+
+### 2.5.1. Môi trường thực nghiệm và thư viện
+
+Hồ sơ chạy Chương 3 (`outputs/chuong3/ket_qua.json`) ghi Python 3.12.10, pandas 3.0.5, NumPy 2.5.3 và Matplotlib 3.11.2. Đây là phiên bản được lưu cho lượt phân tích đó, không phải khẳng định toàn bộ môi trường hiện tại có cùng phiên bản. SciPy được dùng cho kiểm định; tương quan Spearman được tính bằng pandas. Các thư viện cần cho Chương 4 phải được ghi phiên bản khi thực nghiệm.
+
+| Công cụ | Vai trò trong project |
+|---|---|
+| pandas, NumPy | Đọc, chuẩn hóa, ghép bảng, thống kê, tính toán vector hóa |
+| Matplotlib | Biểu đồ và heatmap trong mã Chương 3 |
+| SciPy | Chi-square và Mann–Whitney U |
+| sqlite3, json | Thực nghiệm ghép bảng dẫn xuất CSV/JSON/SQLite |
+| scikit-learn | Dự kiến dùng Pipeline, tiền xử lý và ba mô hình ở Chương 4 |
+| Quarto | Biên soạn báo cáo từ QMD; mã nguồn phân tích lưu riêng |
+
+Seaborn và Statsmodels không phải điều kiện bắt buộc để tái lập mã Chương 3 hiện có. Không mặc định project đã được thực hiện trên Antigravity chỉ vì công cụ này được nhắc trong bản gửi ban đầu.
+
+### 2.5.2. Tổ chức dữ liệu và khả năng tái lập
+
+Project phân tách dữ liệu bẩn ở `Data/raw`, dữ liệu đã xử lý ở `Data/processed`, mã nguồn ở `src` và `Notebooks`, bảng kết quả ở `outputs/chuong3`, hình ở `figures/chuong3` và bản thảo các chương ở `outputs`. Bảng CSV/JSON/SQLite trong thực nghiệm Chương 3 được dẫn xuất từ cùng một nguồn, không phải ba nguồn khảo sát độc lập. Parquet/Feather chưa được ghi nhận là đầu ra của lượt chạy này.
+
+Tái lập cần đồng thời kiểm soát tệp đầu vào bằng checksum, phiên bản thư viện, quy tắc xử lý, cấu hình chia dữ liệu và hạt giống ngẫu nhiên. Chỉ đặt `random_state=42` không bảo đảm tái lập 100% giữa mọi môi trường. Mã phân tích Chương 3 còn trỏ tới tên CSV cũ; cần cập nhật và kiểm tra lại phạm vi mẫu trước khi chạy lại trên `PJ21.csv`, không thay tên rồi mặc định mọi kết quả giữ nguyên.
+
+### 2.5.3. Sử dụng AI hỗ trợ và trách nhiệm kiểm chứng
+
+Khung P-D-M-V được dùng như định hướng làm việc: nêu yêu cầu và tạo bản nháp; đọc hiểu mã và đối chiếu dữ liệu; thay đổi có kiểm soát để kiểm tra độ bền; kiểm chứng và hoàn thiện. Đây không phải tuyên bố mọi bước đã được thực hiện đầy đủ. Nội dung có AI hỗ trợ cần được nhóm rà soát, ghi nhật ký đúng công cụ thực tế và xác minh trước khi nộp.
+
+Tập Test dành cho đánh giá cuối cùng; việc điều chỉnh mô hình trong bước kiểm chứng phải dựa vào Train và validation, tránh dùng lặp Test để tối ưu. ID chỉ phục vụ truy vết; không suy đoán danh tính. Mô hình hỗ trợ quyết định và cần đánh giá tính phù hợp, khác biệt hiệu năng giữa các nhóm trước khi triển khai thực tế.
+
+---
+
+## Kết luận chương 2
+
+Chương 2 xây dựng nền tảng về chất lượng dịch vụ, sự hài lòng và các điểm chạm hành khách; tổng hợp nghiên cứu trước để định hướng phân tích. Khung phương pháp gắn với RQ1–RQ5: thống kê mô tả, Spearman, Chi-square và Mann–Whitney cho Chương 3; so sánh Logistic Regression, Decision Tree và Random Forest cho Chương 4; tổng hợp bằng chứng để đề xuất quản trị ở Chương 5.
+
+Phạm vi dữ liệu phân biệt bảng 129.880 dòng trong hồ sơ làm sạch với 119.092 nhãn quan sát được và tệp hiện tại. Thiếu nhãn, ý nghĩa mã 0, giá trị điền khuyết, ngoại lai và nguy cơ rò rỉ phải được giữ trong diễn giải. Hiệu năng mô hình, thứ hạng đặc trưng và hiệu quả giải pháp chưa được điền khi chưa có kết quả thực nghiệm xác nhận.
+
+---
+
+## TÀI LIỆU THAM KHẢO SỬ DỤNG TRONG CHƯƠNG 2
+
+* Breiman, L. (2001). Random forests. *Machine Learning*, 45, 5–32. <https://doi.org/10.1023/A:1010933404324>
+* Eshaghi, M. S., Afshardoost, M., Lohmann, G., & Moyle, B. D. (2024). Drivers and outcomes of airline passenger satisfaction: A meta-analysis. *Journal of the Air Transport Research Society*, 3, Article 100034. <https://doi.org/10.1016/j.jatrs.2024.100034>
+* Jiang, X., Zhang, Y., Li, Y., & Zhang, B. (2022). Forecast and analysis of aircraft passenger satisfaction based on RF-RFE-LR model. *Scientific Reports*, 12, Article 11174. <https://doi.org/10.1038/s41598-022-14566-3>
+* Le, N. T. C., Khuong, M. N., Quy, H. T. K., Quynh, V. T., & Truc, N. H. T. (2023). An empirical analysis on factors affecting passenger satisfaction of Korean Air. *Journal of Aviation Science and Technology*, 2(2), 7–14. <https://jast.vau.edu.vn/index.php/jast/article/view/82>
+* Noviantoro, T., & Huang, J.-P. (2022). Investigating airline passenger satisfaction: Data mining method. *Research in Transportation Business & Management*, 43, Article 100726. <https://doi.org/10.1016/j.rtbm.2021.100726>
+* Parasuraman, A., Zeithaml, V. A., & Berry, L. L. (1988). SERVQUAL: A multiple-item scale for measuring consumer perceptions of service quality. *Journal of Retailing*, 64(1), 12–40.
+* Park, E., Jang, Y., Kim, J., Jeong, N. J., Bae, K., & del Pobil, A. P. (2019). Determinants of customer satisfaction with airline services: An analysis of customer feedback big data. *Journal of Retailing and Consumer Services*, 51, 186–190. <https://doi.org/10.1016/j.jretconser.2019.06.009>
+* Schröer, C., Kruse, F., & Gómez, J. M. (2021). A systematic literature review on applying CRISP-DM process model. *Procedia Computer Science*, 181, 526–534. <https://doi.org/10.1016/j.procs.2021.01.199>
+* Scikit-learn developers. (n.d.). *RandomForestClassifier*. Scikit-learn documentation. <https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>
+* Nguồn dữ liệu: hồ sơ project giới thiệu bộ dữ liệu Airline Passenger Satisfaction từ Kaggle; URL bộ dữ liệu gốc, ngày tải và điều kiện sử dụng còn cần xác minh, chưa đủ thông tin lập trích dẫn nguồn hoàn chỉnh.
+
+Ghi chú thư mục: Bài Le và cộng sự được ghi năm 2023 theo số tạp chí và bản PDF; trang tạp chí hiện hiển thị ngày đăng 21/04/2026. Cần thống nhất quy ước năm khi lập danh mục chung.

@@ -1,0 +1,131 @@
+# Chương 5. Định hướng nâng cao trải nghiệm hành khách và giải pháp quản trị dịch vụ hàng không {#sec-chuong5}
+
+::: {.callout-warning}
+## BẢN THẢO – chưa phải bản chính thức (xóa khối này khi hoàn thiện)
+Chương này được soạn khi Chương 2 và Chương 4 chưa hoàn thiện, Chương 3 đang ở dạng bản thảo. Các vị trí đánh dấu **[CHỜ KẾT QUẢ EDA]** hoặc **[CHỜ KẾT QUẢ MACHINE LEARNING]** chỉ được điền sau khi có kết quả đã kiểm chứng từ mã nguồn. Mọi giải pháp dưới đây là **định hướng đề xuất**, chưa có bằng chứng về hiệu quả khi triển khai.
+:::
+
+Chương này chuyển hóa các phân tích về đặc điểm hành khách, chất lượng dịch vụ, thời gian trễ chuyến bay và mô hình phân loại thành các định hướng quản trị, nhằm trả lời câu hỏi nghiên cứu RQ5 (Chương 1): *từ kết quả phân tích dữ liệu và mô hình học máy, có thể đề xuất những giải pháp quản trị nào để hỗ trợ cải thiện trải nghiệm và mức độ hài lòng của hành khách.* Chương cũng thảo luận lộ trình triển khai, giới hạn nghiên cứu và hướng phát triển. Các định hướng dựa trên RQ1–RQ4 và chỉ được chốt khi các kết quả tương ứng được kiểm chứng.
+
+**Bảng 5.0. Cơ sở định lượng cần có trước khi hoàn thiện chương**
+
+| Nội dung chương | Câu hỏi nghiên cứu liên quan | Nguồn kết quả cần dùng | Trạng thái |
+|---|---|---|---|
+| 5.1.1 Điểm chạm dịch vụ | RQ3, RQ4 | EDA (Chương 3) và Feature Importance (Chương 4) | **[CHỜ KẾT QUẢ EDA]** và **[CHỜ KẾT QUẢ MACHINE LEARNING]** |
+| 5.1.2 Chậm trễ chuyến bay | RQ2 | Hài lòng theo độ trễ (Chương 3) | **[CHỜ KẾT QUẢ EDA]** (bản thảo có kết quả, chưa được chốt) |
+| 5.1.3 Cá nhân hóa | RQ1 | Hài lòng theo Class, Customer Type, Type of Travel (Chương 3) | **[CHỜ KẾT QUẢ EDA]** (bản thảo có kết quả, còn lưu ý về giá trị điền khuyết) |
+| 5.1.4 Phân tích dữ liệu và học máy | RQ4 | So sánh mô hình (Chương 4) | **[CHỜ KẾT QUẢ MACHINE LEARNING]** |
+
+*Nguồn: Tổng hợp của nhóm từ dàn ý Chương 1 và tiến độ các chương.*
+
+## 5.1. Đề xuất giải pháp nâng cao sự hài lòng và chất lượng dịch vụ hàng không {#sec-5-1}
+
+### 5.1.1. Ưu tiên cải thiện các điểm chạm dịch vụ có liên hệ nổi bật với sự hài lòng
+
+Trải nghiệm của hành khách được hình thành từ nhiều điểm chạm dịch vụ. Doanh nghiệp nên xác định các điểm chạm có liên hệ đáng chú ý với sự hài lòng để phân bổ nguồn lực hợp lý, thay vì đầu tư đồng đều cho mọi dịch vụ.
+
+Nghiên cứu đề xuất kết hợp kết quả phân tích khám phá dữ liệu (EDA) với mức độ quan trọng của đặc trưng (Feature Importance) từ mô hình học máy để xác định các tiêu chí cần ưu tiên xem xét. Những tiêu chí có điểm đánh giá thấp và đồng thời có liên hệ đáng kể với sự hài lòng có thể được đưa vào danh sách khảo sát và cải thiện trước. Các nhóm dịch vụ có thể xem xét gồm sự thoải mái của ghế ngồi, kết nối Wifi, giải trí trong chuyến bay, đồ ăn và thức uống, thủ tục check-in và trải nghiệm lên máy bay; việc chọn nhóm nào được ưu tiên phụ thuộc vào kết quả ở Chương 3 và Chương 4.
+
+Mức độ quan trọng của đặc trưng trong mô hình dự đoán không đồng nghĩa với tác động nhân quả. Vì vậy, doanh nghiệp cần kết hợp phân tích định lượng với khảo sát bổ sung hoặc thử nghiệm thực tế trước khi quyết định đầu tư quy mô lớn.
+
+**Cơ sở định lượng:** **[CHỜ KẾT QUẢ EDA]** – bổ sung các tiêu chí dịch vụ có liên hệ nổi bật với sự hài lòng, kèm chỉ số cụ thể, sau khi Chương 3 được chốt (lưu ý điểm 0 chưa rõ ý nghĩa và các giá trị đã điền khuyết). **[CHỜ KẾT QUẢ MACHINE LEARNING]** – bổ sung Feature Importance của mô hình được chọn ở Chương 4 và chỉ nêu khi đã có kết quả chạy thực tế.
+
+### 5.1.2. Cải thiện trải nghiệm hành khách trong các tình huống chậm trễ chuyến bay
+
+Thời gian trễ chuyến bay là yếu tố vận hành có thể liên quan đến trải nghiệm của hành khách, nhất là khi chậm trễ làm thay đổi kế hoạch di chuyển hoặc gây bất tiện ngoài dự kiến.
+
+Doanh nghiệp có thể xem xét các định hướng sau: thông báo kịp thời, cung cấp thông tin rõ ràng về tình trạng chuyến bay và tăng cường hỗ trợ hành khách trong thời gian chờ. Ngoài việc hạn chế các nguyên nhân chậm trễ có thể kiểm soát, chất lượng giao tiếp và hỗ trợ khách hàng cũng cần được quan tâm.
+
+Để đánh giá các giải pháp này, doanh nghiệp có thể theo dõi tỷ lệ hài lòng theo nhóm thời gian trễ, tỷ lệ khiếu nại và mức độ hài lòng sau khi được hỗ trợ. Hai chỉ tiêu sau không có trong bộ dữ liệu nghiên cứu nên cần nguồn thu thập bổ sung.
+
+**Cơ sở định lượng:** **[CHỜ KẾT QUẢ EDA]** – sử dụng kết quả hài lòng theo Departure Delay và Arrival Delay ở Chương 3; chỉ nêu sự khác biệt khi số liệu chứng minh và cần lưu ý các giá trị trễ cực đoan chưa xác minh cũng như ô độ trễ đã được điền khuyết.
+
+### 5.1.3. Cá nhân hóa dịch vụ theo đặc điểm và nhu cầu hành khách
+
+Đặc điểm hành khách và mục đích chuyến đi có thể dẫn đến khác biệt về nhu cầu dịch vụ. Doanh nghiệp có thể so sánh mức độ hài lòng giữa các nhóm hạng vé, loại khách hàng và mục đích chuyến đi để xác định nhóm cần được quan tâm.
+
+Với hành khách đi công tác, có thể nghiên cứu nhu cầu về sự thuận tiện, tính đúng giờ và khả năng kết nối; với hành khách đi cá nhân, có thể xem xét thêm các yếu tố về sự thoải mái, thông tin dịch vụ và sự thuận tiện. Đây là giả thuyết cần kiểm chứng bằng dữ liệu thực tế, không mặc định mọi hành khách trong cùng nhóm có nhu cầu giống nhau.
+
+Cá nhân hóa nên hướng đến nâng cao khả năng phục vụ và trải nghiệm, đồng thời tránh đối xử không hợp lý giữa các nhóm hành khách.
+
+**Cơ sở định lượng:** **[CHỜ KẾT QUẢ EDA]** – so sánh tỷ lệ hài lòng theo Class, Customer Type và Type of Travel từ Chương 3 sau khi làm rõ ảnh hưởng của giá trị điền khuyết đối với các biến phân nhóm. Chương này chưa đưa số liệu cụ thể.
+
+### 5.1.4. Ứng dụng phân tích dữ liệu và học máy trong quản trị chất lượng dịch vụ
+
+Bên cạnh các giải pháp cải thiện dịch vụ trực tiếp, nghiên cứu đề xuất ứng dụng Khoa học Dữ liệu vào việc theo dõi và đánh giá sự hài lòng của hành khách. Khi tích hợp được dữ liệu khảo sát với thông tin hành trình, doanh nghiệp có thể xây dựng hệ thống theo dõi tỷ lệ hài lòng, nhận diện nhóm có nguy cơ không hài lòng và các tiêu chí cần xem xét.
+
+Mô hình phân loại trong nghiên cứu chỉ nên xem là bước thử nghiệm ban đầu. Nếu được kiểm định trên dữ liệu mới và đạt yêu cầu về độ tin cậy, mô hình có thể hỗ trợ bộ phận quản trị phân tích phản hồi. Mô hình không nên là công cụ ra quyết định tự động hoàn toàn; kết quả dự đoán cần được kết hợp với đánh giá của nhân viên và điều kiện vận hành thực tế.
+
+**Cơ sở định lượng:** **[CHỜ KẾT QUẢ MACHINE LEARNING]** – bổ sung hiệu năng Logistic Regression, Decision Tree, Random Forest (Accuracy, Precision, Recall, F1-score, ROC-AUC) ở Chương 4 trước khi nhận định mức độ phù hợp của mô hình.
+
+## 5.2. Lộ trình đề xuất triển khai giải pháp trong hoạt động quản trị hàng không {#sec-5-2}
+
+Lộ trình dưới đây là **đề xuất định hướng**, không phải kết quả thực nghiệm.
+
+### 5.2.1. Giai đoạn 1: Chuẩn hóa dữ liệu và xây dựng hệ thống theo dõi
+
+Doanh nghiệp cần rà soát cách thu thập, lưu trữ và quản lý dữ liệu khảo sát để có nguồn dữ liệu có cấu trúc thống nhất, hạn chế thiếu thông tin, sai định dạng và khó khăn khi kết hợp dữ liệu từ nhiều hệ thống. Các nhóm thông tin gồm đặc điểm hành khách, thông tin chuyến bay, đánh giá dịch vụ và mức hài lòng tổng thể. Dữ liệu cần được kiểm tra chất lượng định kỳ và quản lý theo quy tắc bảo vệ thông tin phù hợp. Song song, có thể thiết kế báo cáo trực quan để theo dõi tỷ lệ hài lòng và khác biệt giữa các nhóm.
+
+### 5.2.2. Giai đoạn 2: Thử nghiệm các giải pháp cải thiện dịch vụ
+
+Sau khi xác định tiêu chí ưu tiên, doanh nghiệp có thể chọn một số nhóm hành khách hoặc phạm vi khai thác để thử nghiệm, với mục tiêu và chỉ tiêu đánh giá rõ ràng. Ví dụ, với giải pháp cải thiện thông báo chậm trễ, có thể theo dõi thời gian thông báo, mức hài lòng và tỷ lệ phản hồi tiêu cực. Kết quả trước và sau cần được so sánh bằng phương pháp phù hợp, có xét các yếu tố khác có thể làm thay đổi mức hài lòng.
+
+### 5.2.3. Giai đoạn 3: Tích hợp mô hình dự đoán và đánh giá định kỳ
+
+Khi dữ liệu ổn định và mô hình được kiểm định đầy đủ, doanh nghiệp có thể cân nhắc đưa mô hình vào quy trình phân tích và báo cáo nội bộ, chú trọng chất lượng dự đoán, khả năng giải thích và tính ổn định trên dữ liệu mới. Mô hình cần được đánh giá định kỳ bằng Precision, Recall, F1-score và ROC-AUC; nếu phân phối dữ liệu hoặc đặc điểm hành khách thay đổi đáng kể, cần cập nhật hoặc huấn luyện lại. Cần có cơ chế giám sát của con người để tránh dùng kết quả dự đoán không phù hợp với bối cảnh thực tế.
+
+### 5.2.4. Các chỉ tiêu đề xuất để đánh giá hiệu quả triển khai
+
+**Bảng 5.1. Nhóm chỉ tiêu đề xuất theo dõi hiệu quả triển khai**
+
+| Nhóm đánh giá | Chỉ tiêu theo dõi | Mục đích | Có trong dữ liệu nghiên cứu |
+|---|---|---|---|
+| Sự hài lòng | Tỷ lệ hành khách hài lòng | Theo dõi trải nghiệm tổng thể | Có (Satisfaction) |
+| Chất lượng dịch vụ | Điểm đánh giá trung bình theo tiêu chí | Xác định dịch vụ cần cải thiện | Có (14 điểm dịch vụ) |
+| Vận hành chuyến bay | Thời gian trễ trung bình, tỷ lệ chuyến bay trễ | Theo dõi vận hành | Một phần (Departure Delay, Arrival Delay; không có mã chuyến bay) |
+| Phản hồi khách hàng | Tỷ lệ khiếu nại, thời gian phản hồi | Đánh giá khả năng hỗ trợ | Không |
+| Mô hình dự đoán | Precision, Recall, F1-score, ROC-AUC | Theo dõi chất lượng mô hình | Sau khi hoàn thành Chương 4 **[CHỜ KẾT QUẢ MACHINE LEARNING]** |
+
+*Nguồn: Đề xuất của nhóm; cột cuối đối chiếu với cấu trúc dữ liệu 24 cột hiện có. Các chỉ tiêu không có trong dữ liệu cần nguồn thu thập bổ sung trước khi đưa vào hệ thống đánh giá.*
+
+## 5.3. Hạn chế nghiên cứu và các vấn đề đạo đức trong sử dụng dữ liệu {#sec-5-3}
+
+### 5.3.1. Hạn chế về nguồn dữ liệu và phạm vi đại diện
+
+Nghiên cứu dùng bộ dữ liệu khảo sát thứ cấp, không trực tiếp khảo sát hành khách hoặc thu thập dữ liệu vận hành của một hãng cụ thể. Nguồn công khai của bộ dữ liệu được ghi là Kaggle **[CẦN XÁC MINH: nguồn, ngày tải và điều kiện sử dụng chưa có trong hồ sơ cục bộ]**.
+
+Dữ liệu không có thông tin về thời điểm khảo sát, hãng vận chuyển hay tuyến bay, và phương pháp chọn mẫu chưa được xác minh, nên khả năng khái quát hóa cho toàn bộ thị trường hàng không còn hạn chế. Ngoài ra, dữ liệu khảo sát chịu ảnh hưởng từ cảm nhận chủ quan, và mức hài lòng tại một thời điểm không phản ánh đầy đủ thay đổi trải nghiệm theo thời gian.
+
+### 5.3.2. Hạn chế của quy trình xử lý dữ liệu và mô hình học máy
+
+Theo kiểm tra đã thực hiện đối với dữ liệu hiện có, bộ dữ liệu sau làm sạch có 129.880 bản ghi và không còn ô thiếu vì các ô thiếu đã được điền theo quy tắc: biến phân loại bằng giá trị phổ biến nhất, biến số bằng trung vị hoặc theo nhóm. Trong đó biến mục tiêu `Satisfaction` cũng có 10.788 bản ghi không diễn giải được trước khi điền **[số liệu từ bản thảo Chương 3; chờ chốt]**. Việc điền khuyết có thể làm thay đổi phân phối và tính đại diện của dữ liệu. Độ trễ vẫn còn các giá trị cực đoan chưa được xác minh nguồn.
+
+Với mô hình học máy, hiệu năng trên tập kiểm tra chỉ phản ánh khả năng dự đoán trong điều kiện đánh giá cụ thể, không bảo đảm duy trì khi áp dụng cho hãng hàng không hoặc thời kỳ khác. Feature Importance chỉ phản ánh mức hữu ích của đặc trưng với mô hình dự đoán, không đủ chứng minh rằng thay đổi một yếu tố dịch vụ sẽ trực tiếp làm thay đổi mức hài lòng. **[CHỜ KẾT QUẢ MACHINE LEARNING]** – bổ sung hạn chế cụ thể (ví dụ cách chia dữ liệu, rò rỉ thông tin, mất cân bằng lớp) sau khi hoàn thành Chương 4.
+
+### 5.3.3. Đạo đức dữ liệu, tính công bằng và trách nhiệm giải trình
+
+Việc ứng dụng Khoa học Dữ liệu trong dịch vụ hàng không cần bảo đảm quyền riêng tư, tính công bằng và minh bạch. Dữ liệu có khả năng nhận diện cá nhân phải được bảo vệ, và không dùng vượt ngoài mục đích đã xác định và căn cứ pháp lý cho phép.
+
+Mô hình dự đoán có thể tạo kết quả khác nhau giữa các nhóm hành khách; cần kiểm tra thiên lệch thuật toán và tránh dùng kết quả dự đoán để ra quyết định bất lợi hoặc phân biệt đối xử không có cơ sở chính đáng.
+
+Trong quá trình thực hiện đồ án, việc dùng công cụ trí tuệ nhân tạo hỗ trợ lập trình và phân tích cần tuân thủ nguyên tắc minh bạch học thuật: nhóm kiểm chứng kết quả, giải thích được mã nguồn và ghi nhận trung thực các bước thực hiện trong nhật ký làm việc.
+
+## 5.4. Định hướng mở rộng và phát triển nghiên cứu trong tương lai {#sec-5-4}
+
+### 5.4.1. Mở rộng quy mô và tính đa dạng của dữ liệu
+
+Các nghiên cứu tiếp theo có thể kết hợp khảo sát từ nhiều hãng hàng không, tuyến bay, khu vực hoặc giai đoạn khác nhau. Việc bổ sung thời điểm bay, điều kiện khai thác, phản hồi sau chuyến đi và lịch sử sử dụng dịch vụ có thể giúp phân tích sâu hơn các yếu tố liên quan đến trải nghiệm. Dữ liệu văn bản từ phản hồi hoặc khiếu nại cũng là nguồn tiềm năng bổ sung cho thang đo có cấu trúc.
+
+### 5.4.2. Mở rộng các phương pháp phân tích và mô hình dự đoán
+
+Có thể thử thêm các thuật toán như Gradient Boosting, XGBoost hoặc LightGBM, và dùng các phương pháp giải thích như Permutation Importance hoặc SHAP để phân tích sâu vai trò của đặc trưng. Với dữ liệu lớn hơn, có thể xem xét xử lý theo phân đoạn hoặc công cụ tính toán phân tán để tăng khả năng mở rộng. Đây là hướng đề xuất, chưa được thực hiện trong đồ án này.
+
+### 5.4.3. Phát triển hệ thống hỗ trợ ra quyết định dựa trên dữ liệu
+
+Một hướng ứng dụng là xây dựng hệ thống hỗ trợ quản trị chất lượng dịch vụ, kết hợp Dashboard trực quan với mô hình dự đoán hài lòng, cung cấp báo cáo theo nhóm hành khách, tiêu chí dịch vụ và giai đoạn vận hành. Để triển khai thực tế, hệ thống cần được kiểm định trên dữ liệu vận hành phù hợp, có biện pháp bảo vệ dữ liệu và quy trình giám sát, cập nhật mô hình định kỳ.
+
+### 5.4.4. Tổng kết chương
+
+Chương 5 trình bày các định hướng đề xuất cho quản trị trải nghiệm hành khách: ưu tiên điểm chạm dịch vụ, hỗ trợ khi chậm trễ, cá nhân hóa và ứng dụng mô hình để hỗ trợ theo dõi sự hài lòng, cùng lộ trình triển khai ba giai đoạn, các hạn chế và hướng phát triển. Các định hướng này chưa được kiểm chứng bằng triển khai thực tế.
+
+**[CHỜ KẾT QUẢ EDA]** và **[CHỜ KẾT QUẢ MACHINE LEARNING]** – phần tổng kết liên hệ với kết quả thực nghiệm của đồ án chỉ được viết sau khi Chương 2, 3 và 4 hoàn tất và được kiểm chứng.

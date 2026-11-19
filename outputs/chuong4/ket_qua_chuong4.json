@@ -1,0 +1,321 @@
+{
+  "n_total": 119092,
+  "n_train": 95273,
+  "n_test": 23819,
+  "train_satisfied_n": 41392,
+  "train_satisfied_pct": 43.445677159321114,
+  "train_dissatisfied_n": 53881,
+  "train_dissatisfied_pct": 56.55432284067889,
+  "test_satisfied_n": 10348,
+  "test_satisfied_pct": 43.44430916495235,
+  "test_dissatisfied_n": 13471,
+  "test_dissatisfied_pct": 56.555690835047656,
+  "n_features_orig": 22,
+  "n_cat_features": 4,
+  "n_num_features": 18,
+  "n_encoded_features_tree": 29,
+  "n_encoded_features_lr": 25,
+  "imputation_train_matches_pj21_all_22": false,
+  "vif_max_col": "In-flight Entertainment",
+  "vif_max_val": 2.3499488150232275,
+  "vif_second_col": "Seat Comfort",
+  "vif_second_val": 1.731836594801054,
+  "vif_third_col": "In-flight Service",
+  "vif_third_val": 1.7068192388673438,
+  "dep_arr_pearson_train": 0.35580064482386825,
+  "dep_arr_spearman_train": 0.4712571766526394,
+  "models_test": {
+    "Logistic Regression": {
+      "ma_cau_hinh": "LR_C1.0",
+      "cau_hinh": "C = 1,0 (L2, StandardScaler + OneHotEncoder drop='first')",
+      "train_acc_pct": 84.51817408919631,
+      "train_f1_pct": 81.87158940071775,
+      "train_roc_auc_pct": 90.58450074667041,
+      "cv_acc_mean_pct": 84.50558077738263,
+      "cv_acc_std_pct": 0.2203146749216355,
+      "cv_f1_mean_pct": 81.85258686871305,
+      "cv_f1_std_pct": 0.2741238477757582,
+      "cv_f1_macro_mean_pct": 84.1671525398028,
+      "cv_roc_auc_mean_pct": 90.56660613327637,
+      "cv_roc_auc_std_pct": 0.3185357216435627,
+      "test_acc_pct": 84.40740585247072,
+      "test_prec_1_pct": 83.5321471896482,
+      "test_rec_1_pct": 79.85117897178199,
+      "test_f1_1_pct": 81.6501976284585,
+      "test_prec_0_pct": 85.02908020392044,
+      "test_rec_0_pct": 87.90735654368643,
+      "test_f1_0_pct": 86.44426600481788,
+      "test_f1_macro_pct": 84.04723181663817,
+      "test_f1_weighted_pct": 84.36151611781308,
+      "test_roc_auc_pct": 90.49970606445544,
+      "test_pr_auc_pct": 90.56637461890209,
+      "test_brier": 0.11553586394796599,
+      "test_logloss": 0.38739835394775507,
+      "gap_train_test_acc_pct": 0.11076823672559044,
+      "thoi_gian_fit_giay": 2.5576744000136387
+    },
+    "Decision Tree (Không cắt tỉa)": {
+      "ma_cau_hinh": "DT_unconstrained",
+      "cau_hinh": "max_depth = None, min_samples_leaf = 1 (đối chứng quá khớp)",
+      "train_acc_pct": 100.0,
+      "train_f1_pct": 100.0,
+      "train_roc_auc_pct": 100.0,
+      "cv_acc_mean_pct": 89.6392521887482,
+      "cv_acc_std_pct": 0.3444278243701758,
+      "cv_f1_mean_pct": 88.11560245017625,
+      "cv_f1_std_pct": 0.3867871008681211,
+      "cv_f1_macro_mean_pct": 89.46609106131648,
+      "cv_roc_auc_mean_pct": 89.49632600181839,
+      "cv_roc_auc_std_pct": 0.3422579422618799,
+      "test_acc_pct": 89.92401024392291,
+      "test_prec_1_pct": 87.92708532162627,
+      "test_rec_1_pct": 89.03169694626982,
+      "test_f1_1_pct": 88.4759435321233,
+      "test_prec_0_pct": 91.49239187467207,
+      "test_rec_0_pct": 90.60945735283201,
+      "test_f1_0_pct": 91.04878412651051,
+      "test_f1_macro_pct": 89.76236382931691,
+      "test_f1_weighted_pct": 89.93103130436354,
+      "test_roc_auc_pct": 89.82057714955091,
+      "test_pr_auc_pct": 83.04807962604983,
+      "test_brier": 0.10075989756077082,
+      "test_logloss": 3.6317548232033747,
+      "gap_train_test_acc_pct": 10.075989756077092,
+      "thoi_gian_fit_giay": 3.9788588999945205
+    },
+    "Decision Tree (Đã tinh chỉnh)": {
+      "ma_cau_hinh": "DT_d14_leaf20",
+      "cau_hinh": "max_depth = 14, min_samples_leaf = 20 (tối ưu CV)",
+      "train_acc_pct": 92.71357047642039,
+      "train_f1_pct": 91.46797109286663,
+      "train_roc_auc_pct": 98.01754365572195,
+      "cv_acc_mean_pct": 91.19163155651174,
+      "cv_acc_std_pct": 0.1551240628577687,
+      "cv_f1_mean_pct": 89.63658101092837,
+      "cv_f1_std_pct": 0.1870218576514198,
+      "cv_f1_macro_mean_pct": 90.98869111540442,
+      "cv_roc_auc_mean_pct": 96.69171125137296,
+      "cv_roc_auc_std_pct": 0.1399405188457822,
+      "test_acc_pct": 91.63692850245603,
+      "test_prec_1_pct": 91.72992409109068,
+      "test_rec_1_pct": 88.75144955546965,
+      "test_f1_1_pct": 90.21611001964637,
+      "test_prec_0_pct": 91.56949373506193,
+      "test_rec_0_pct": 93.85346299458095,
+      "test_f1_0_pct": 92.69741183371215,
+      "test_f1_macro_pct": 91.45676092667927,
+      "test_f1_weighted_pct": 91.61942740229385,
+      "test_roc_auc_pct": 96.97469670778703,
+      "test_pr_auc_pct": 96.31866349089857,
+      "test_brier": 0.06184077172179485,
+      "test_logloss": 0.3294477151425223,
+      "gap_train_test_acc_pct": 1.0766419739643567,
+      "thoi_gian_fit_giay": 1.818251999997301
+    },
+    "Random Forest": {
+      "ma_cau_hinh": "RF_200_dNone_leaf2",
+      "cau_hinh": "n_estimators = 200, max_depth = None, min_samples_leaf = 2",
+      "train_acc_pct": 98.80553777040714,
+      "train_f1_pct": 98.61445929821998,
+      "train_roc_auc_pct": 99.96272615847086,
+      "cv_acc_mean_pct": 93.10192928454772,
+      "cv_acc_std_pct": 0.1166524736096385,
+      "cv_f1_mean_pct": 91.88892594830834,
+      "cv_f1_std_pct": 0.1425164540547928,
+      "cv_f1_macro_mean_pct": 92.94410205124056,
+      "cv_roc_auc_mean_pct": 98.05555082735732,
+      "cv_roc_auc_std_pct": 0.0622215228137333,
+      "test_acc_pct": 93.1903102565179,
+      "test_prec_1_pct": 93.97298931667002,
+      "test_rec_1_pct": 90.10436799381523,
+      "test_f1_1_pct": 91.9980266403552,
+      "test_prec_0_pct": 92.63150320212996,
+      "test_rec_0_pct": 95.56083438497514,
+      "test_f1_0_pct": 94.073370359544,
+      "test_f1_macro_pct": 93.03569849994959,
+      "test_f1_weighted_pct": 93.17175161794418,
+      "test_roc_auc_pct": 98.20611045325013,
+      "test_pr_auc_pct": 97.98509534681878,
+      "test_brier": 0.05194386129973019,
+      "test_logloss": 0.18374572195746813,
+      "gap_train_test_acc_pct": 5.615227513889238,
+      "thoi_gian_fit_giay": 35.11291589998291
+    }
+  },
+  "confusion_matrices_test": {
+    "Logistic Regression": {
+      "TN": 11842,
+      "FP": 1629,
+      "FN": 2085,
+      "TP": 8263,
+      "tong_test": 23819,
+      "ty_le_FP_tren_lop_0_FPR_pct": 12.092643456313562,
+      "ty_le_FN_tren_lop_1_FNR_pct": 20.148821028218013,
+      "ty_le_sai_so_tong_pct": 15.592594147529285
+    },
+    "Decision Tree (Không cắt tỉa)": {
+      "TN": 12206,
+      "FP": 1265,
+      "FN": 1135,
+      "TP": 9213,
+      "tong_test": 23819,
+      "ty_le_FP_tren_lop_0_FPR_pct": 9.39054264716799,
+      "ty_le_FN_tren_lop_1_FNR_pct": 10.96830305373019,
+      "ty_le_sai_so_tong_pct": 10.075989756077082
+    },
+    "Decision Tree (Đã tinh chỉnh)": {
+      "TN": 12643,
+      "FP": 828,
+      "FN": 1164,
+      "TP": 9184,
+      "tong_test": 23819,
+      "ty_le_FP_tren_lop_0_FPR_pct": 6.146537005419049,
+      "ty_le_FN_tren_lop_1_FNR_pct": 11.248550444530345,
+      "ty_le_sai_so_tong_pct": 8.363071497543977
+    },
+    "Random Forest": {
+      "TN": 12873,
+      "FP": 598,
+      "FN": 1024,
+      "TP": 9324,
+      "tong_test": 23819,
+      "ty_le_FP_tren_lop_0_FPR_pct": 4.439165615024868,
+      "ty_le_FN_tren_lop_1_FNR_pct": 9.89563200618477,
+      "ty_le_sai_so_tong_pct": 6.809689743482094
+    }
+  },
+  "top5_rf_mdi": [
+    {
+      "bien": "Class",
+      "mdi_pct": 16.43190438708246,
+      "perm_roc_auc_drop_mean": 3.1139265734174515,
+      "perm_f1_drop_mean": 8.022775148673864
+    },
+    {
+      "bien": "In-flight Wifi Service",
+      "mdi_pct": 14.808542519759222,
+      "perm_roc_auc_drop_mean": 6.297929593032348,
+      "perm_f1_drop_mean": 11.254444222019153
+    },
+    {
+      "bien": "Online Boarding",
+      "mdi_pct": 11.631825150912146,
+      "perm_roc_auc_drop_mean": 2.1863492384692096,
+      "perm_f1_drop_mean": 4.014016476670874
+    },
+    {
+      "bien": "In-flight Entertainment",
+      "mdi_pct": 6.879429046601704,
+      "perm_roc_auc_drop_mean": 0.6543814846920193,
+      "perm_f1_drop_mean": 1.7512958201261086
+    },
+    {
+      "bien": "Type of Travel",
+      "mdi_pct": 6.293654831848958,
+      "perm_roc_auc_drop_mean": 4.156207853564064,
+      "perm_f1_drop_mean": 9.250671347185229
+    }
+  ],
+  "top5_rf_perm_auc": [
+    {
+      "bien": "In-flight Wifi Service",
+      "mdi_pct": 14.808542519759222,
+      "perm_roc_auc_drop_mean": 6.297929593032348,
+      "perm_f1_drop_mean": 11.254444222019153
+    },
+    {
+      "bien": "Type of Travel",
+      "mdi_pct": 6.293654831848958,
+      "perm_roc_auc_drop_mean": 4.156207853564064,
+      "perm_f1_drop_mean": 9.250671347185229
+    },
+    {
+      "bien": "Class",
+      "mdi_pct": 16.43190438708246,
+      "perm_roc_auc_drop_mean": 3.1139265734174515,
+      "perm_f1_drop_mean": 8.022775148673864
+    },
+    {
+      "bien": "Online Boarding",
+      "mdi_pct": 11.631825150912146,
+      "perm_roc_auc_drop_mean": 2.1863492384692096,
+      "perm_f1_drop_mean": 4.014016476670874
+    },
+    {
+      "bien": "Customer Type",
+      "mdi_pct": 3.204890141101498,
+      "perm_roc_auc_drop_mean": 1.1105739836497477,
+      "perm_f1_drop_mean": 2.533757916682078
+    }
+  ],
+  "top5_rf_perm_f1": [
+    {
+      "bien": "In-flight Wifi Service",
+      "mdi_pct": 14.808542519759222,
+      "perm_roc_auc_drop_mean": 6.297929593032348,
+      "perm_f1_drop_mean": 11.254444222019153
+    },
+    {
+      "bien": "Type of Travel",
+      "mdi_pct": 6.293654831848958,
+      "perm_roc_auc_drop_mean": 4.156207853564064,
+      "perm_f1_drop_mean": 9.250671347185229
+    },
+    {
+      "bien": "Class",
+      "mdi_pct": 16.43190438708246,
+      "perm_roc_auc_drop_mean": 3.1139265734174515,
+      "perm_f1_drop_mean": 8.022775148673864
+    },
+    {
+      "bien": "Online Boarding",
+      "mdi_pct": 11.631825150912146,
+      "perm_roc_auc_drop_mean": 2.1863492384692096,
+      "perm_f1_drop_mean": 4.014016476670874
+    },
+    {
+      "bien": "Customer Type",
+      "mdi_pct": 3.204890141101498,
+      "perm_roc_auc_drop_mean": 1.1105739836497477,
+      "perm_f1_drop_mean": 2.533757916682078
+    }
+  ],
+  "top5_lr_beta": [
+    {
+      "dac_trung_ma_hoa": "Type of Travel_Personal Travel",
+      "he_so_beta": -2.0071914669575373,
+      "odds_ratio_exp_beta": 0.13436551522580076
+    },
+    {
+      "dac_trung_ma_hoa": "Customer Type_Returning Customer",
+      "he_so_beta": 1.3658851293659047,
+      "odds_ratio_exp_beta": 3.9191905078018885
+    },
+    {
+      "dac_trung_ma_hoa": "Class_Economy",
+      "he_so_beta": -1.2981495422165243,
+      "odds_ratio_exp_beta": 0.27303656850048497
+    },
+    {
+      "dac_trung_ma_hoa": "Class_Economy Plus",
+      "he_so_beta": -1.109957738855742,
+      "odds_ratio_exp_beta": 0.32957288890828557
+    },
+    {
+      "dac_trung_ma_hoa": "Customer Type_Unknown",
+      "he_so_beta": 1.0814161021539574,
+      "odds_ratio_exp_beta": 2.948852472064364
+    }
+  ],
+  "input_sha256": {
+    "Data\\raw\\Du lieu khong sach.csv": "c70d2b1a2fb89ae1d4d5befe76c01867afc18be0d62e45d33aea34e53c5001e4",
+    "Data\\processed\\PJ21.csv": "baa89213a9cd76be3baa239731ad6035f1544ce4c94f3ab4a8c545bb4adc3e3a"
+  },
+  "versions": {
+    "python": "3.12.10",
+    "pandas": "3.0.5",
+    "numpy": "2.5.3",
+    "scikit_learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  }
+}

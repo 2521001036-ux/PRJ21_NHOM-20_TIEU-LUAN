@@ -1,0 +1,20 @@
+lang: vi
+toc: true
+toc-depth: 3
+number-sections: false
+execute:
+  echo: false
+crossref:
+  chapters: true
+  fig-title: "Hình"
+  tbl-title: "Bảng"
+  fig-prefix: "Hình"
+  tbl-prefix: "Bảng"
+  sec-prefix: "mục"
+  title-delim: "."
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+  docx:
+    toc: false

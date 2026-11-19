@@ -1,0 +1,9 @@
+﻿phuong_an,mo_hinh,so_dac_trung_sau_ma_hoa,test_acc_pct,test_f1_1_pct,test_f1_macro_pct,test_roc_auc_pct
+1. Pipeline chống rò rỉ (chuẩn — fit Imputer trên Train),Logistic Regression,25,84.40740585247072,81.6501976284585,84.04723181663817,90.49970606445544
+1. Pipeline chống rò rỉ (chuẩn — fit Imputer trên Train),Random Forest,29,93.1903102565179,91.9980266403552,93.03569849994959,98.20610937719381
+2. Nạp trực tiếp PJ21.csv (điền Mode/Median toàn cục trước khi chia),Logistic Regression,25,84.40740585247072,81.6501976284585,84.04723181663817,90.49968669544165
+2. Nạp trực tiếp PJ21.csv (điền Mode/Median toàn cục trước khi chia),Random Forest,29,93.25748352155841,92.06991902034368,93.10280439441927,98.21465111226777
+3. Pipeline chống rò rỉ + Cờ báo khuyết (Missing Indicators),Logistic Regression,45,84.66770225450271,81.95295512947223,84.31273039299683,90.66595317915387
+3. Pipeline chống rò rỉ + Cờ báo khuyết (Missing Indicators),Random Forest,51,93.21969855997312,92.03766701178327,93.06690515641256,98.19167228822401
+4. Chuyển điểm 0 dịch vụ thành NaN và điền trung vị trên Train,Logistic Regression,25,85.51156639657417,83.11395997455595,85.21346320480674,92.84582305209344
+4. Chuyển điểm 0 dịch vụ thành NaN và điền trung vị trên Train,Random Forest,29,92.05676140895923,90.57675067237773,91.85586445084779,97.62061457909398

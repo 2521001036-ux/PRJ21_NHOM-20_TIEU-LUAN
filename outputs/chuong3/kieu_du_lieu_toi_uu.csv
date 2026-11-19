@@ -1,0 +1,25 @@
+﻿,0
+ID,int32
+Gender,category
+Age,int8
+Customer Type,category
+Type of Travel,category
+Class,category
+Flight Distance,int16
+Departure Delay,int16
+Arrival Delay,int16
+Departure and Arrival Time Convenience,int8
+Ease of Online Booking,int8
+Check-in Service,int8
+Online Boarding,int8
+Gate Location,int8
+On-board Service,int8
+Seat Comfort,int8
+Leg Room Service,int8
+Cleanliness,int8
+Food and Drink,int8
+In-flight Service,int8
+In-flight Wifi Service,int8
+In-flight Entertainment,int8
+Baggage Handling,int8
+Satisfaction,category

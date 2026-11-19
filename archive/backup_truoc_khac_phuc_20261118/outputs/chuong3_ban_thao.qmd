@@ -1,0 +1,351 @@
+---
+lang: vi
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    theme: none
+    highlight-style: none
+header-includes: |
+  <style>
+  body {font-family: Georgia, 'Times New Roman', serif; line-height: 1.55; color: #20303b; max-width: 1040px; margin: 35px auto; padding: 0 30px;}
+  h1, h2, h3 {font-family: Arial, sans-serif; color: #236789; line-height: 1.3;}
+  h1 {font-size: 28px;} h2 {margin-top: 36px; font-size: 23px;} h3 {margin-top: 26px; font-size: 18px;}
+  table {border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 18px 0;}
+  th, td {border-bottom: 1px solid #d4dce1; padding: 7px 9px; text-align: left;}
+  th {background: #edf4f7;} img {max-width: 100%; height: auto;}
+  a {color: #236789;} code {font-size: 0.9em;}
+  @media print {body {font-size: 12pt; margin: 0;} #TOC {display: none;} table, figure {break-inside: avoid;}}
+  </style>
+number-sections: false
+execute:
+  echo: false
+---
+
+# Chương 3. Tổ chức, xử lý và khám phá dữ liệu về sự hài lòng của hành khách hàng không {#sec-chuong3}
+
+Chương này trình bày quá trình kiểm tra cấu trúc, tổ chức lưu trữ, kiểm toán quy trình làm sạch và phân tích khám phá dữ liệu (EDA) nhằm trả lời các câu hỏi nghiên cứu **RQ1, RQ2 và RQ3** đã xác lập tại Chương 1 về phân khúc hành khách, độ trễ chuyến bay và các điểm chạm dịch vụ. Toàn bộ số liệu, bảng biểu và hình vẽ được tính toán trực tiếp từ tệp dữ liệu bẩn `Data/raw/Du lieu khong sach.csv` (**129.880 dòng × 24 cột**) và tệp dữ liệu đã làm sạch chuẩn `Data/processed/PJ21.csv` (**119.092 dòng × 24 cột**) cập nhật ngày 17/11/2026. Tệp đối chứng gốc `Data/original/airline_passenger_satisfaction.csv` tuyệt đối không được sử dụng để khôi phục dữ liệu bẩn hay tính toán kết quả EDA.
+
+## 3.1. Nguồn dữ liệu và cấu trúc thông tin khảo sát hành khách {#sec-3-1}
+
+### 3.1.1. Nguồn dữ liệu, đơn vị quan sát và phạm vi sử dụng
+
+Theo hồ sơ đề tài tại Chương 1, bộ dữ liệu nghiên cứu mang tên *Airline Passenger Satisfaction*. Trong phạm vi thực hiện của nhóm, quy trình xử lý tiếp nhận tệp đầu vào chưa làm sạch `Data/raw/Du lieu khong sach.csv` gồm **129.880 dòng và 24 cột** (3.117.120 ô dữ liệu), sau khi loại bỏ **10.788 dòng** không có nhãn mục tiêu `Satisfaction` hợp lệ và thực hiện chuẩn hóa, điền khuyết theo quy tắc xác định trước tại `Notebooks/02_kiem_toan_du_lieu.ipynb/clean_data.ipynb` (đồng bộ với `lam_sach_du_lieu.py`), thu được tệp dữ liệu sạch chuẩn `Data/processed/PJ21.csv` gồm **119.092 dòng và 24 cột** (2.858.208 ô dữ liệu), đáp ứng yêu cầu quy mô tối thiểu 100.000 quan sát của học phần.
+
+Mỗi bản ghi tương ứng với một lượt khảo sát trải nghiệm chuyến bay của hành khách; hồ sơ dữ liệu không có mã định danh cá nhân xuyên suốt nhiều chuyến đi nên không thể kiểm chứng một hành khách xuất hiện một hay nhiều lần. Biến `ID` (từ 1 đến 129.880) đóng vai trò khóa bản ghi để truy vết và đối chiếu một–một giữa dữ liệu bẩn và dữ liệu sau xử lý (`is_unique = True`, 0 dòng trùng lặp). Do dữ liệu không chứa thông tin về thời điểm khảo sát, hãng hàng không khai thác hay đường bay cụ thể, kết quả phân tích chỉ đại diện cho mẫu khảo sát hiện có, không mặc nhiên suy rộng cho toàn bộ thị trường hàng không hoặc các hãng hàng không tại Việt Nam. Thông tin chi tiết về ngày tải ban đầu và giấy phép từ nguồn công khai Kaggle vẫn cần được xác minh bổ sung trong hồ sơ dự án.
+
+### 3.1.2. Kiến trúc, kiểu dữ liệu và miền giá trị của các nhóm biến
+
+Khi nạp nguyên trạng tệp bẩn bằng Pandas với cấu hình giữ nguyên chuỗi (`dtype=str`), toàn bộ 24 cột đều ở dạng chuỗi (`str`/`object`) do lẫn khoảng trắng thừa, hậu tố đơn vị tính và các ký hiệu báo thiếu. Sau khi làm sạch trong `PJ21.csv` và thu gọn kiểu dữ liệu (downcasting), cấu trúc kiểu dữ liệu và miền giá trị của 24 biến được xác lập như tại Bảng 3.1.
+
+**Bảng 3.1. Từ điển dữ liệu (Data Dictionary), kiểu dữ liệu và miền giá trị quy ước**
+
+| Biến | Ý nghĩa và đơn vị tính | Kiểu (Raw → PJ21 → Tối ưu) | Miền giá trị / Danh mục trong PJ21.csv | Vai trò |
+|---|---|---|---|---|
+| `ID` | Mã bản ghi khảo sát | `str` → `int64` → `int32` | Số nguyên dương duy nhất `[1; 129.880]` | Khóa ghép; loại khỏi ML |
+| `Gender` | Giới tính ghi nhận | `str` → `str` → `category` | `Female`, `Male` (2 nhóm) | Giải thích – nhân khẩu |
+| `Age` | Độ tuổi (năm) | `str` → `int64` → `int8` | Quy ước `(0; 100]`; thực tế `[7; 100]` | Giải thích – nhân khẩu |
+| `Customer Type` | Loại khách hàng | `str` → `str` → `category` | `Returning Customer`, `First-time Customer`, `Unknown` | Giải thích – phân khúc |
+| `Type of Travel` | Mục đích chuyến đi | `str` → `str` → `category` | `Business Travel`, `Personal Travel`, `Unknown` | Giải thích – hành trình |
+| `Class` | Hạng ghế khai thác | `str` → `str` → `category` | `Business`, `Economy`, `Economy Plus` (3 nhóm) | Giải thích – phân khúc |
+| `Flight Distance` | Khoảng cách bay (chưa xác minh đơn vị nguồn) | `str` → `int64` → `int16` | Quy ước `(0; 9.999)`; thực tế `[31; 9.910]` | Giải thích – vận hành |
+| `Departure Delay` | Độ trễ khởi hành (quy ước: phút) | `str` → `int64` → `int16` | Quy ước `[0; 2.000]`; thực tế `[0; 2.000]` | Giải thích – vận hành |
+| `Arrival Delay` | Độ trễ hạ cánh (quy ước: phút) | `str` → `int64` → `int16` | Quy ước `[0; 2.000]`; thực tế `[0; 2.000]` | Giải thích – vận hành |
+| `Departure and Arrival Time Convenience` | Thuận tiện giờ đi/đến (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Ease of Online Booking` | Thuận tiện đặt vé trực tuyến (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Check-in Service` | Dịch vụ làm thủ tục check-in (điểm) | `str` → `int64` → `int8` | Quy ước `[0; 5]`; thực tế `[1; 5]` | Giải thích – dịch vụ |
+| `Online Boarding` | Trải nghiệm thủ tục lên tàu bay trực tuyến (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Gate Location` | Vị trí cửa khởi hành (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `On-board Service` | Phục vụ trên tàu bay (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Seat Comfort` | Độ thoải mái ghế ngồi (điểm) | `str` → `int64` → `int8` | Quy ước `[0; 5]`; thực tế `[1; 5]` | Giải thích – dịch vụ |
+| `Leg Room Service` | Không gian để chân (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Cleanliness` | Mức độ vệ sinh, sạch sẽ (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Food and Drink` | Chất lượng đồ ăn, thức uống (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `In-flight Service` | Dịch vụ trong chuyến bay (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `In-flight Wifi Service` | Chất lượng Wifi trên chuyến bay (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `In-flight Entertainment` | Giải trí trên chuyến bay (điểm) | `str` → `int64` → `int8` | Thang thứ bậc `[0; 5]` | Giải thích – dịch vụ |
+| `Baggage Handling` | Xử lý hành lý (điểm) | `str` → `int64` → `int8` | Quy ước `[0; 5]`; thực tế `[1; 5]` | Giải thích – dịch vụ |
+| `Satisfaction` | Mức độ hài lòng tổng thể | `str` → `str` → `category` | `Satisfied`, `Neutral or Dissatisfied` | **Biến mục tiêu (0/1)** |
+
+*Nguồn: Tổng hợp từ `Data/raw/Du lieu khong sach.csv`, `Data/processed/PJ21.csv` và `outputs/chuong3/kieu_du_lieu_toi_uu.csv`.*
+
+Bộ dữ liệu gồm 1 khóa định danh (`ID`), 4 biến phân loại mô tả hành khách và chuyến đi, 4 biến định lượng vận hành, 14 biến điểm đánh giá dịch vụ theo thang thứ bậc và 1 biến mục tiêu nhị phân (`Satisfaction`). Trong `PJ21.csv`, 11/14 tiêu chí dịch vụ có miền thực tế `0–5` và 3 tiêu chí (`Check-in Service`, `Seat Comfort`, `Baggage Handling`) có miền `1–5`. Do hồ sơ nguồn chưa xác nhận mã `0` có nghĩa là “không áp dụng dịch vụ” hay một mức điểm thấp nhất, nghiên cứu không mặc định điểm `0` là “rất không hài lòng” mà thực hiện phân tích độ nhạy khi giữ và loại mã `0` tại mục 3.5.3.
+
+## 3.2. Tổ chức bảng khảo sát, ghép nối dữ liệu và tối ưu bộ nhớ {#sec-3-2}
+
+### 3.2.1. Thiết kế bảng và kiểm soát quan hệ ghép nối
+
+Trong workspace ban đầu của dự án chỉ có tệp CSV đơn lẻ ở từng tầng dữ liệu. Để kiểm chứng kỹ thuật tích hợp đa định dạng và kiểm soát khóa liên kết, tệp sạch `PJ21.csv` (**119.092 dòng**) được tách theo ba nhóm nghiệp vụ ra ba định dạng lưu trữ khác nhau, sau đó đọc lại (trong đó bảng hành khách được đọc phân đoạn với `chunksize = 30.000` và nối bằng `pd.concat`) rồi ghép nối qua khóa `ID` bằng `pd.merge(..., on="ID", validate="one_to_one")`.
+
+**Bảng 3.2. Cấu trúc ba bảng dẫn xuất trong thực nghiệm tích hợp đa định dạng**
+
+| Tệp lưu trữ | Định dạng | Các trường thông tin | Số dòng | Số cột |
+|---|---|---|---:|---:|
+| `hanh_khach.csv` | CSV (đọc theo `chunksize=30.000`) | `ID`, `Gender`, `Age`, `Customer Type` | 119.092 | 4 |
+| `hanh_trinh.json` | JSON (`orient="records"`) | `ID`, `Type of Travel`, `Class`, `Flight Distance`, `Departure Delay`, `Arrival Delay` | 119.092 | 6 |
+| `danh_gia.sqlite` | SQLite (bảng `danh_gia`) | `ID`, 14 biến điểm dịch vụ, `Satisfaction` | 119.092 | 16 |
+
+*Nguồn: Thực nghiệm tích hợp từ `Data/processed/PJ21.csv` tại `outputs/chuong3/multi_file/`.*
+
+Kiểm tra tự động bằng `assert_frame_equal` xác nhận bảng tổng hợp sau hai phép ghép `one_to_one` có đúng **119.092 dòng × 24 cột**, không phát sinh bản ghi trùng lặp hoặc thất thoát dòng, và khớp tuyệt đối từng giá trị với `PJ21.csv`. Tuy nhiên, cần nêu rõ về mặt học thuật: **đây chỉ là thực nghiệm kỹ thuật tách – ghép từ một tệp nguồn duy nhất**, không phải tích hợp các nguồn dữ liệu độc lập thu thập từ nhiều hệ thống khác nhau. Do đó, yêu cầu về nguồn dữ liệu đa tệp độc lập vẫn chưa được đáp ứng về mặt nguồn gốc dữ liệu và cần được giải trình rõ khi nghiệm thu.
+
+### 3.2.2. Hiệu quả thu gọn kiểu dữ liệu và hiện trạng định dạng lưu trữ
+
+Khi nạp dữ liệu bẩn `Data/raw/Du lieu khong sach.csv` ở dạng chuỗi (`129.880 × 24`), bộ nhớ DataFrame đo bằng `memory_usage(deep=True)` là **151,3627 MiB** (158.715.312 byte). Trên tập dữ liệu sạch `PJ21.csv` (`119.092 × 24`), dung lượng mặc định trong bộ nhớ là **51,4713 MiB** (53.971.600 byte). Sau khi chuyển 5 biến phân loại sang kiểu `category` và thu gọn (downcast) 19 cột số nguyên theo đúng miền giá trị (`int8` cho `Age` và 14 điểm dịch vụ; `int16` cho `Flight Distance`, `Departure Delay`, `Arrival Delay`; `int32` cho `ID`), dung lượng DataFrame giảm xuống còn **3,4081 MiB** (3.573.679 byte), tiết kiệm **93,3786%** bộ nhớ bảng mà không làm thay đổi bất kỳ giá trị nào.
+
+Lưu ý rằng con số **93,3786%** chỉ phản ánh dung lượng lưu trữ của đối tượng DataFrame trong bộ nhớ sau khi đã nạp, không phải mức tiêu thụ RAM cực đại (peak memory) của toàn tiến trình Python. Bên cạnh đó, môi trường làm việc hiện tại chưa cài đặt thư viện `pyarrow` hoặc `fastparquet`, nên **bước xuất và đọc tệp trung gian định dạng Parquet/Feather chưa được thực hiện** và được ghi nhận đúng tình trạng là hạng mục còn thiếu.
+
+## 3.3. Kiểm toán chất lượng và đánh giá quy trình làm sạch dữ liệu {#sec-3-3}
+
+### 3.3.1. Kiểm toán lỗi dữ liệu bẩn và bảng đối chiếu trước–sau làm sạch
+
+Để khắc phục hạn chế của việc chỉ đếm ô `NaN` mặc định hoặc gán cứng số lỗi sau xử lý bằng `0`, quy trình kiểm toán tại `lam_sach_du_lieu.py` và `src/phan_tich_chuong3.py` thực hiện quét thực tế trên từng ô dữ liệu cho cả tệp bẩn (**129.880 dòng**, 3.117.120 ô) và tệp sạch `PJ21.csv` (**119.092 dòng**, 2.858.208 ô) theo ba nhóm lỗi:
+
+1. **Lỗi thiếu dữ liệu (`Thiếu`):** Gồm **269.947 ô** trống (`NaN`) khi đọc CSV mặc định và **140.667 ô** chứa ký hiệu báo thiếu ẩn (`?`, `-`, `unknown`, `chưa rõ`, `null`, `none`, `n/a`, `nan`), tổng cộng **410.614 ô thiếu** trên toàn bộ dữ liệu bẩn.
+2. **Lỗi sai định dạng (`Sai định dạng`):** Gồm khoảng trắng thừa ở đầu/cuối chuỗi (kể cả **10.484 ô** ở cột `ID`), sai lệch chữ hoa/thường và chuỗi bị cắt cụt ở 5 biến phân loại (như `'  Fema'`, `'  Returnin'`, `'  Busine'`, `'  Economy Pl'`, `'  Neutral or Dissatisfi'`), hậu tố đơn vị tính gắn vào cột số (`USD`, `VND`, `đ`, `kg`, `%`) và chuỗi biểu diễn số thực `.0` hoặc `'nan đ'` ở các cột số nguyên, tổng cộng **419.228 lượt lỗi định dạng**.
+3. **Lỗi ngoài miền giá trị quy ước (`Ngoài miền`):** Gồm các giá trị số nằm ngoài giới hạn quy ước `BOUNDS` của quy trình làm sạch (như mã lỗi `-1`, các số âm khác, mã `9999`, độ trễ vượt `2.000` phút, điểm dịch vụ ngoài `[0; 5]`) cùng 28 ô chuỗi `'nan'` kèm đơn vị ở cột `Arrival Delay`, tổng cộng **128.076 lượt lỗi ngoài miền**.
+
+Vì một ô dữ liệu số có thể **đồng thời mắc cả lỗi sai định dạng và lỗi ngoài miền** (ví dụ chuỗi `'-39.0'`, `'41000.0'` hoặc `'nan đ'` vừa sai định dạng số nguyên vừa nằm ngoài miền hợp lệ, tổng cộng có **37.748 ô** trùng hai lỗi), báo cáo tách bạch rõ **Tổng lượt lỗi (957.918 lượt)** và **Số ô lỗi duy nhất (920.170 ô**, chiếm **29,5199%** tổng số ô của tệp bẩn). Đồng thời, khi đối chiếu qua khóa `ID`, trong số **920.170 ô lỗi duy nhất** ban đầu, có **83.037 ô lỗi** nằm trên **10.788 dòng** bị loại bỏ do khuyết nhãn mục tiêu `Satisfaction` (lỗi biến mất do loại dòng), và **837.133 ô lỗi duy nhất** nằm trên **119.092 dòng** được giữ lại và xử lý trực tiếp trong `PJ21.csv`.
+
+**Bảng 3.3. Đối chiếu chi tiết số lượng lỗi trước và sau khi làm sạch trên toàn bộ 24 biến**
+
+| Biến | Thiếu (trước) | Sai ĐD (trước) | Ngoài miền (trước) | Tổng lượt lỗi | Ô lỗi duy nhất | Thuộc dòng loại | Được sửa (PJ21) | Giá trị điền | Số ô điền (PJ21) | Lỗi sau xử lý |
+|---|---|---|---|---|---|---|---|---|---|---|
+| ID | 0 | 10.484 | 0 | 10.484 | 10.484 | 853 | 9.631 | Không điền | 0 | 0 |
+| Gender | 10.347 | 21.763 | 0 | 32.110 | 32.110 | 2.581 | 29.529 | Female | 9.517 | 0 |
+| Age | 5.283 | 8.919 | 4.574 | 18.776 | 15.945 | 1.332 | 14.613 | 40 | 9.012 | 0 |
+| Customer Type | 44.050 | 56.288 | 0 | 100.338 | 100.338 | 8.308 | 92.030 | Unknown | 40.408 | 0 |
+| Type of Travel | 49.684 | 44.719 | 0 | 94.403 | 94.403 | 7.833 | 86.570 | Unknown | 45.607 | 0 |
+| Class | 9.930 | 26.256 | 0 | 36.186 | 36.186 | 2.984 | 33.202 | Business | 9.113 | 0 |
+| Flight Distance | 16.672 | 16.178 | 8.203 | 41.053 | 38.498 | 3.177 | 35.321 | 846 | 22.791 | 0 |
+| Departure Delay | 33.846 | 5.407 | 11.363 | 50.616 | 50.384 | 4.229 | 46.155 | 0 | 41.414 | 0 |
+| Arrival Delay | 6.211 | 9.740 | 2.531 | 18.482 | 17.907 | 1.415 | 16.492 | 0 | 8.038 | 0 |
+| Departure and Arrival Time Convenience | 13.469 | 0 | 0 | 13.469 | 13.469 | 1.087 | 12.382 | 3 | 12.382 | 0 |
+| Ease of Online Booking | 27.747 | 8.393 | 10.930 | 47.070 | 45.426 | 3.824 | 41.602 | 3 | 35.423 | 0 |
+| Check-in Service | 8.839 | 12.125 | 6.352 | 27.316 | 23.990 | 1.968 | 22.022 | 3 | 13.948 | 0 |
+| Online Boarding | 25.123 | 14.511 | 9.732 | 49.366 | 47.934 | 3.974 | 43.960 | 3 | 31.958 | 0 |
+| Gate Location | 19.628 | 17.888 | 9.483 | 46.999 | 44.037 | 3.688 | 40.349 | 3 | 26.671 | 0 |
+| On-board Service | 5.665 | 11.481 | 4.701 | 21.847 | 19.019 | 1.613 | 17.406 | 4 | 9.500 | 0 |
+| Seat Comfort | 12.671 | 8.737 | 5.999 | 27.407 | 25.547 | 2.110 | 23.437 | 4 | 17.119 | 0 |
+| Leg Room Service | 4.943 | 19.692 | 4.178 | 28.813 | 26.192 | 2.204 | 23.988 | 4 | 8.338 | 0 |
+| Cleanliness | 29.690 | 9.924 | 12.182 | 51.796 | 49.508 | 4.067 | 45.441 | 3 | 38.441 | 0 |
+| Food and Drink | 25.068 | 15.638 | 9.674 | 50.380 | 49.075 | 4.051 | 45.024 | 3 | 31.902 | 0 |
+| In-flight Service | 6.714 | 18.897 | 5.346 | 30.957 | 27.826 | 2.324 | 25.502 | 4 | 11.043 | 0 |
+| In-flight Wifi Service | 17.261 | 13.091 | 8.187 | 38.539 | 36.235 | 3.018 | 33.217 | 3 | 23.318 | 0 |
+| In-flight Entertainment | 7.537 | 12.716 | 5.214 | 25.467 | 22.648 | 1.843 | 20.805 | 4 | 11.683 | 0 |
+| Baggage Handling | 19.448 | 18.066 | 9.427 | 46.941 | 43.906 | 3.766 | 40.140 | 4 | 26.368 | 0 |
+| Satisfaction | 10.788 | 38.315 | 0 | 49.103 | 49.103 | 10.788 | 38.315 | Không điền | 0 | 0 |
+| **Tổng cộng (24 cột)** | **410.614** | **419.228** | **128.076** | **957.918** | **920.170** | **83.037** | **837.133** | **—** | **483.994** | **0** |
+
+*Nguồn: Kiểm toán thực tế bằng hàm quét từng ô từ `Data/raw/Du lieu khong sach.csv` (n = 129.880) và `Data/processed/PJ21.csv` (n = 119.092), đối chiếu qua khóa `ID` (`outputs/chuong3/kiem_tra_chat_luong.csv`).*
+
+Trên tệp `PJ21.csv` sau xử lý, phép chạy hàm kiểm toán thực tế trên toàn bộ **2.858.208 ô** xác nhận số lỗi `Thiếu (sau) = 0`, `Sai định dạng (sau) = 0` và `Ngoài miền (sau) = 0` (với quy ước `'Unknown'` là danh mục hợp lệ đã gán tường minh cho hai cột `Customer Type` và `Type of Travel`). Mã băm SHA-256 của cả tệp bẩn và `PJ21.csv` trước và sau quá trình kiểm toán hoàn toàn không đổi.
+
+### 3.3.2. Các quy tắc chuẩn hóa, loại dòng thiếu nhãn và điền khuyết
+
+Quy trình làm sạch trong `Notebooks/02_kiem_toan_du_lieu.ipynb/clean_data.ipynb` và `lam_sach_du_lieu.py` tạo ra `PJ21.csv` gồm bốn quyết định xử lý chính:
+
+1. **Loại bỏ bản ghi thiếu biến mục tiêu `Satisfaction`:** Tất cả **10.788 dòng** (chiếm **8,3061%** dữ liệu ban đầu) có nhãn `Satisfaction` bị trống hoặc mang mã thiếu (`?`, `unknown`, `chưa rõ`) được loại bỏ thay vì điền bằng nhãn phổ biến nhất (Mode). Quyết định này giúp giữ nguyên tính chân thực của biến mục tiêu trên **119.092 dòng** còn lại, không tạo ra nhãn giả làm sai lệch bài toán phân loại có giám sát.
+2. **Chuẩn hóa văn bản và khôi phục chuỗi cắt cụt:** Xóa khoảng trắng thừa ở cột `ID` và 5 biến phân loại; chuẩn hóa chữ hoa/thường và ánh xạ các tiền tố bị cắt cụt (`'  fema'` → `'Female'`, `'  returnin'` → `'Returning Customer'`, `'  first-ti'` → `'First-time Customer'`, `'  busine'` → `'Business Travel'`, `'  person'` → `'Personal Travel'`, `'  economy pl'` → `'Economy Plus'`, `'  neutral or dissatisfi'` → `'Neutral or Dissatisfied'`).
+3. **Bóc tách số bằng biểu thức chính quy và lọc theo miền quy ước (`BOUNDS`):** Trích xuất giá trị số đầu tiên từ chuỗi và chuyển mọi giá trị nằm ngoài miền quy ước (`Age` ngoài `(0; 100]`, `Flight Distance` ngoài `(0; 9.999)`, `Departure Delay` và `Arrival Delay` ngoài `[0; 2.000]`, 14 điểm dịch vụ ngoài `[0; 5]`) thành `NaN`. Cách làm này loại bỏ toàn bộ mã lỗi `-1`, `9999` và các giá trị độ trễ phóng đại hàng trăm nghìn phút, nhưng có hạn chế là **đánh đồng các số âm `< -1` (vốn có thể là số dương bị gắn nhầm dấu trừ) và các số bị nhân hệ số 10 với ngoại lai cần xóa**, đồng thời việc xóa hậu tố đơn vị (`USD`, `VND`, `kg`, `%`, `đ`) chỉ là làm sạch ký tự rác chứ không phải quy đổi đơn vị đo lường.
+4. **Chiến lược điền khuyết phân biệt theo tỷ lệ thiếu:**
+
+**Bảng 3.4. Tổng hợp chiến lược điền khuyết và tỷ lệ ô bị ảnh hưởng trên `PJ21.csv` (n = 119.092)**
+
+| Nhóm biến | Phương pháp xử lý ô thiếu / ngoài miền | Giá trị điền | Số ô điền trên `PJ21.csv` (tỷ lệ %) | Hệ quả và hạn chế cần kiểm soát |
+|---|---|---|---|---|
+| `Satisfaction` | Loại bỏ bản ghi thiếu nhãn trước khi điền khuyết | Không điền | 0 (đã loại 10.788 dòng) | Tránh tạo nhãn giả; cần lưu ý khả năng khuyết nhãn không hoàn toàn ngẫu nhiên |
+| `Customer Type`, `Type of Travel` | Gán nhãn danh mục riêng `'Unknown'` cho các ô thiếu | `'Unknown'` | 40.408 (33,93%) và 45.607 (38,30%) | Bảo toàn độ tinh khiết của các phân khúc quan sát được; không được gộp `'Unknown'` vào khách `Returning` hay `Business` |
+| `Gender`, `Class` | Điền giá trị phổ biến nhất (Mode) trên toàn tập | `'Female'`, `'Business'` | 9.517 (7,99%) và 9.113 (7,65%) | Làm tăng cỡ mẫu và kéo tỷ lệ hài lòng của nhóm `Business` và `Female` về gần mức trung bình chung |
+| 4 biến định lượng vận hành | Điền trung vị (Median) toàn cục rồi ép kiểu `int64` | `Age=40`, `Distance=846`, `Delay=0` | Từ `Arrival Delay` = 8.038 (6,75%) đến `Departure Delay` = 41.414 (34,77%) | Tạo đỉnh tập trung tại trung vị (`Age = 40`, `Delay = 0`) và làm giảm phương sai thực tế |
+| 14 biến điểm dịch vụ | Điền trung vị (Median) toàn cục rồi ép kiểu `int64` | Điền `3` hoặc `4` tùy biến (xem chú thích) | Từ `Leg Room Service` = 8.338 (7,00%) đến `Cleanliness` = 38.441 (32,28%) | Thu hẹp biến thiên điểm số và có thể làm thay đổi độ lớn cũng như thứ hạng tương quan đơn biến với `Satisfaction` |
+
+*Nguồn: Tổng hợp từ `Notebooks/02_kiem_toan_du_lieu.ipynb/clean_data.ipynb`, `lam_sach_du_lieu.py` và `outputs/chuong3/kiem_tra_chat_luong.csv`.*
+
+*Chú thích giá trị điền của 14 biến dịch vụ trong Bảng 3.4:* Theo bảng đối chiếu trực tiếp tại Bảng 3.3 (`kiem_tra_chat_luong.csv`), 5 biến gồm `On-board Service`, `Seat Comfort`, `In-flight Service`, `In-flight Entertainment` và `Baggage Handling` có trung vị bằng `4`; 8 biến gồm `Departure and Arrival Time Convenience`, `Ease of Online Booking`, `Check-in Service`, `Online Boarding`, `Gate Location`, `Cleanliness`, `Food and Drink` và `In-flight Wifi Service` có trung vị bằng `3`. Riêng biến `Leg Room Service` (có trung bình `3,3953`), kiểm tra trực tiếp trên 110.754 ô hợp lệ trước khi điền khuyết trong `clean_data.ipynb` cho kết quả trung vị `df['Leg Room Service'].median() = 4,0`, nên toàn bộ 8.338 ô điền khuyết của `Leg Room Service` trong `PJ21.csv` thực tế nhận giá trị `4` (tức thực tế trong tệp `PJ21.csv` có 8 biến điền `3` và 6 biến điền `4`; nếu xét theo danh mục 5 biến có trung bình $> 3,40$ thường được ghi nhận là nhóm điền `4` thì gồm `On-board Service`, `Seat Comfort`, `In-flight Service`, `In-flight Entertainment`, `Baggage Handling`).
+
+### 3.3.3. Giới hạn miền giá trị, ngoại lai thống kê và dữ liệu độ trễ
+
+Trong quy trình tạo `PJ21.csv`, ngưỡng cận trên **2.000 phút** đối với `Departure Delay` và `Arrival Delay`, cũng như ngưỡng **9.999** đối với `Flight Distance`, phải được hiểu là **quy tắc cắt lọc kỹ thuật đang áp dụng trong mã làm sạch của nhóm** để loại bỏ các giá trị phóng đại bất thường (như 178.000 hay 270.000 phút trong dữ liệu bẩn), **không phải là quy chuẩn nghiệp vụ hàng không đã có nguồn tài liệu xác nhận**. Đặc biệt, ở biến `Flight Distance`, do ngưỡng lọc đặt tại `< 9.999`, trong `PJ21.csv` vẫn còn các giá trị từ `5.000` đến `9.910` (nhiều khả năng là các quãng đường `500–991` bị nhân hệ số 10 trong dữ liệu bẩn).
+
+Ngay cả sau khi đã cắt lọc ngoài miền `BOUNDS` và điền trung vị, việc kiểm tra ngoại lai thống kê theo quy tắc khoảng tứ phân vị $[Q_1 - 1,5 \times \text{IQR};\; Q_3 + 1,5 \times \text{IQR}]$ trên `PJ21.csv` vẫn ghi nhận nhiều quan sát nằm ở đuôi phân phối phải (Bảng 3.5).
+
+**Bảng 3.5. Kết quả nhận diện ngoại lai thống kê theo IQR trên `PJ21.csv` (n = 119.092)**
+
+| Biến | Q1 | Q3 | IQR | Cận trên IQR | Số ngoại lai IQR | Tỷ lệ (%) |
+|---|---|---|---|---|---|---|
+| Age | 28,0000 | 50,0000 | 22,0000 | 83,0000 | 29 | 0,0244 |
+| Flight Distance | 502,0000 | 1476,0000 | 974,0000 | 2937,0000 | 8.301 | 6,9702 |
+| Departure Delay | 0,0000 | 3,0000 | 3,0000 | 7,5000 | 23.540 | 19,7662 |
+| Arrival Delay | 0,0000 | 11,0000 | 11,0000 | 27,5000 | 17.218 | 14,4577 |
+
+*Nguồn: Tính toán từ `Data/processed/PJ21.csv` (`outputs/chuong3/ngoai_lai_iqr.csv`).*
+
+Do hơn một nửa số chuyến bay trong `PJ21.csv` có độ trễ bằng `0` phút ($Q_1 = 0$, trung vị $= 0$, $Q_3 = 3$ phút với `Departure Delay` và $Q_3 = 11$ phút với `Arrival Delay`), ngưỡng cận trên IQR rất thấp (`7,5` phút và `27,5` phút), dẫn tới **19,7662%** bản ghi trễ khởi hành và **14,4577%** bản ghi trễ đến vượt cận trên IQR. Đây là đặc trưng tự nhiên của phân phối độ trễ lệch phải có điểm tập trung tại 0, không phải lỗi dữ liệu cần xóa thêm. Vì vậy, các phân tích ở mục 3.5 và 3.6 sử dụng phân nhóm độ trễ và kiểm định phi tham số Mann–Whitney U.
+
+### 3.3.4. Đánh giá tính tái lập và phạm vi chống rò rỉ dữ liệu
+
+Cần phân biệt rạch ròi ba khái niệm trong báo cáo này:
+
+1. **Tính tái lập của mã nguồn (100%):** Chạy lại `lam_sach_du_lieu.py` và `Notebooks/02_kiem_toan_du_lieu.ipynb/clean_data.ipynb` trên `Data/raw/Du lieu khong sach.csv` tạo ra kết quả khớp tuyệt đối từng ô với `Data/processed/PJ21.csv` (SHA-256: `baa89213a9cd76be...`).
+2. **Độ chính xác khôi phục dữ liệu (không đồng nhất với 0 lỗi kiểm toán):** Việc số lỗi kiểm toán sau xử lý bằng `0` chỉ chứng minh `PJ21.csv` đã tuân thủ đầy đủ các quy tắc định dạng, miền giá trị và điền khuyết do nhóm đặt ra; **không chứng minh 483.994 ô được điền Mode/Median/`Unknown` trên 119.092 dòng phản ánh đúng giá trị thực tế ban đầu của hành khách**.
+3. **Phạm vi chống rò rỉ dữ liệu (Data Leakage):** Mặc dù bước chuẩn bị mô hình (Cell 8 của `clean_data.ipynb`) đã thực hiện chia tập `Train/Test` (80/20, phân tầng theo `Satisfaction`) trước khi khớp `StandardScaler` trên tập `Train`, nhưng bản thân tệp `PJ21.csv` lại được điền `Mode` (`Gender`, `Class`) và `Median` (18 biến số) tính trên **toàn bộ 119.092 dòng trước khi chia tập**. Cần nhấn mạnh rằng **nếu vẫn lấy trực tiếp tệp `PJ21.csv` đã điền sẵn (0 ô `NaN`) làm đầu vào cho Chương 4 thì việc chỉ thêm `SimpleImputer` vào `Pipeline` hoàn toàn không khắc phục được ảnh hưởng của điền khuyết toàn tập**. Để chống rò rỉ dữ liệu thực chất ở Chương 4, cần cung cấp bảng dữ liệu sau bước chuẩn hóa và lọc ngoài miền `BOUNDS` nhưng **trước khi điền khuyết** (hoặc khôi phục mặt nạ các ô thiếu/ngoài miền từ `Data/raw/Du lieu khong sach.csv` theo khóa `ID`), sau đó mới chia `Train/Test` và chỉ `fit` các bộ tiền xử lý trên tập `Train`.
+
+## 3.4. Đặc điểm phân bố của hành khách và mức độ hài lòng {#sec-3-4}
+
+### 3.4.1. Thống kê mô tả tuổi, khoảng cách bay và độ trễ
+
+**Bảng 3.6. Thống kê mô tả bốn biến định lượng vận hành trên `PJ21.csv` (n = 119.092)**
+
+| Biến | Trung bình | Độ lệch chuẩn | Min | Q1 (25%) | Trung vị (50%) | Q3 (75%) | P99 (99%) | Max |
+|---|---|---|---|---|---|---|---|---|
+| Age | 39,4918 | 14,5398 | 7 | 28 | 40 | 50 | 70 | 100 |
+| Flight Distance | 1135,5448 | 941,6384 | 31 | 502 | 846 | 1.476 | 3.883 | 9.910 |
+| Departure Delay | 10,3205 | 43,3579 | 0 | 0 | 0 | 3 | 156 | 2.000 |
+| Arrival Delay | 15,4135 | 54,8828 | 0 | 0 | 0 | 11 | 187 | 2.000 |
+
+*Nguồn: Tính toán từ `Data/processed/PJ21.csv` (`outputs/chuong3/thong_ke_mo_ta.csv`). Bảng thống kê đầy đủ của cả 14 biến điểm dịch vụ được lưu tại tệp CSV cùng tên.*
+
+Trên `PJ21.csv`, độ tuổi của hành khách có trung bình **39,4918 năm**, trung vị **40 năm** và độ lệch chuẩn **14,5398 năm** (miền giá trị từ 7 đến 100 tuổi). Khoảng cách bay có trung bình **1.135,5448** và trung vị **846** (độ lệch chuẩn **941,6384**). Đối với hai biến độ trễ, sau khi loại bỏ các giá trị ngoài miền `[0; 2.000]` phút và điền trung vị `0` phút (với **41.414 ô** tương ứng **34,77%** ở `Departure Delay` và **8.038 ô** tương ứng **6,75%** ở `Arrival Delay`), độ trễ khởi hành trung bình là **10,3205 phút** (độ lệch chuẩn **43,3579 phút**, phân vị 99% là **156 phút**) và độ trễ đến trung bình là **15,4135 phút** (độ lệch chuẩn **54,8828 phút**, phân vị 99% là **187 phút**), trong khi trung vị của cả hai biến đều bằng **0 phút**.
+
+![Phân bố tuổi và boxplot độ trễ đến sau biến đổi log(1+x) trên PJ21.csv.](../figures/chuong3/05_phan_phoi.png){width=95%}
+
+*Hình 3.1. Phân bố tuổi (trái) và boxplot `log(1 + Arrival Delay)` theo nhóm hài lòng (phải) trên `PJ21.csv` (n = 119.092). Nguồn: Tính toán của nhóm.*
+
+Hình 3.1 (trái) cho thấy phân bố tuổi tập trung chủ yếu trong khoảng 22–60 tuổi, nhưng xuất hiện một cột cao đột biến tại đúng giá trị trung vị `Age = 40` do có **9.012 bản ghi (7,57%)** bị thiếu hoặc ngoài miền tuổi trên tập 119.092 dòng được điền bằng `40`. Ở Hình 3.1 (phải), do cả hai nhóm hài lòng đều có trung vị độ trễ đến bằng `0` phút, vạch trung vị nằm sát đáy hộp (`0`), song hộp tứ phân vị ($Q_3$) và râu trên của nhóm *Neutral or Dissatisfied* mở rộng cao hơn rõ rệt so với nhóm *Satisfied*.
+
+### 3.4.2. Sàng lọc bản ghi thiếu nhãn và cơ cấu mức độ hài lòng (RQ1)
+
+Trong **129.880 bản ghi** của tệp dữ liệu bẩn ban đầu, có **119.092 bản ghi (91,6939%)** trích xuất được nhãn `Satisfaction` hợp lệ và **10.788 bản ghi (8,3061%)** không có nhãn hợp lệ đã được loại bỏ khi xuất `PJ21.csv`.
+
+![Kết quả sàng lọc bản ghi thiếu nhãn từ dữ liệu bẩn và cơ cấu nhãn trên PJ21.csv.](../figures/chuong3/01_co_cau_nhan.png){width=95%}
+
+*Hình 3.2. Tỷ lệ bản ghi giữ lại sau sàng lọc nhãn (trái, n = 129.880) và cơ cấu hai lớp `Satisfaction` trên `PJ21.csv` (phải, n = 119.092). Nguồn: Tính toán của nhóm.*
+
+Trên tập dữ liệu sạch chuẩn `PJ21.csv` (**n = 119.092**), có **51.740 bản ghi** thuộc lớp *Satisfied* (**43,4454%**) và **67.352 bản ghi** thuộc lớp *Neutral or Dissatisfied* (**56,5546%**). Tỷ lệ hai lớp tương đối cân bằng (xấp xỉ 43,45% / 56,55%), thuận lợi cho việc huấn luyện và đánh giá các mô hình phân loại nhị phân ở Chương 4 mà không bị biến dạng bởi nhãn điền khuyết.
+
+## 3.5. Khám phá mối liên hệ giữa trải nghiệm dịch vụ và sự hài lòng {#sec-3-5}
+
+### 3.5.1. Khác biệt mức hài lòng giữa các phân khúc hành khách và vai trò của nhóm `Unknown` (RQ1)
+
+Để trả lời **RQ1**, Bảng 3.7 và Hình 3.3 trình bày quy mô mẫu và tỷ lệ hài lòng theo hạng vé (`Class`), loại khách hàng (`Customer Type`), mục đích chuyến đi (`Type of Travel`) và giới tính (`Gender`) trên `PJ21.csv` (**n = 119.092**), trong đó nhóm `'Unknown'` của hai biến `Customer Type` và `Type of Travel` được tách riêng, tuyệt đối không gộp vào nhóm khách quay lại hay khách đi công tác.
+
+**Bảng 3.7. Quy mô và tỷ lệ hài lòng theo các phân khúc hành khách trên `PJ21.csv` (n = 119.092)**
+
+| Biến phân nhóm | Nhóm | Số bản ghi (n) | Số hài lòng | Tỷ lệ hài lòng (%) |
+|---|---|---|---|---|
+| Class | Business | 61.826 | 40.611 | 65,6860 |
+| Class | Economy | 49.327 | 9.174 | 18,5983 |
+| Class | Economy Plus | 7.939 | 1.955 | 24,6253 |
+| Customer Type | First-time Customer | 14.481 | 3.458 | 23,8796 |
+| Customer Type | Returning Customer | 64.203 | 30.859 | 48,0647 |
+| Customer Type | Unknown | 40.408 | 17.423 | 43,1177 |
+| Type of Travel | Business Travel | 50.834 | 29.566 | 58,1619 |
+| Type of Travel | Personal Travel | 22.651 | 2.353 | 10,3881 |
+| Type of Travel | Unknown | 45.607 | 19.821 | 43,4604 |
+| Gender | Female | 65.241 | 28.064 | 43,0159 |
+| Gender | Male | 53.851 | 23.676 | 43,9658 |
+
+*Nguồn: Tính toán từ `Data/processed/PJ21.csv` (`outputs/chuong3/Class.csv`, `Customer_Type.csv`, `Type_of_Travel.csv`, `Gender.csv`).*
+
+![Tỷ lệ hài lòng theo hạng vé, loại khách hàng và mục đích chuyến đi trên PJ21.csv.](../figures/chuong3/02_phan_khuc.png){width=100%}
+
+*Hình 3.3. So sánh tỷ lệ hài lòng giữa các phân khúc trên `PJ21.csv` (n = 119.092; cột màu xám biểu thị nhóm `Unknown` do khuyết dữ liệu gốc). Nguồn: Tính toán của nhóm.*
+
+Từ Bảng 3.7 và Hình 3.3, nghiên cứu rút ra ba phát hiện định lượng gắn với **RQ1**, kèm đánh giá ảnh hưởng của việc điền khuyết đặc trưng:
+
+- **Phát hiện 1 — Khác biệt theo hạng vé (`Class`) và ảnh hưởng của điền Mode:** Trên `PJ21.csv`, hạng vé `Business` có tỷ lệ hài lòng cao nhất đạt **65,6860%** (n = 61.826), cao hơn **41,0607 điểm phần trăm** so với `Economy Plus` (**24,6253%**, n = 7.939) và cao hơn **47,0877 điểm phần trăm** so với `Economy` (**18,5983%**, n = 49.327). Tuy nhiên, cần lưu ý rằng nhóm `Business` trong `PJ21.csv` đã bao gồm **9.113 bản ghi** thiếu `Class` trong dữ liệu bẩn được điền bằng Mode `'Business'`. Khi tách riêng **52.713 bản ghi** thực sự quan sát được hạng vé `Business`, tỷ lệ hài lòng thực tế đạt tới **69,4516%**, trong khi **9.113 bản ghi** được điền Mode chỉ có tỷ lệ hài lòng **43,9043%**. Như vậy, việc điền Mode cho `Class` đã làm giảm tỷ lệ hài lòng quan sát của hạng `Business` xuống **3,7656 điểm phần trăm**.
+- **Phát hiện 2 — Khác biệt theo mục đích chuyến đi (`Type of Travel`):** Trong số các bản ghi xác định được mục đích chuyến đi, nhóm đi công tác (`Business Travel`, n = 50.834) có tỷ lệ hài lòng đạt **58,1619%**, gấp hơn 5,5 lần nhóm đi cá nhân (`Personal Travel`, n = 22.651, đạt **10,3881%**), tức chênh lệch **47,7738 điểm phần trăm**. Nhóm không rõ mục đích (`Unknown`, n = 45.607, chiếm 38,30% toàn tập) có tỷ lệ hài lòng là **43,4604%**; tuy con số này gần với tỷ lệ hài lòng chung của toàn mẫu (**43,4454%**), nhưng chỉ riêng sự tương đồng về tỷ lệ trung bình **không đủ cơ sở để suy luận cơ chế khuyết thông tin mục đích chuyến đi là hoàn toàn ngẫu nhiên (MCAR)** nếu chưa kiểm chứng thêm cấu trúc khuyết theo các biến khác.
+- **Phát hiện 3 — Khác biệt theo loại khách hàng (`Customer Type`):** Nhóm khách hàng quay lại (`Returning Customer`, n = 64.203) có tỷ lệ hài lòng **48,0647%**, cao hơn **24,1851 điểm phần trăm** so với nhóm khách bay lần đầu (`First-time Customer`, n = 14.481, đạt **23,8796%**). Nhóm `Unknown` (n = 40.408, chiếm 33,93% toàn tập) có tỷ lệ hài lòng **43,1177%**. Các kết quả trên xác nhận rằng nếu gộp nhóm `Unknown` vào `Business Travel` hoặc `Returning Customer` (như khi điền Mode) thì tỷ lệ hài lòng của hai phân khúc này sẽ bị kéo lệch đáng kể; do đó việc giữ nguyên nhóm `'Unknown'` riêng biệt trong `PJ21.csv` là cần thiết.
+
+### 3.5.2. Mối liên hệ giữa độ trễ khởi hành, độ trễ đến và đánh giá tổng thể (RQ2)
+
+Câu hỏi nghiên cứu **RQ2** tại Chương 1 đặt vấn đề về mối liên hệ của **cả thời gian trễ khởi hành (`Departure Delay`) và thời gian trễ đến (`Arrival Delay`)** với mức độ hài lòng của hành khách. Trên `PJ21.csv` (miền `[0; 2.000]` phút), hai biến độ trễ được chia thành cùng 4 khoảng thời gian: `0 phút` (không trễ), `1–15 phút`, `16–60 phút` và `Trên 60 phút`. Do quy trình làm sạch điền trung vị `0` phút cho **41.414 bản ghi (34,77%)** bị thiếu hoặc ngoài miền ở `Departure Delay` và **8.038 bản ghi (6,75%)** ở `Arrival Delay`, Bảng 3.8 và Hình 3.4 trình bày song song kết quả trên toàn bộ `PJ21.csv` (**n = 119.092**) cùng kết quả chỉ tính trên các bản ghi có độ trễ quan sát hợp lệ từ dữ liệu bẩn (đối chiếu qua khóa `ID`: **n = 77.678** đối với `Departure Delay` và **n = 111.054** đối với `Arrival Delay`).
+
+**Bảng 3.8. Tỷ lệ hài lòng theo bốn nhóm độ trễ khởi hành (`Departure Delay`) và độ trễ đến (`Arrival Delay`)**
+
+| Biến độ trễ | Nhóm thời gian | Số bản ghi PJ21 | Hài lòng PJ21 (%) | Số bản ghi quan sát | Hài lòng quan sát (%) |
+|---|---|---|---|---|---|
+| Departure Delay (Trễ khởi hành) | 0 phút | 85.434 | 44,6532 | 44.020 | 45,6429 |
+| Departure Delay (Trễ khởi hành) | 1–15 phút | 16.439 | 43,3786 | 16.439 | 43,3786 |
+| Departure Delay (Trễ khởi hành) | 16–60 phút | 11.765 | 38,2320 | 11.765 | 38,2320 |
+| Departure Delay (Trễ khởi hành) | Trên 60 phút | 5.454 | 35,9736 | 5.454 | 35,9736 |
+| Arrival Delay (Trễ đến) | 0 phút | 70.643 | 46,9813 | 62.605 | 47,3477 |
+| Arrival Delay (Trễ đến) | 1–15 phút | 23.082 | 40,9973 | 23.082 | 40,9973 |
+| Arrival Delay (Trễ đến) | 16–60 phút | 17.390 | 35,8252 | 17.390 | 35,8252 |
+| Arrival Delay (Trễ đến) | Trên 60 phút | 7.977 | 35,8280 | 7.977 | 35,8280 |
+
+*Nguồn: Tính toán từ `Data/processed/PJ21.csv` và đối chiếu qua `ID` với `Data/raw/Du lieu khong sach.csv` (`outputs/chuong3/nhom_do_tre_khoi_hanh.csv` và `outputs/chuong3/nhom_do_tre.csv`).*
+
+![Tỷ lệ hài lòng theo nhóm độ trễ khởi hành và độ trễ đến trên PJ21.csv và trên tập quan sát hợp lệ.](../figures/chuong3/03_do_tre.png){width=100%}
+
+*Hình 3.4. So sánh tỷ lệ hài lòng theo nhóm độ trễ khởi hành (`Departure Delay`, trái) và độ trễ đến (`Arrival Delay`, phải). Nguồn: Tính toán của nhóm.*
+
+- **Phát hiện 4 — Xu hướng giảm mức hài lòng theo cả độ trễ khởi hành và độ trễ đến, với độ nhạy mạnh hơn ở chiều hạ cánh (RQ2):**
+  1. **Đối với độ trễ khởi hành (`Departure Delay`):** Trên `PJ21.csv`, tỷ lệ hài lòng giảm từ **44,6532%** ở nhóm `0 phút` xuống **43,3786%** ở nhóm `1–15 phút`, **38,2320%** ở nhóm `16–60 phút` và còn **35,9736%** ở nhóm `Trên 60 phút` (chênh lệch **8,6796 điểm phần trăm** giữa nhóm 0 phút và nhóm trễ trên 60 phút). Khi tách bỏ **41.414 bản ghi** được điền `0` phút (vốn có tỷ lệ hài lòng trung bình **43,6012%**), tỷ lệ hài lòng của nhóm `0 phút` quan sát thực tế (**n = 44.020**) là **45,6429%**, tương ứng mức giảm **9,6693 điểm phần trăm** khi chuyến bay khởi hành trễ trên 60 phút.
+  2. **Đối với độ trễ đến (`Arrival Delay`):** Trên `PJ21.csv`, tỷ lệ hài lòng ở nhóm `0 phút` đạt **46,9813%**, giảm rõ rệt ngay khi trễ nhẹ `1–15 phút` (**40,9973%**) và xuống mức **35,8252%** (`16–60 phút`) cũng như **35,8280%** (`Trên 60 phút`), tức giảm **11,1533 điểm phần trăm**. Khi chỉ tính trên các bản ghi có `Arrival Delay` quan sát hợp lệ (loại bỏ **8.038 bản ghi** điền `0` phút có tỷ lệ hài lòng **44,1279%**), tỷ lệ hài lòng của nhóm `0 phút` quan sát được (**n = 62.605**) là **47,3477%**, cao hơn nhóm trễ trên 60 phút là **11,5197 điểm phần trăm**.
+  3. So sánh hai chiều độ trễ cho thấy sự hài lòng của hành khách giảm nhanh và biên độ giảm lớn hơn theo độ trễ đến (11,5197 điểm phần trăm trên tập quan sát) so với độ trễ khởi hành (9,6693 điểm phần trăm trên tập quan sát), đồng thời việc điền trung vị `0` phút cho 34,77% bản ghi `Departure Delay` đã làm phẳng nhẹ tỷ lệ hài lòng của nhóm `0 phút` khởi hành (từ 45,6429% xuống 44,6532%).
+
+### 3.5.3. Các điểm chạm dịch vụ có liên hệ nổi bật (RQ3)
+
+Để trả lời **RQ3**, biến mục tiêu `Satisfaction` được mã hóa nhị phân (`1 = Satisfied`, `0 = Neutral or Dissatisfied`) và tính hệ số tương quan hạng Spearman ($\rho$) với 14 tiêu chí dịch vụ. Nhằm đánh giá cụ thể ảnh hưởng của (i) các điểm `0` chưa rõ nghĩa nghiệp vụ và (ii) việc điền trung vị (`3` hoặc `4`, chiếm từ **7,00%** ở `Leg Room Service` đến **32,28%** ở `Cleanliness`) vào các ô bị thiếu/ngoài miền, Bảng 3.9 báo cáo đồng thời hệ số Spearman và thứ hạng (`#1` đến `#14`) theo cả ba cách tính: giữ mã `0` trên `PJ21.csv`, loại riêng mã `0` trên `PJ21.csv`, và chỉ tính trên các ô quan sát hợp lệ trước khi điền trung vị.
+
+**Bảng 3.9. Hệ số tương quan hạng Spearman và thứ hạng của 14 tiêu chí dịch vụ với `Satisfaction`**
+
+| Tiêu chí dịch vụ | ρ giữ mã 0 (Hạng) | ρ bỏ mã 0 (Hạng) | ρ chỉ ô quan sát (Hạng) | Số ô ≠ 0 | Số ô quan sát |
+|---|---|---|---|---|---|
+| Online Boarding | 0,4636 (#1) | 0,4900 (#1) | 0,5513 (#1) | 117.003 | 87.134 |
+| In-flight Entertainment | 0,3770 (#2) | 0,3769 (#2) | 0,4002 (#2) | 119.077 | 107.409 |
+| Seat Comfort | 0,3364 (#3) | 0,3364 (#4) | 0,3621 (#3) | 119.092 | 101.973 |
+| On-board Service | 0,3147 (#4) | 0,3147 (#5) | 0,3299 (#4) | 119.087 | 109.592 |
+| Leg Room Service | 0,3046 (#5) | 0,3059 (#6) | 0,3163 (#5) | 118.568 | 110.754 |
+| In-flight Wifi Service | 0,2689 (#6) | 0,3383 (#3) | 0,2858 (#7) | 116.157 | 95.774 |
+| In-flight Service | 0,2558 (#7) | 0,2558 (#7) | 0,2667 (#9) | 119.087 | 108.049 |
+| Cleanliness | 0,2536 (#8) | 0,2536 (#8) | 0,3071 (#6) | 119.087 | 80.651 |
+| Baggage Handling | 0,2426 (#9) | 0,2426 (#9) | 0,2706 (#8) | 119.092 | 92.724 |
+| Check-in Service | 0,2181 (#10) | 0,2181 (#10) | 0,2354 (#10) | 119.092 | 105.144 |
+| Food and Drink | 0,1751 (#11) | 0,1753 (#12) | 0,2077 (#11) | 119.004 | 87.190 |
+| Ease of Online Booking | 0,1533 (#12) | 0,1940 (#11) | 0,1696 (#12) | 115.364 | 83.669 |
+| Gate Location | -0,0096 (#13) | -0,0096 (#13) | -0,0057 (#13) | 119.091 | 92.421 |
+| Departure and Arrival Time Convenience | -0,0503 (#14) | -0,0473 (#14) | -0,0520 (#14) | 113.602 | 106.710 |
+
+*Nguồn: Tính toán từ `Data/processed/PJ21.csv` và đối chiếu ô quan sát từ `Data/raw/Du lieu khong sach.csv` (`outputs/chuong3/do_nhay_diem_0.csv`).*
+
+![Ma trận tương quan Spearman giữa 14 điểm dịch vụ và nhãn hài lòng trên PJ21.csv.](../figures/chuong3/04_heatmap.png){width=92%}
+
+*Hình 3.5. Ma trận tương quan Spearman giữa 14 tiêu chí dịch vụ và `Satisfaction (0/1)` trên `PJ21.csv` (n = 119.092). Nguồn: Tính toán của nhóm.*
+
+- **Phát hiện 5 — Các điểm chạm dịch vụ có liên hệ nổi bật và sự dịch chuyển thứ hạng giữa ba cách tính (RQ3):**
+  1. **Khi giữ mã `0` trên toàn bộ `PJ21.csv` (n = 119.092):** Năm tiêu chí dẫn đầu lần lượt là **`Online Boarding`** ($\rho = 0,4636$, `#1`), **`In-flight Entertainment`** ($\rho = 0,3770$, `#2`), **`Seat Comfort`** ($\rho = 0,3364$, `#3`), **`On-board Service`** ($\rho = 0,3147$, `#4`) và **`Leg Room Service`** ($\rho = 0,3046$, `#5`); đứng thứ 6 là `In-flight Wifi Service` ($\rho = 0,2689$, `#6`).
+  2. **Khi loại bỏ điểm `0` (phân tích độ nhạy mã `0`):** Thứ hạng trong nhóm dẫn đầu có sự thay đổi đáng chú ý. Cụ thể, **`In-flight Wifi Service`** tăng mạnh hệ số Spearman từ $0,2689$ (`#6`) lên **$\rho = 0,3383$ và vươn lên đứng thứ 3 (`#3`)** chỉ sau `Online Boarding` ($\rho = 0,4900$, `#1`) và `In-flight Entertainment` ($\rho = 0,3769$, `#2`). Sự bứt phá này đẩy `Seat Comfort` ($\rho = 0,3364$) xuống `#4`, `On-board Service` ($\rho = 0,3147$) xuống `#5` và đưa **`Leg Room Service` ($\rho = 0,3059$) ra khỏi top 5 xuống vị trí thứ 6 (`#6`)**. Ở nhóm cuối bảng, `Ease of Online Booking` cũng tăng từ $0,1533$ (`#12`) lên $0,1940$ (`#11`), đổi vị trí với `Food and Drink` ($0,1753$, xuống `#12`).
+  3. **Khi chỉ tính trên các ô quan sát hợp lệ trước điền trung vị:** Năm vị trí đầu bảng là `Online Boarding` ($\rho = 0,5513$, `#1`), `In-flight Entertainment` ($\rho = 0,4002$, `#2`), `Seat Comfort` ($\rho = 0,3621$, `#3`), `On-board Service` ($\rho = 0,3299$, `#4`) và `Leg Room Service` ($\rho = 0,3163$, `#5`). Tuy nhiên, ở khu vực giữa bảng, thứ hạng có sự hoán đổi so với cột giữ mã `0` trên `PJ21.csv`: biến `Cleanliness` đạt $\rho = 0,3071$ (đứng `#6` trên 80.651 ô quan sát), nhưng do có tỷ lệ điền trung vị cao nhất nhóm dịch vụ (38.441 ô = 32,28%), hệ số tương quan của `Cleanliness` trên `PJ21.csv` giảm xuống $0,2536$ (hạng `#8`), nhường vị trí `#6` và `#7` trên `PJ21.csv` cho `In-flight Wifi Service` ($0,2689$) và `In-flight Service` ($0,2558$). Tương tự, `Baggage Handling` từ `#8` ($\rho = 0,2706$ trên ô quan sát) xuống `#9` ($\rho = 0,2426$) trên `PJ21.csv`.
+  4. Đối với hai tiêu chí cuối bảng là `Gate Location` và `Departure and Arrival Time Convenience`, hệ số tương quan đều rất gần 0 hoặc âm nhẹ ở cả ba cách tính (với `Gate Location`: $\rho = -0,0096$ trên `PJ21.csv` so với $-0,0057$ trên ô quan sát; với `Departure and Arrival Time Convenience`: $\rho = -0,0503$ trên `PJ21.csv` so với $-0,0520$ trên ô quan sát). Như vậy, tác động của việc điền trung vị và xử lý mã `0` phụ thuộc cụ thể vào tỷ lệ ô điền khuyết cũng như phân bố điểm `0` của từng biến, không làm thay đổi đồng nhất mọi tiêu chí.
+
+## 3.6. Kiểm định sơ bộ và giới hạn suy luận thống kê {#sec-3-6}
+
+### 3.6.1. Kiểm định liên hệ giữa hạng vé và sự hài lòng
+
+- **Giả thuyết kiểm định:** $H_0$: Hạng vé (`Class`) và mức độ hài lòng (`Satisfaction`) độc lập thống kê; $H_1$: Có mối liên hệ thống kê giữa hạng vé và mức độ hài lòng.
+- **Thiết kế mẫu kiểm định:** Để tránh sai lệch do **9.113 bản ghi** được điền Mode `'Business'`, phép kiểm định Chi-square ($\chi^2$) chính thức chỉ thực hiện trên **n = 109.979 bản ghi** có cả `Class` và `Satisfaction` quan sát hợp lệ từ dữ liệu bẩn; đồng thời báo cáo kết quả đối chiếu trên toàn bộ **n = 119.092 bản ghi** của `PJ21.csv`.
+- **Kết quả thực nghiệm:** Trên tập quan sát hợp lệ (**n = 109.979**), thống kê $\chi^2 = \mathbf{28054,1333}$, bậc tự do $\text{df} = \mathbf{2}$, giá trị $p < 10^{-300}$ (nhỏ hơn rất nhiều so với mức ý nghĩa $\alpha = 0,05$), tần số kỳ vọng nhỏ nhất là **3446,1117** ($\ge 5$, thỏa mãn điều kiện áp dụng kiểm định Chi-square) và hệ số độ mạnh liên hệ Cramér’s $V = \mathbf{0,5051}$. Nếu tính trên toàn bộ `PJ21.csv` (**n = 119.092**), kết quả là $\chi^2 = 25985,3912$, $\text{df} = 2$, $p < 10^{-300}$ và Cramér’s $V = 0,4671$. Như vậy, ở mức ý nghĩa 5%, dữ liệu cung cấp bằng chứng bác bỏ $H_0$ và xác nhận mối liên hệ có cường độ mạnh ($V \approx 0,5051$) giữa hạng vé và sự hài lòng trong mẫu khảo sát; việc điền Mode ở `Class` làm giảm nhẹ Cramér’s $V$ từ $0,5051$ xuống $0,4671$.
+
+### 3.6.2. So sánh phân phối độ trễ khởi hành và độ trễ đến giữa hai nhóm hài lòng
+
+- **Giả thuyết kiểm định:** Với mỗi biến độ trễ (`Departure Delay` và `Arrival Delay`), $H_0$: Phân phối độ trễ của nhóm *Satisfied* và nhóm *Neutral or Dissatisfied* giống nhau; $H_1$: Phân phối độ trễ của hai nhóm khác nhau (kiểm định hai phía). Do phân phối độ trễ lệch phải mạnh và có tỷ trọng lớn giá trị 0, kiểm định phi tham số Mann–Whitney U được sử dụng thay cho kiểm định $t$; lưu ý khi hình dạng phân phối hai nhóm khác nhau, đây là kiểm định sự dịch chuyển thứ hạng phân phối (stochastic dominance) chứ không đơn thuần là kiểm định hai trung vị (vốn cùng bằng 0 phút).
+- **Kết quả thực nghiệm đối với độ trễ khởi hành (`Departure Delay`):**
+  - Trên toàn bộ `PJ21.csv` (**n = 119.092**; nhóm *Satisfied* có trung bình **9,0029 phút**, tỷ lệ trễ $> 0$ là **26,2679%**; nhóm *Neutral or Dissatisfied* có trung bình **11,3327 phút**, tỷ lệ trễ $> 0$ là **29,7942%**): thống kê $U = \mathbf{1671189762,5}$, $p = \mathbf{1,77 \times 10^{-52}} < 0,0001$, hệ số tương quan thứ hạng nhị phân $r_{rb} = \mathbf{-0,0409}$.
+  - Trên tập chỉ gồm các bản ghi có `Departure Delay` quan sát hợp lệ (**n = 77.678**; tỷ lệ có trễ khởi hành $> 0$ ở nhóm hài lòng là **40,3497%** so với **45,6120%** ở nhóm không hài lòng): thống kê $U = \mathbf{692187731,0}$, $p = \mathbf{7,52 \times 10^{-68}} < 0,0001$, hệ số $r_{rb} = \mathbf{-0,0658}$.
+- **Kết quả thực nghiệm đối với độ trễ đến (`Arrival Delay`):**
+  - Trên toàn bộ `PJ21.csv` (**n = 119.092**; nhóm *Satisfied* có trung bình **12,8054 phút**, tỷ lệ trễ $> 0$ là **35,8543%**; nhóm *Neutral or Dissatisfied* có trung bình **17,4171 phút**, tỷ lệ trễ $> 0$ là **44,3907%**): thống kê $U = \mathbf{1570744725,5}$, $p = \mathbf{3,78 \times 10^{-236}} < 0,0001$, hệ số $r_{rb} = \mathbf{-0,0985}$.
+  - Trên tập chỉ gồm các bản ghi có `Arrival Delay` quan sát hợp lệ (**n = 111.054**; tỷ lệ có trễ đến $> 0$ ở nhóm hài lòng là **38,4931%** so với **47,5621%** ở nhóm không hài lòng): thống kê $U = \mathbf{1354446404,5}$, $p = \mathbf{8,97 \times 10^{-245}} < 0,0001$, hệ số $r_{rb} = \mathbf{-0,1058}$.
+- **Diễn giải:** Cả hai phép kiểm định độ trễ đều bác bỏ $H_0$ ở mức ý nghĩa 5% (kể cả khi hiệu chỉnh Bonferroni $\alpha/3 \approx 0,0167$ cho toàn bộ ba phép kiểm định trong mục 3.6). Dấu âm của $r_{rb}$ xác nhận nhóm hành khách hài lòng có xu hướng gặp độ trễ khởi hành và độ trễ đến thấp hơn nhóm trung lập/không hài lòng, đồng thời độ lớn hiệu ứng của độ trễ đến ($|r_{rb}| = 0,1058$ trên tập quan sát) mạnh hơn độ trễ khởi hành ($|r_{rb}| = 0,0658$ trên tập quan sát). Tuy nhiên, quy mô hiệu ứng nhìn chung ở mức nhỏ, cho thấy độ trễ chuyến bay cần được đặt trong mô hình kết hợp đa biến cùng các tiêu chí dịch vụ ở Chương 4.
+
+### 3.6.3. Kết quả chuyển tiếp sang giai đoạn mô hình hóa
+
+Từ quá trình kiểm toán dữ liệu và phân tích khám phá trên `PJ21.csv`, nghiên cứu xác lập bốn nguyên tắc kỹ thuật chuyển tiếp sang Chương 4 (Huấn luyện và đánh giá mô hình học máy):
+
+1. **Sử dụng tập bản ghi có nhãn thực (`n = 119.092`) và loại bỏ khóa định danh:** Biến `ID` chỉ dùng để đối chiếu bản ghi và phải loại khỏi ma trận đặc trưng $X$; biến mục tiêu `Satisfaction` trên `PJ21.csv` gồm 100% nhãn quan sát thật (`1 = Satisfied`, `0 = Neutral or Dissatisfied`).
+2. **Bảo toàn nhóm `'Unknown'` khi mã hóa đặc trưng phân loại:** Khi thực hiện One-Hot Encoding cho `Customer Type` và `Type of Travel`, cần giữ nguyên cột chỉ báo của nhóm `'Unknown'` (hoặc các cờ báo khuyết) thay vì gộp vào nhóm đa số, vì thực nghiệm ở mục 3.5.1 đã chứng minh nhóm `'Unknown'` có tỷ lệ hài lòng khác biệt rõ rệt so với nhóm `Business Travel` và `Returning Customer`.
+3. **Yêu cầu về đầu vào chống rò rỉ dữ liệu thực chất cho Chương 4:** Do tệp `PJ21.csv` hiện tại đã điền `Mode` (`Gender`, `Class`) và `Median` (18 biến số) trên toàn bộ 119.092 dòng trước khi chia tập và không còn ô `NaN`, **việc chỉ gắn thêm `SimpleImputer` vào `Pipeline` nhưng vẫn truyền trực tiếp `PJ21.csv` làm đầu vào sẽ không khắc phục được ảnh hưởng của điền khuyết toàn tập**. Để loại bỏ hoàn toàn rò rỉ thông tin thống kê khi huấn luyện và đánh giá mô hình ở Chương 4, quy trình chuẩn bị dữ liệu mô hình phải sử dụng bảng dữ liệu **sau bước chuẩn hóa và lọc ngoài miền `BOUNDS` nhưng trước bước điền khuyết** (hoặc khôi phục mặt nạ các ô thiếu/ngoài miền từ `Data/raw/Du lieu khong sach.csv` đối chiếu qua khóa `ID` trên 119.092 dòng), sau đó mới thực hiện `train_test_split` (80/20, `stratify=y`) và chỉ `fit` các bộ tiền xử lý (`SimpleImputer`, `OneHotEncoder`, `StandardScaler`) trên tập `Train` bên trong `Pipeline`.
+4. **Ghi nhận đúng hiện trạng các yêu cầu kỹ thuật của học phần:** Thực nghiệm ghép nối tại mục 3.2.1 hiện là các bảng dẫn xuất từ một tệp nguồn duy nhất; việc xuất tệp trung gian định dạng Parquet/Feather và thông tin chi tiết về nguồn dữ liệu (ngày tải, giấy phép, đơn vị gốc của `Flight Distance`, quy ước mã điểm `0`) vẫn đang thiếu và chưa được đánh dấu hoàn thành. Toàn bộ mã nguồn xử lý và nhật ký làm việc được quản lý thành tệp riêng, không in toàn bộ mã Python vào báo cáo.

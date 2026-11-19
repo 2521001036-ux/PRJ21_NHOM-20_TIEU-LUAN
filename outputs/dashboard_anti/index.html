@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRJ 21 — Chương 3: Dashboard Thuyết trình Kiểm toán & Khám phá Dữ liệu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="mode-slide">
+
+  <!-- ========================================================================
+       THANH ĐIỀU KHIỂN THUYẾT TRÌNH TRÊN CÙNG (STICKY PRESENTATION BAR)
+       ======================================================================== -->
+  <header class="top-deck-bar" role="banner">
+    <div class="deck-progress-track" title="Tiến độ phần thuyết trình">
+      <div class="deck-progress-fill" id="deckProgressFill"></div>
+    </div>
+    <div class="autoplay-progress-bar" id="autoplayProgressBar"></div>
+
+    <div class="deck-header-inner">
+      <div class="brand-cluster">
+        <div class="brand-emblem" aria-hidden="true">P21</div>
+        <div class="brand-titles">
+          <h1>CHƯƠNG 3: TỔ CHỨC, XỬ LÝ &amp; KHÁM PHÁ DỮ LIỆU HÀNH KHÁCH HÀNG KHÔNG</h1>
+          <div class="brand-subtitle">
+            <span class="brand-tag">CRISP-DM Giai đoạn 1 &amp; 2</span>
+            <span>Airline Passenger Satisfaction • 129.880 dòng thô → 119.092 dòng sạch (PJ21.csv)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cụm nút điều khiển thuyết trình -->
+      <div class="presentation-controls" role="toolbar" aria-label="Công cụ điều khiển thuyết trình">
+        <div class="ctrl-group">
+          <button type="button" class="ctrl-btn" id="btnPrevSlide" title="Phần trước (Phím mũi tên Trái ←)">
+            ◀ Trước
+          </button>
+          <span class="slide-counter-pill" id="slideCounterPill">Phần 1 / 6</span>
+          <button type="button" class="ctrl-btn" id="btnNextSlide" title="Phần tiếp theo (Phím mũi tên Phải →)">
+            Tiếp ▶
+          </button>
+        </div>
+
+        <div class="ctrl-group">
+          <button type="button" class="ctrl-btn" id="btnAutoplayToggle" title="Tự động chuyển phần thuyết trình (Phím Space)">
+            ▶ Tự chạy
+          </button>
+          <select id="selectAutoplaySec" class="ctrl-select" title="Thời gian mỗi phần khi tự chạy" aria-label="Thời gian tự chạy">
+            <option value="10">10 giây/phần</option>
+            <option value="18" selected>18 giây/phần</option>
+            <option value="30">30 giây/phần</option>
+            <option value="45">45 giây/phần</option>
+          </select>
+        </div>
+
+        <div class="ctrl-group">
+          <button type="button" class="ctrl-btn active" id="btnModeToggle" title="Chuyển giữa chế độ Trình chiếu từng phần (Slide) và Cuộn toàn bộ (Phím M)">
+            🖥 Chế độ: Từng phần
+          </button>
+          <button type="button" class="ctrl-btn" id="btnFontScale" title="Phóng to cỡ chữ cho màn hình chiếu hội trường lớn">
+            A+ Cỡ chữ: 100%
+          </button>
+          <button type="button" class="ctrl-btn" id="btnThemeToggle" title="Đổi giao diện Sáng / Tối cho máy chiếu (Phím T)">
+            🌙 Nền tối
+          </button>
+          <button type="button" class="ctrl-btn" id="btnFullscreen" title="Bật/Tắt Toàn màn hình (Phím F)">
+            ⛶ Toàn màn hình
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh điều hướng 6 phần chính -->
+    <nav class="section-stepper-nav" aria-label="Điều hướng 6 phần Chương 3">
+      <div class="stepper-inner">
+        <button type="button" class="step-tab active" data-step="1">
+          <span class="step-num">1</span>
+          <span class="step-label-wrap">
+            <span class="step-title">Tổng quan &amp; Nhãn</span>
+            <span class="step-sub">129.880 → 119.092 dòng • 920.170 ô lỗi</span>
+          </span>
+        </button>
+        <button type="button" class="step-tab" data-step="2">
+          <span class="step-num">2</span>
+          <span class="step-label-wrap">
+            <span class="step-title">Quy trình Làm sạch</span>
+            <span class="step-sub">6 bước chuẩn hóa, BOUNDS &amp; điền khuyết</span>
+          </span>
+        </button>
+        <button type="button" class="step-tab" data-step="3">
+          <span class="step-num">3</span>
+          <span class="step-label-wrap">
+            <span class="step-title">Kiểm toán 24 Biến</span>
+            <span class="step-sub">Bảng trước/sau • Lọc, tìm kiếm &amp; tải CSV</span>
+          </span>
+        </button>
+        <button type="button" class="step-tab" data-step="4">
+          <span class="step-num">4</span>
+          <span class="step-label-wrap">
+            <span class="step-title">Ví dụ Thực tế (ID)</span>
+            <span class="step-sub">Đối chiếu Trước/Sau • Chuẩn hóa vs Điền</span>
+          </span>
+        </button>
+        <button type="button" class="step-tab" data-step="5">
+          <span class="step-num">5</span>
+          <span class="step-label-wrap">
+            <span class="step-title">Khám phá Dữ liệu (EDA)</span>
+            <span class="step-sub">RQ1 Phân khúc • RQ2 Độ trễ • RQ3 Spearman</span>
+          </span>
+        </button>
+        <button type="button" class="step-tab" data-step="6">
+          <span class="step-num">6</span>
+          <span class="step-label-wrap">
+            <span class="step-title">Nguồn &amp; Kiểm chứng</span>
+            <span class="step-sub">SHA-256 • Đối chiếu tổng &amp; Giới hạn</span>
+          </span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========================================================================
+       KHUNG NỘI DUNG CHÍNH (6 PHẦN THUYẾT TRÌNH)
+       ======================================================================== -->
+  <main class="dashboard-main">
+
+    <!-- ======================================================================
+         PHẦN 1: TỔNG QUAN DỮ LIỆU, PHÂN RÃ LỖI VÀ CƠ CẤU NHÃN
+         ====================================================================== -->
+    <section class="deck-section active-slide" id="sec-1" data-section="1">
+      <div class="section-banner">
+        <div class="section-banner-left">
+          <div class="section-kicker">Phần 01 / 06 • Mục 3.1, 3.2, 3.3.1 &amp; 3.4.2</div>
+          <h2 class="section-heading">Tổng quan Dữ liệu Trước/Sau Làm sạch, Cơ cấu Lỗi &amp; Nhãn Mục tiêu</h2>
+          <p class="section-lead">
+            Toàn bộ chỉ số được tính trực tiếp từ tệp chưa làm sạch <code>Data/raw/Du lieu khong sach.csv</code> (129.880 dòng × 24 cột = 3.117.120 ô) và tệp đã làm sạch <code>Data/processed/PJ21.csv</code> (119.092 dòng × 24 cột = 2.858.208 ô) đối chiếu 1–1 qua khóa nguyên dương duy nhất <code>ID</code>.
+          </p>
+        </div>
+        <div class="section-banner-right">
+          <span class="badge badge-green">✓ Đạt chuẩn &gt; 100.000 quan sát</span>
+          <span class="badge badge-blue">Khóa ID: 1–129.880 (0 dòng trùng)</span>
+          <span class="badge badge-teal">Kiểm toán sau xử lý: 0 lỗi</span>
+        </div>
+      </div>
+
+      <!-- 4 Thẻ KPI cốt lõi -->
+      <div class="grid-4">
+        <div class="kpi-card" style="--kpi-accent: var(--brand-blue);">
+          <div class="kpi-top">
+            <span class="kpi-label">Quy mô Bản ghi (Dòng × Cột)</span>
+            <span class="badge badge-blue">Giữ lại 91,6939%</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">119.092</span>
+            <span class="kpi-delta badge-slate">từ 129.880 dòng thô</span>
+          </div>
+          <div class="kpi-desc">
+            Giữ nguyên <strong>24 cột</strong>. Tổng số ô giảm từ <strong>3.117.120 ô</strong> xuống <strong>2.858.208 ô</strong> (loại 258.912 ô thuộc 10.788 dòng thiếu nhãn).
+          </div>
+        </div>
+
+        <div class="kpi-card" style="--kpi-accent: var(--brand-crimson);">
+          <div class="kpi-top">
+            <span class="kpi-label">Dòng bị loại do thiếu Nhãn</span>
+            <span class="badge badge-red">8,3061% tổng dòng</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">10.788</span>
+            <span class="kpi-delta badge-red">thiếu Satisfaction</span>
+          </div>
+          <div class="kpi-desc">
+            Gồm <strong>6.828 ô trống CSV</strong> và <strong>3.960 mã thiếu ẩn</strong> (<code>?</code>, <code>-</code>, <code>null</code>, <code>None</code>, <code>N/A</code>, <code>unknown</code>, <code>chưa rõ</code>). Loại bỏ để bảo toàn 100% nhãn quan sát.
+          </div>
+        </div>
+
+        <div class="kpi-card" style="--kpi-accent: var(--brand-amber);">
+          <div class="kpi-top">
+            <span class="kpi-label">Ô lỗi duy nhất vs Lượt lỗi</span>
+            <span class="badge badge-amber">29,5199% tổng số ô</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">920.170</span>
+            <span class="kpi-delta badge-amber">957.918 lượt lỗi</span>
+          </div>
+          <div class="kpi-desc">
+            Có <strong>37.748 ô trùng 2 lỗi</strong> (vừa sai định dạng vừa ngoài miền). Trên <code>PJ21.csv</code>, kiểm toán thực tế từng ô sau xử lý ghi nhận <strong>0 lỗi</strong>.
+          </div>
+        </div>
+
+        <div class="kpi-card" style="--kpi-accent: var(--brand-teal);">
+          <div class="kpi-top">
+            <span class="kpi-label">Cơ cấu Nhãn trên PJ21.csv</span>
+            <span class="badge badge-teal">100% Nhãn quan sát</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">43,45%</span>
+            <span class="kpi-delta badge-teal">51.740 Satisfied</span>
+          </div>
+          <div class="kpi-desc">
+            Lớp <code>Neutral or Dissatisfied</code> chiếm <strong>56,55%</strong> (<strong>67.352</strong> bản ghi). Hai lớp tương đối cân bằng, không điền khuyết biến mục tiêu.
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng 2: Sơ đồ phân rã 3.117.120 ô và Biểu đồ Cơ cấu nhãn -->
+      <div class="grid-2-asym">
+        <!-- Thẻ Trái: Phân rã 957.918 lượt lỗi -> 920.170 ô lỗi duy nhất -> Chuẩn hóa vs Điền khuyết -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🔍 Sơ đồ Phân rã Lỗi Kiểm toán (Từ Lượt lỗi đến Ô được sửa trên PJ21.csv)</h3>
+              <p class="card-subtitle">Đối chiếu chính xác giữa 3 nhóm lỗi, phần giao 2 lỗi và số phận từng ô qua khóa ID</p>
+            </div>
+            <span class="badge badge-purple">Hàm kiem_toan_tung_o()</span>
+          </div>
+
+          <div class="flow-diagram">
+            <!-- Tầng 1: 3 nhóm lượt lỗi -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700; margin-bottom:0.35rem;">
+                <span>1. Tổng lượt lỗi phát hiện trên 3.117.120 ô thô: <strong>957.918 lượt</strong></span>
+                <span style="color:var(--brand-purple);">Trừ 37.748 ô trùng (Sai ĐD ∩ Ngoài miền) = <strong>920.170 ô lỗi duy nhất</strong></span>
+              </div>
+              <div class="stacked-bar-wrap">
+                <div class="stacked-bar-track">
+                  <div class="stacked-seg" style="width: 42.865%; background: #dc2626;" title="Thiếu: 410.614 ô (269.947 ô rỗng CSV + 140.667 mã thiếu ẩn)">
+                    Thiếu: 410.614 (42,87%)
+                  </div>
+                  <div class="stacked-seg" style="width: 43.764%; background: #d97706;" title="Sai định dạng: 419.228 lượt (khoảng trắng, hoa/thường, cắt cụt, đơn vị USD/VND/đ/kg/%, số .0)">
+                    Sai ĐD: 419.228 (43,76%)
+                  </div>
+                  <div class="stacked-seg" style="width: 13.370%; background: #7c3aed;" title="Ngoài miền quy ước BOUNDS: 128.076 lượt (-1, số âm, 9999, trễ > 2000, điểm ngoài 0..5)">
+                    128.076 (13,37%)
+                  </div>
+                </div>
+                <div class="stacked-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span><strong>Thiếu (410.614 ô):</strong> 269.947 ô trống + 140.667 mã ẩn</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#d97706;"></span><strong>Sai định dạng (419.228 lượt):</strong> khoảng trắng, cắt cụt, đơn vị giả lập, đuôi .0</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#7c3aed;"></span><strong>Ngoài miền (128.076 lượt):</strong> mã -1, 9999, ngoài ngưỡng BOUNDS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tầng 2: Phân rã 920.170 ô lỗi duy nhất -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700; margin-bottom:0.35rem;">
+                <span>2. Phân rã <strong>920.170 ô lỗi duy nhất</strong> (29,52% tổng số ô thô) theo khóa ID:</span>
+                <span>83.037 (thuộc dòng loại) + 837.133 (trên 119.092 dòng giữ lại)</span>
+              </div>
+              <div class="stacked-bar-wrap">
+                <div class="stacked-bar-track">
+                  <div class="stacked-seg" style="width: 9.024%; background: #64748b;" title="83.037 ô lỗi biến mất cùng 10.788 dòng bị loại do thiếu nhãn Satisfaction">
+                    83.037 (9,02%)
+                  </div>
+                  <div class="stacked-seg" style="width: 38.378%; background: #0284c7;" title="353.139 ô được chuẩn hóa định dạng/văn bản/số về đúng giá trị thực quan sát được">
+                    Chuẩn hóa giữ giá trị gốc: 353.139 (38,38%)
+                  </div>
+                  <div class="stacked-seg" style="width: 52.598%; background: #0d9488;" title="483.994 ô thiếu hoặc ngoài miền trên dòng giữ lại được điền Mode / Trung vị hoặc gán Unknown">
+                    Điền khuyết / Gán Unknown: 483.994 (52,60%)
+                  </div>
+                </div>
+                <div class="stacked-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:#64748b;"></span><strong>Thuộc 10.788 dòng bị loại:</strong> 83.037 ô lỗi</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#0284c7;"></span><strong>Chuẩn hóa (bảo toàn giá trị thực):</strong> 353.139 ô (trên <code>PJ21.csv</code>)</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#0d9488;"></span><strong>Điền khuyết / Unknown:</strong> 483.994 ô (16,93% số ô <code>PJ21.csv</code>)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tầng 3: 3 khối đối chiếu -->
+            <div class="flow-tier">
+              <div class="flow-node">
+                <div class="flow-node-title">Dữ liệu thô (129.880 × 24)</div>
+                <div class="flow-node-num">3.117.120 ô</div>
+                <div class="flow-node-sub">2.196.950 ô hợp lệ (70,48%) + 920.170 ô lỗi (29,52%)</div>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-node">
+                <div class="flow-node-title">Sàng lọc &amp; Xử lý theo ID</div>
+                <div class="flow-node-num">837.133 ô sửa</div>
+                <div class="flow-node-sub">Loại 10.788 dòng thiếu nhãn (258.912 ô, chứa 83.037 ô lỗi)</div>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-node" style="border-color: var(--brand-emerald);">
+                <div class="flow-node-title">PJ21.csv (119.092 × 24)</div>
+                <div class="flow-node-num" style="color: var(--brand-emerald);">2.858.208 ô (0 lỗi)</div>
+                <div class="flow-node-sub">2.374.214 ô quan sát thực tế (83,07%) + 483.994 ô điền (16,93%)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout callout-teal">
+            <strong>Điểm nhấn phương pháp luận (Mục 3.3.1 &amp; 3.3.4):</strong> Kết quả <strong>“0 lỗi sau xử lý”</strong> được xác nhận bằng cách chạy hàm kiểm toán thực tế trên từng ô của <code>PJ21.csv</code> (không gán cứng bằng 0). Báo cáo luôn tách bạch <strong>2.374.214 ô quan sát thực tế</strong> với <strong>483.994 ô điền khuyết/Unknown</strong> khi phân tích EDA ở Phần 5.
+          </div>
+        </div>
+
+        <!-- Thẻ Phải: Biểu đồ Cơ cấu nhãn Satisfaction (Hình 3.1) -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🎯 Sàng lọc &amp; Cơ cấu Nhãn Mục tiêu <code>Satisfaction</code></h3>
+              <p class="card-subtitle">Tái hiện tương tác Hình 3.1 từ <code>nguon_goc_nhan.csv</code> &amp; <code>PJ21.csv</code></p>
+            </div>
+            <span class="badge badge-blue">Mục 3.4.2</span>
+          </div>
+
+          <div class="svg-chart-wrap" id="chartLabelStructure"></div>
+
+          <div class="callout">
+            <strong>Tại sao loại 10.788 dòng thay vì điền Mode cho <code>Satisfaction</code>?</strong><br/>
+            Nếu điền Mode (<code>Neutral or Dissatisfied</code>) cho 10.788 dòng thiếu nhãn (8,31%), tập dữ liệu sẽ bị bơm thêm 10.788 nhãn giả tạo, làm lệch tỷ lệ lớp và gây nhiễu trực tiếp cho hàm mục tiêu ở Chương 4. Việc loại bỏ giúp <strong>100% trong 119.092 dòng</strong> của <code>PJ21.csv</code> mang nhãn khảo sát thực tế.
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng 3: Tối ưu bộ nhớ RAM & Thực nghiệm đọc-ghép đa định dạng (Mục 3.2) -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">💾 Tối ưu Bộ nhớ DataFrame trong RAM (Mục 3.2)</h3>
+              <p class="card-subtitle">Đo thực tế bằng <code>memory_usage(deep=True)</code> trong <code>src/phan_tich_chuong3.py</code></p>
+            </div>
+            <span class="badge badge-green">Tiết kiệm 93,38% RAM</span>
+          </div>
+          <div class="svg-chart-wrap" id="chartMemoryUsage"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🗂 Thực nghiệm Tổ chức Lưu trữ &amp; Ghép Đa định dạng (Mục 3.2)</h3>
+              <p class="card-subtitle">Kiểm chứng đọc theo lô (chunksize), hợp nhất và ghép <code>one_to_one</code> qua khóa <code>ID</code></p>
+            </div>
+            <span class="badge badge-slate">assert_frame_equal: Khớp 100%</span>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tệp dẫn xuất (<code>outputs/chuong3/multi_file/</code>)</th>
+                  <th style="text-align:left;">Định dạng &amp; Kỹ thuật nạp</th>
+                  <th style="text-align:left;">Các trường lưu trữ</th>
+                  <th>Số dòng</th>
+                  <th>Số cột</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>hanh_khach.csv</code></strong></td>
+                  <td style="text-align:left;">CSV (<code>chunksize=30.000</code> + <code>pd.concat</code>)</td>
+                  <td style="text-align:left;"><code>ID</code>, <code>Gender</code>, <code>Age</code>, <code>Customer Type</code></td>
+                  <td>119.092</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td><strong><code>hanh_trinh.json</code></strong></td>
+                  <td style="text-align:left;">JSON (<code>orient="records"</code>)</td>
+                  <td style="text-align:left;"><code>ID</code>, <code>Type of Travel</code>, <code>Class</code>, <code>Flight Distance</code>, <code>Departure Delay</code>, <code>Arrival Delay</code></td>
+                  <td>119.092</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td><strong><code>danh_gia.sqlite</code></strong></td>
+                  <td style="text-align:left;">SQLite (bảng <code>danh_gia</code>, truy vấn SQL)</td>
+                  <td style="text-align:left;"><code>ID</code>, 14 điểm dịch vụ, <code>Satisfaction</code></td>
+                  <td>119.092</td>
+                  <td>16</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Bảng hợp nhất (<code>master</code>)</strong></td>
+                  <td style="text-align:left;"><code>pd.merge(..., on="ID", validate="one_to_one")</code></td>
+                  <td style="text-align:left;">Bảo toàn toàn bộ 24 biến, khớp tuyệt đối từng ô với <code>PJ21.csv</code></td>
+                  <td>119.092</td>
+                  <td>24</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="callout" style="margin-top:0.65rem;">
+            <strong>Ghi chú minh bạch:</strong> Ba tệp trên được tách dẫn xuất từ một nguồn đã làm sạch (<code>PJ21.csv</code>) để kiểm chứng kỹ thuật đọc – ghép đa định dạng và kiểm soát khóa chính, không phải tích hợp các nguồn thu thập độc lập.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHẦN 2: QUY TRÌNH LÀM SẠCH DỮ LIỆU (6 BƯỚC + TRÌNH DIỄN KẾT QUẢ ĐÃ TÍNH)
+         ====================================================================== -->
+    <section class="deck-section" id="sec-2" data-section="2">
+      <div class="section-banner">
+        <div class="section-banner-left">
+          <div class="section-kicker">Phần 02 / 06 • Mục 3.3.2, 3.3.3 &amp; 3.3.4</div>
+          <h2 class="section-heading">Quy trình Làm sạch Dữ liệu Từng bước, Quy tắc <code>BOUNDS</code> &amp; Chiến lược Điền khuyết</h2>
+          <p class="section-lead">
+            Đồng bộ 100% giữa <code>Notebooks/02_kiem_toan_du_lieu.ipynb/lam_sach_du_lieu.py</code>, <code>clean_data.ipynb</code> và <code>src/phan_tich_chuong3.py</code>. Bấm vào từng bước để bung/thu gọn quy tắc kỹ thuật, mã nguồn và lý do phương pháp luận.
+          </p>
+        </div>
+        <div class="section-banner-right">
+          <button type="button" class="btn-action" id="btnExpandAllSteps">➕ Bung tất cả các bước</button>
+          <button type="button" class="btn-action" id="btnCollapseAllSteps">➖ Thu gọn tất cả</button>
+        </div>
+      </div>
+
+      <!-- Khung Trình diễn Quy trình làm sạch (Ghi rõ: Trình diễn kết quả đã tính) -->
+      <div class="pipeline-sim-banner">
+        <div class="sim-top-row">
+          <div>
+            <div class="sim-disclaimer-pill">
+              ⚠ CHẾ ĐỘ TRÌNH DIỄN KẾT QUẢ ĐÃ TÍNH SẴN (PRE-COMPUTED PYTHON AUDIT REPLAY)
+            </div>
+            <h3 style="font-size:1.1rem; margin-top:0.35rem;">
+              Mô phỏng trực quan sự biến đổi số dòng và số ô lỗi qua 6 bước của <code>lam_sach_du_lieu.py</code>
+            </h3>
+          </div>
+          <div class="sim-btn-row">
+            <button type="button" class="btn-primary-sim" id="btnRunPipelineSim">
+              ▶ Chạy trình diễn quy trình (Kết quả đã tính)
+            </button>
+            <button type="button" class="btn-secondary-sim" id="btnStepPipelineSim">
+              ⏭ Bước tiếp theo
+            </button>
+            <button type="button" class="btn-secondary-sim" id="btnResetPipelineSim">
+              ↺ Đặt lại (Trạng thái thô)
+            </button>
+          </div>
+        </div>
+
+        <div class="sim-live-metrics">
+          <div class="sim-metric-box">
+            <span class="sim-metric-label">Bước đang trình diễn</span>
+            <span class="sim-metric-val" id="simStepName">0 / 6 (Chưa chạy)</span>
+          </div>
+          <div class="sim-metric-box">
+            <span class="sim-metric-label">Số bản ghi (Dòng)</span>
+            <span class="sim-metric-val" id="simRowCount">129.880</span>
+          </div>
+          <div class="sim-metric-box">
+            <span class="sim-metric-label">Lượt lỗi Sai định dạng</span>
+            <span class="sim-metric-val" id="simFmtCount">419.228</span>
+          </div>
+          <div class="sim-metric-box">
+            <span class="sim-metric-label">Lượt lỗi Ngoài miền</span>
+            <span class="sim-metric-val" id="simOutCount">128.076</span>
+          </div>
+          <div class="sim-metric-box">
+            <span class="sim-metric-label">Ô thiếu / Chờ điền khuyết</span>
+            <span class="sim-metric-val" id="simMissCount">410.614</span>
+          </div>
+        </div>
+
+        <div class="sim-status-log" id="simStatusLog">
+          [Sẵn sàng] Nhấn "▶ Chạy trình diễn quy trình (Kết quả đã tính)" để xem diễn biến số liệu kiểm toán thực tế qua từng bước xử lý. Không thay đổi hay ghi đè tệp dữ liệu gốc.
+        </div>
+      </div>
+
+      <!-- 6 Bước Quy trình Làm sạch (Accordion Bung/Thu gọn) -->
+      <div class="pipeline-accordion" id="pipelineAccordion">
+        <!-- Bước 1 -->
+        <div class="pipe-step-card open" data-pipe-step="1">
+          <button type="button" class="pipe-step-header">
+            <div class="pipe-step-left">
+              <span class="pipe-step-badge">B1</span>
+              <div>
+                <div class="pipe-step-title">Bước 1: Nạp dữ liệu thô, Kiểm soát khóa <code>ID</code> &amp; Nhận diện 9 mã thiếu ẩn (<code>MISSING_TOKENS</code>)</div>
+                <div class="pipe-step-summary">Quét 129.880 dòng × 24 cột (3.117.120 ô) • Phát hiện 269.947 ô trống CSV + 140.667 ô mã thiếu ẩn = 410.614 ô thiếu</div>
+              </div>
+            </div>
+            <div class="pipe-step-right">
+              <span class="badge badge-red">410.614 ô thiếu</span>
+              <span class="pipe-chevron">▼</span>
+            </div>
+          </button>
+          <div class="pipe-step-body">
+            <div class="pipe-detail-grid">
+              <div class="pipe-box">
+                <h4>Quy tắc kỹ thuật áp dụng</h4>
+                <ul>
+                  <li>Đọc <code>Data/raw/Du lieu khong sach.csv</code> với <code>dtype={"ID": str}</code>, xóa khoảng trắng tên cột và kiểm tra tính duy nhất của khóa <code>ID</code> (1–129.880, <strong>0 dòng trùng</strong>).</li>
+                  <li>Nếu chỉ dùng <code>pd.read_csv</code> mặc định, Pandas chỉ nhận diện được <strong>269.947 ô trống/NA chuẩn</strong> và bỏ sót <strong>140.667 ô chứa ký hiệu báo thiếu ẩn</strong>.</li>
+                  <li>Tập hợp <code>MISSING_TOKENS</code> chuẩn hóa về chữ thường sau khi <code>strip()</code>: <code>{"nan", "none", "null", "n/a", "?", "-", "unknown", "chưa rõ", ""}</code>.</li>
+                </ul>
+              </div>
+              <div class="pipe-box">
+                <h4>Lý do phương pháp luận &amp; Mã nguồn</h4>
+                <ul>
+                  <li>Các ký hiệu như <code>"?"</code>, <code>"-"</code>, <code>"chưa rõ"</code>, <code>"unknown"</code> khiến cột số bị ép sang kiểu chuỗi (<code>object</code>) và làm sai lệch bảng tần suất biến phân loại.</li>
+                </ul>
+                <pre class="code-snippet">MISSING_TOKENS = {"nan", "none", "null", "n/a", "?", "-", "unknown", "chưa rõ", ""}
+def is_missing_str(val) -> bool:
+    if pd.isna(val): return True
+    return str(val).strip().lower() in MISSING_TOKENS</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 2 -->
+        <div class="pipe-step-card open" data-pipe-step="2">
+          <button type="button" class="pipe-step-header">
+            <div class="pipe-step-left">
+              <span class="pipe-step-badge">B2</span>
+              <div>
+                <div class="pipe-step-title">Bước 2: Chuẩn hóa 5 biến phân loại &amp; Khôi phục chuỗi bị cắt cụt (<code>ALL_MAPS</code>)</div>
+                <div class="pipe-step-summary">Xử lý 187.341 lượt sai định dạng ở <code>Gender</code>, <code>Customer Type</code>, <code>Type of Travel</code>, <code>Class</code>, <code>Satisfaction</code></div>
+              </div>
+            </div>
+            <div class="pipe-step-right">
+              <span class="badge badge-blue">187.341 ô phân loại được chuẩn hóa</span>
+              <span class="pipe-chevron">▼</span>
+            </div>
+          </button>
+          <div class="pipe-step-body">
+            <div class="pipe-detail-grid">
+              <div class="pipe-box">
+                <h4>Quy tắc ánh xạ &amp; Khôi phục tiền tố cắt cụt</h4>
+                <ul>
+                  <li>Cắt khoảng trắng đầu/cuối, đưa về chữ thường và đối chiếu qua bảng ánh xạ <code>ALL_MAPS</code> (hỗ trợ khớp tiền tố <code>startswith</code> cho chuỗi bị cắt cụt):</li>
+                  <li><code>Gender</code> (21.763 lỗi ĐD): <code>'  fema'</code>, <code>'FEMALE'</code> → <code>Female</code>; <code>'Male  '</code>, <code>'MALE'</code> → <code>Male</code>.</li>
+                  <li><code>Customer Type</code> (56.288 lỗi ĐD): <code>'  Returnin'</code>, <code>'Returning '</code>, <code>'returning'</code> → <code>Returning Customer</code>; <code>'First-time'</code>, <code>'FIRST-TIME'</code> → <code>First-time Customer</code>.</li>
+                  <li><code>Type of Travel</code> (44.719 lỗi ĐD): <code>'  Busine'</code>, <code>'BUSINESS'</code> → <code>Business Travel</code>; <code>'  Person'</code>, <code>'personal'</code> → <code>Personal Travel</code>.</li>
+                  <li><code>Class</code> (26.256 lỗi ĐD): <code>'  economy pl'</code>, <code>'economy+'</code> → <code>Economy Plus</code>; <code>'Business   '</code> → <code>Business</code>.</li>
+                  <li><code>Satisfaction</code> (38.315 lỗi ĐD): <code>'  Neutral or Dissatisfi'</code>, <code>'NEUTRAL OR DISSATISFIED'</code> → <code>Neutral or Dissatisfied</code>; <code>'Satisfied   '</code> → <code>Satisfied</code>.</li>
+                </ul>
+              </div>
+              <div class="pipe-box">
+                <h4>Lý do phương pháp luận &amp; Mã nguồn</h4>
+                <ul>
+                  <li>Các tiền tố cắt cụt như <code>'  Busine'</code> hay <code>'  Returnin'</code> là lỗi xuất/nhập chuỗi có quy luật không mơ hồ (tiền tố duy nhất trong miền danh mục), nên khôi phục về nhãn chuẩn giúp <strong>bảo toàn thông tin thực tế</strong> thay vì xóa hoặc coi là thiếu.</li>
+                  <li>Mọi giá trị thuộc <code>MISSING_TOKENS</code> ở bước này được chuyển thống nhất về <code>np.nan</code> để chờ xử lý ở Bước 4–5.</li>
+                </ul>
+                <pre class="code-snippet">def normalize_cat(val, mapping: dict):
+    if is_missing_str(val): return np.nan
+    cleaned = str(val).strip().lower()
+    if cleaned in mapping: return mapping[cleaned]
+    for key, std in mapping.items():
+        if cleaned.startswith(key) or key.startswith(cleaned):
+            return std
+    return np.nan</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 3 -->
+        <div class="pipe-step-card" data-pipe-step="3">
+          <button type="button" class="pipe-step-header">
+            <div class="pipe-step-left">
+              <span class="pipe-step-badge">B3</span>
+              <div>
+                <div class="pipe-step-title">Bước 3: Trích xuất số bằng Regex, Bỏ hậu tố đơn vị giả lập &amp; Lọc miền quy ước (<code>BOUNDS</code>)</div>
+                <div class="pipe-step-summary">Xử lý 221.403 lượt sai định dạng ở 18 cột số &amp; Chuyển 128.076 giá trị ngoài miền thành <code>NaN</code></div>
+              </div>
+            </div>
+            <div class="pipe-step-right">
+              <span class="badge badge-purple">128.076 ngoài miền → NaN</span>
+              <span class="pipe-chevron">▼</span>
+            </div>
+          </button>
+          <div class="pipe-step-body">
+            <div class="pipe-detail-grid">
+              <div class="pipe-box">
+                <h4>Quy tắc trích số &amp; Ngưỡng lọc kỹ thuật <code>BOUNDS</code></h4>
+                <ul>
+                  <li>Trích số đầu tiên bằng Regex <code>[-+]?\d*\.?\d+</code>, loại bỏ các hậu tố đơn vị giả lập (<code>USD</code>, <code>VND</code>, <code>đ</code>, <code>kg</code>, <code>%</code>) và đuôi thập phân <code>.0</code>. <em>Lưu ý:</em> Việc bỏ hậu tố chỉ là làm sạch ký tự nhiễu, <strong>không quy đổi đơn vị</strong>.</li>
+                  <li>Chuyển các giá trị nằm ngoài miền quy ước <code>BOUNDS</code> thành <code>np.nan</code>:
+                    <ul>
+                      <li><code>Age</code>: Hợp lệ trong (0; 100] (thực tế trên <code>PJ21.csv</code>: [7; 100]; loại số âm, <code>0</code>, <code>770.0</code>, <code>9999</code>).</li>
+                      <li><code>Flight Distance</code>: Hợp lệ trong (0; 9.999) (thực tế: [31; 9.910]; loại mã lỗi <code>9999</code> và số &le; 0).</li>
+                      <li><code>Departure Delay</code>, <code>Arrival Delay</code>: Hợp lệ trong [0; 2.000] phút (loại mã <code>-1</code>, số âm và mã <code>9999</code>).</li>
+                      <li><strong>14 điểm dịch vụ</strong>: Hợp lệ trong [0; 5] (loại mã <code>-1</code>, <code>9999</code>, <code>50.0</code>, v.v.).</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+              <div class="pipe-box">
+                <h4>Ghi nhận minh bạch về ngưỡng cắt lọc (Mục 3.3.3)</h4>
+                <ul>
+                  <li>Các ngưỡng <code>2.000</code> phút (độ trễ) và <code>9.999</code> (khoảng cách bay) là <strong>quy tắc cắt lọc kỹ thuật của nhóm</strong>, không phải chuẩn nghiệp vụ có nguồn xác nhận.</li>
+                  <li>Trong <code>PJ21.csv</code> còn <strong>178 bản ghi</strong> có <code>Flight Distance</code> từ <code>5.001</code> đến <code>9.910</code>; cả <strong>178/178</strong> giá trị này đều là quan sát hợp lệ từ tệp thô (không phải ô điền), được giữ nguyên và ghi nhận là giới hạn do chưa rõ đơn vị đo gốc.</li>
+                </ul>
+                <pre class="code-snippet">BOUNDS = {"Age": (0, 100), "Flight Distance": (0, 9999),
+          "Departure Delay": (0, 2000), "Arrival Delay": (0, 2000),
+          **{rc: (0, 5) for rc in RATING_COLS}}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 4 -->
+        <div class="pipe-step-card" data-pipe-step="4">
+          <button type="button" class="pipe-step-header">
+            <div class="pipe-step-left">
+              <span class="pipe-step-badge">B4</span>
+              <div>
+                <div class="pipe-step-title">Bước 4: Loại bỏ 10.788 dòng (8,3061%) thiếu nhãn mục tiêu <code>Satisfaction</code></div>
+                <div class="pipe-step-summary">Giữ lại 119.092 dòng (91,6939%) có nhãn hợp lệ • Loại bỏ 83.037 ô lỗi thuộc các dòng không có nhãn</div>
+              </div>
+            </div>
+            <div class="pipe-step-right">
+              <span class="badge badge-red">-10.788 dòng thiếu nhãn</span>
+              <span class="pipe-chevron">▼</span>
+            </div>
+          </button>
+          <div class="pipe-step-body">
+            <div class="pipe-detail-grid">
+              <div class="pipe-box">
+                <h4>Quy tắc thực hiện</h4>
+                <ul>
+                  <li>Sau Bước 2, <strong>38.315 ô</strong> <code>Satisfaction</code> bị sai định dạng (như <code>'Satisfied   '</code>, <code>'  Neutral or Dissatisfi'</code>) đã được khôi phục thành nhãn hợp lệ.</li>
+                  <li>Còn lại đúng <strong>10.788 dòng</strong> mà trường <code>Satisfaction</code> bị trống (6.828 dòng) hoặc mang mã thiếu ẩn (3.960 dòng như <code>'?'</code>, <code>'null'</code>, <code>'None'</code>).</li>
+                  <li>Lệnh <code>df = df[df["Satisfaction"].notna()].copy()</code> loại bỏ 10.788 dòng này, giữ lại <strong>119.092 dòng</strong>.</li>
+                </ul>
+              </div>
+              <div class="pipe-box">
+                <h4>Hạch toán ô lỗi biến mất do loại dòng</h4>
+                <ul>
+                  <li>Trên 10.788 dòng bị loại có tổng cộng <strong>83.037 ô lỗi duy nhất</strong> (gồm 10.788 ô thiếu nhãn <code>Satisfaction</code> và 72.249 ô lỗi ở 23 biến còn lại).</li>
+                  <li>Báo cáo tách riêng <strong>83.037 ô lỗi thuộc dòng bị loại</strong> khỏi <strong>837.133 ô lỗi được sửa trên 119.092 dòng giữ lại</strong> để không phóng đại số lượng ô được sửa trong <code>PJ21.csv</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 5 -->
+        <div class="pipe-step-card" data-pipe-step="5">
+          <button type="button" class="pipe-step-header">
+            <div class="pipe-step-left">
+              <span class="pipe-step-badge">B5</span>
+              <div>
+                <div class="pipe-step-title">Bước 5: Điền khuyết toàn cục (Mode / <code>Unknown</code> / Median) &amp; Làm sạch khoảng trắng</div>
+                <div class="pipe-step-summary">Xử lý 483.994 ô thiếu/ngoài miền trên 119.092 dòng giữ lại + Chuẩn hóa <code>ID</code> (9.631 ô có khoảng trắng đầu/cuối) về <code>int64</code></div>
+              </div>
+            </div>
+            <div class="pipe-step-right">
+              <span class="badge badge-amber">483.994 ô điền khuyết / Unknown</span>
+              <span class="pipe-chevron">▼</span>
+            </div>
+          </button>
+          <div class="pipe-step-body">
+            <div class="pipe-detail-grid">
+              <div class="pipe-box">
+                <h4>Chiến lược điền khuyết theo nhóm biến (Bảng 3.4)</h4>
+                <ul>
+                  <li><strong><code>Customer Type</code> (40.408 ô, 33,93%) &amp; <code>Type of Travel</code> (45.607 ô, 38,30%):</strong> Tỷ lệ thiếu rất cao (&gt; 33%), nếu điền Mode sẽ làm méo nghiêm trọng phân bố phân khúc. Được gán nhãn riêng <strong><code>'Unknown'</code></strong>.</li>
+                  <li><strong><code>Gender</code> (9.517 ô, 7,99%) &amp; <code>Class</code> (9.113 ô, 7,65%):</strong> Tỷ lệ thiếu dưới 8%, điền <strong>Mode toàn tập</strong> (<code>Female</code> và <code>Business</code>).</li>
+                  <li><strong>4 biến vận hành:</strong> Điền <strong>Trung vị toàn tập</strong> rồi ép kiểu <code>int64</code>: <code>Age = 40</code> (9.012 ô, 7,57%), <code>Flight Distance = 846</code> (22.791 ô, 19,14%), <code>Departure Delay = 0</code> (41.414 ô, 34,77%), <code>Arrival Delay = 0</code> (8.038 ô, 6,75%).</li>
+                  <li><strong>14 điểm dịch vụ:</strong> Điền <strong>Trung vị toàn tập</strong>: <strong>8 biến điền <code>3</code></strong> và <strong>6 biến điền <code>4</code></strong> (<code>On-board Service</code>, <code>Seat Comfort</code>, <code>Leg Room Service</code>, <code>In-flight Service</code>, <code>In-flight Entertainment</code>, <code>Baggage Handling</code>).</li>
+                </ul>
+              </div>
+              <div class="pipe-box">
+                <h4>Hệ quả thống kê cần kiểm soát &amp; Làm sạch khoảng trắng</h4>
+                <ul>
+                  <li>Điền Mode <code>Business</code> cho 9.113 ô thiếu <code>Class</code> làm tỷ lệ hài lòng của hạng <code>Business</code> giảm từ <strong>69,45%</strong> (quan sát) xuống <strong>65,69%</strong> (trên <code>PJ21.csv</code>).</li>
+                  <li>Điền trung vị làm co phương sai, tạo đỉnh tại <code>Age = 40</code> và có thể làm đổi thứ hạng tương quan Spearman (ví dụ <code>Cleanliness</code> có 32,28% ô điền <code>3</code> nên giảm từ hạng #6 xuống #8).</li>
+                  <li>Cuối cùng, cắt sạch khoảng trắng ở cột <code>ID</code> (9.631 ô trên dòng giữ lại có khoảng trắng đầu như <code>'  10'</code>) và ép về <code>int64</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 6 -->
+        <div class="pipe-step-card" data-pipe-step="6">
+          <button type="button" class="pipe-step-header">
+            <div class="pipe-step-left">
+              <span class="pipe-step-badge">B6</span>
+              <div>
+                <div class="pipe-step-title">Bước 6: Kiểm toán thực tế Sau xử lý (0 lỗi), Đánh giá Ngoại lai IQR &amp; Kiểm soát Rò rỉ Dữ liệu</div>
+                <div class="pipe-step-summary">Xác nhận <code>assert_frame_equal</code> với <code>PJ21.csv</code> • Giải thích tại sao giữ ngoại lai thống kê 1,5 &times; IQR</div>
+              </div>
+            </div>
+            <div class="pipe-step-right">
+              <span class="badge badge-green">0 lỗi sau xử lý • Khớp 100% SHA-256</span>
+              <span class="pipe-chevron">▼</span>
+            </div>
+          </button>
+          <div class="pipe-step-body">
+            <div class="pipe-detail-grid">
+              <div class="pipe-box">
+                <h4>Kiểm toán sau xử lý &amp; Tính tái lập</h4>
+                <ul>
+                  <li>Chạy lại <code>kiem_toan_tung_o(df, la_sau_xu_ly=True)</code> trên 2.858.208 ô của <code>PJ21.csv</code> ghi nhận <strong>0 ô thiếu, 0 sai định dạng, 0 ngoài miền</strong>.</li>
+                  <li><code>pd.testing.assert_frame_equal</code> xác nhận kết quả chạy lại <code>lam_sach_du_lieu.py</code> khớp 100% từng ô với tệp chuẩn <code>Data/processed/PJ21.csv</code>.</li>
+                </ul>
+              </div>
+              <div class="pipe-box">
+                <h4>Kiểm soát rò rỉ dữ liệu (Data Leakage) cho Chương 4</h4>
+                <ul>
+                  <li>Do <code>PJ21.csv</code> được điền Mode/Median trên toàn bộ 119.092 dòng trước khi chia tập Train/Test, báo cáo Chương 3 luôn <strong>đối chiếu kết quả toàn tập <code>PJ21.csv</code> với tập ô quan sát hợp lệ trước điền khuyết</strong>.</li>
+                  <li>Tại Chương 4 (Mục 3.6.3), quy trình mô hình hóa cần khôi phục mặt nạ thiếu từ tệp thô theo khóa <code>ID</code>, chia Train/Test 80/20 phân tầng (<code>stratify=y, random_state=42</code>) rồi chỉ <code>fit</code> bộ điền khuyết và chuẩn hóa trên tập <code>Train</code> trong <code>Pipeline</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng dưới Phần 2: Bảng chiến lược điền khuyết (Bảng 3.4) và Bảng ngoại lai IQR (Bảng 3.5) -->
+      <div class="grid-2" style="margin-top: 1.15rem;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📋 Chiến lược Điền khuyết &amp; Hệ quả Thống kê (Bảng 3.4)</h3>
+              <p class="card-subtitle">Tổng cộng 483.994 ô được điền hoặc gán <code>Unknown</code> trên <code>PJ21.csv</code> (n = 119.092)</p>
+            </div>
+            <span class="badge badge-amber">Mục 3.3.2</span>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nhóm biến</th>
+                  <th style="text-align:left;">Cách xử lý</th>
+                  <th style="text-align:left;">Giá trị điền</th>
+                  <th>Số ô điền (Tỷ lệ trên PJ21)</th>
+                  <th style="text-align:left;">Hệ quả thống kê cần kiểm soát</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>Satisfaction</code></strong></td>
+                  <td style="text-align:left;">Loại dòng thiếu nhãn</td>
+                  <td style="text-align:left;">Không điền</td>
+                  <td>0 (0,00%; loại 10.788 dòng)</td>
+                  <td style="text-align:left;">Giữ 100% nhãn mục tiêu quan sát thực tế</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Customer Type</code>, <code>Type of Travel</code></strong></td>
+                  <td style="text-align:left;">Gán nhãn riêng</td>
+                  <td style="text-align:left;"><code>Unknown</code></td>
+                  <td>40.408 (33,93%); 45.607 (38,30%)</td>
+                  <td style="text-align:left;">Giữ riêng danh mục thứ 3, không gộp vào nhóm đa số</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Gender</code>, <code>Class</code></strong></td>
+                  <td style="text-align:left;">Điền Mode toàn tập</td>
+                  <td style="text-align:left;"><code>Female</code>, <code>Business</code></td>
+                  <td>9.517 (7,99%); 9.113 (7,65%)</td>
+                  <td style="text-align:left;">Kéo tỷ lệ hài lòng của <code>Business</code> giảm 3,77 điểm % (69,45% → 65,69%)</td>
+                </tr>
+                <tr>
+                  <td><strong>4 biến vận hành</strong></td>
+                  <td style="text-align:left;">Trung vị toàn tập</td>
+                  <td style="text-align:left;"><code>Age</code>=40; <code>Dist</code>=846; Trễ=0</td>
+                  <td>8.038 (6,75%) đến 41.414 (34,77%)</td>
+                  <td style="text-align:left;">Tạo đỉnh tại trung vị (tuổi 40, trễ 0 phút), giảm phương sai</td>
+                </tr>
+                <tr>
+                  <td><strong>14 điểm dịch vụ</strong></td>
+                  <td style="text-align:left;">Trung vị toàn tập</td>
+                  <td style="text-align:left;">8 biến điền <code>3</code>; 6 biến điền <code>4</code></td>
+                  <td>8.338 (7,00%) đến 38.441 (32,28%)</td>
+                  <td style="text-align:left;">Thu hẹp biến thiên, làm đổi thứ hạng tương quan giữa bảng (<code>Cleanliness</code> #6 → #8)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📐 Kiểm tra Ngoại lai Thống kê 1,5 &times; IQR trên <code>PJ21.csv</code> (Bảng 3.5)</h3>
+              <p class="card-subtitle">Nguồn: <code>outputs/chuong3/ngoai_lai_iqr.csv</code> (n = 119.092, toàn bộ ngoại lai nằm ở đuôi phải)</p>
+            </div>
+            <span class="badge badge-purple">Mục 3.3.3 • Không xóa ngoại lai IQR</span>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Biến định lượng</th>
+                  <th>Q1 (25%)</th>
+                  <th>Trung vị</th>
+                  <th>Q3 (75%)</th>
+                  <th>IQR</th>
+                  <th>Cận dưới</th>
+                  <th>Cận trên IQR</th>
+                  <th>Số ngoại lai IQR</th>
+                  <th>Tỷ lệ (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>Age</code></strong></td>
+                  <td>28,0</td>
+                  <td>40,0</td>
+                  <td>50,0</td>
+                  <td>22,0</td>
+                  <td>-5,0</td>
+                  <td>83,0</td>
+                  <td>29</td>
+                  <td>0,0244%</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Flight Distance</code></strong></td>
+                  <td>502,0</td>
+                  <td>846,0</td>
+                  <td>1.476,0</td>
+                  <td>974,0</td>
+                  <td>-959,0</td>
+                  <td>2.937,0</td>
+                  <td>8.301</td>
+                  <td>6,9702%</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Departure Delay</code></strong></td>
+                  <td>0,0</td>
+                  <td>0,0</td>
+                  <td>3,0</td>
+                  <td>3,0</td>
+                  <td>-4,5</td>
+                  <td>7,5</td>
+                  <td class="cell-highlight-warn">23.540</td>
+                  <td class="cell-highlight-warn">19,7662%</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Arrival Delay</code></strong></td>
+                  <td>0,0</td>
+                  <td>0,0</td>
+                  <td>11,0</td>
+                  <td>11,0</td>
+                  <td>-16,5</td>
+                  <td>27,5</td>
+                  <td class="cell-highlight-warn">17.218</td>
+                  <td class="cell-highlight-warn">14,4577%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <strong>Giải thích lý do giữ nguyên các điểm vượt cận trên IQR:</strong> Do hơn 50% chuyến bay có độ trễ 0 phút (<i>Q</i><sub>1</sub> = Trung vị = 0), cận trên IQR của độ trễ rất thấp (<strong>7,5 phút</strong> và <strong>27,5 phút</strong>). Việc 19,77% chuyến bay trễ khởi hành &gt; 7,5 phút và 14,46% trễ đến &gt; 27,5 phút là <strong>đặc trưng phân phối lệch phải tập trung tại 0 của vận hành hàng không</strong>, không phải lỗi dữ liệu. Vì vậy Chương 3 giữ nguyên và sử dụng <strong>phân nhóm độ trễ</strong> cùng <strong>kiểm định phi tham số Mann–Whitney U</strong>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHẦN 3: KIỂM TOÁN 24 BIẾN (BẢNG TRƯỚC/SAU, TÌM KIẾM, LỌC & TẢI CSV)
+         ====================================================================== -->
+    <section class="deck-section" id="sec-3" data-section="3">
+      <div class="section-banner">
+        <div class="section-banner-left">
+          <div class="section-kicker">Phần 03 / 06 • Mục 3.3.1 &amp; Bảng 3.3 (@tbl-audit)</div>
+          <h2 class="section-heading">Kiểm toán Chi tiết 24 Biến: Trước &amp; Sau Làm sạch</h2>
+          <p class="section-lead">
+            Phân biệt tường minh giữa <strong>Tổng lượt lỗi (957.918)</strong>, <strong>Ô trùng 2 lỗi (37.748)</strong>, <strong>Ô lỗi duy nhất (920.170)</strong>, <strong>Ô lỗi thuộc dòng bị loại (83.037)</strong> và <strong>Ô lỗi được sửa trên dòng giữ lại (837.133 = 353.139 chuẩn hóa + 483.994 điền khuyết)</strong>.
+          </p>
+        </div>
+        <div class="section-banner-right">
+          <button type="button" class="btn-action primary" id="btnExportAuditCsv">
+            ⬇ Tải CSV Kiểm toán 24 biến
+          </button>
+        </div>
+      </div>
+
+      <!-- Thanh công cụ Tìm kiếm & Lọc 24 biến -->
+      <div class="card" style="margin-bottom: 1.15rem;">
+        <div class="toolbar-row">
+          <div class="filter-cluster">
+            <input type="search" id="inputSearchAudit" class="input-search" placeholder="🔎 Tìm tên biến (vd: Delay, Boarding, Cleanliness, Class...)" aria-label="Tìm kiếm tên biến" />
+
+            <div class="pill-group" id="auditGroupFilter" role="group" aria-label="Lọc theo nhóm biến">
+              <button type="button" class="pill-btn active" data-group="all">Tất cả (24)</button>
+              <button type="button" class="pill-btn" data-group="Định danh,Mục tiêu">Định danh &amp; Mục tiêu (2)</button>
+              <button type="button" class="pill-btn" data-group="Phân loại">Phân loại (4)</button>
+              <button type="button" class="pill-btn" data-group="Vận hành">Định lượng vận hành (4)</button>
+              <button type="button" class="pill-btn" data-group="Điểm dịch vụ">Điểm dịch vụ (14)</button>
+            </div>
+          </div>
+
+          <div class="filter-cluster">
+            <label for="selectAuditSpecial" style="font-size:0.82rem; font-weight:700; color:var(--text-secondary);">Bộ lọc đặc điểm:</label>
+            <select id="selectAuditSpecial" class="select-filter">
+              <option value="all">Tất cả 24 biến</option>
+              <option value="has_overlap">Có ô trùng 2 lỗi: Sai ĐD ∩ Ngoài miền (17 biến)</option>
+              <option value="high_impute">Tỷ lệ điền khuyết trên PJ21 &gt; 20% (7 biến)</option>
+              <option value="med_3">Điểm dịch vụ điền Trung vị = 3 (8 biến)</option>
+              <option value="med_4">Điểm dịch vụ điền Trung vị = 4 (6 biến)</option>
+              <option value="no_impute">Không điền khuyết: ID &amp; Satisfaction (2 biến)</option>
+            </select>
+
+            <label for="selectAuditSort" style="font-size:0.82rem; font-weight:700; color:var(--text-secondary);">Sắp xếp:</label>
+            <select id="selectAuditSort" class="select-filter">
+              <option value="default">Thứ tự cột gốc (1 → 24)</option>
+              <option value="unique_desc">Ô lỗi duy nhất (Cao → Thấp)</option>
+              <option value="occ_desc">Tổng lượt lỗi (Cao → Thấp)</option>
+              <option value="impute_desc">Số ô điền khuyết trên PJ21 (Cao → Thấp)</option>
+              <option value="std_desc">Số ô chuẩn hóa giữ giá trị (Cao → Thấp)</option>
+              <option value="overlap_desc">Ô trùng 2 lỗi (Cao → Thấp)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bảng Kiểm toán 24 biến -->
+        <div class="table-container table-scroll-y">
+          <table class="data-table" id="tableAudit24">
+            <thead>
+              <tr>
+                <th>Biến (Nhóm)</th>
+                <th title="Tổng ô thiếu = Ô trống CSV + Mã thiếu ẩn">Thiếu (Trước)</th>
+                <th title="Khoảng trắng thừa, sai hoa/thường, cắt cụt, kèm đơn vị USD/VND/đ/kg/%, số thập phân .0">Sai ĐD (Trước)</th>
+                <th title="Ngoài miền quy ước BOUNDS (-1, 9999, âm, quá ngưỡng)">Ngoài miền (Trước)</th>
+                <th title="Số ô vừa bị Sai định dạng vừa Ngoài miền (ví dụ: '9999 %', '-1 USD', '770.0')">Trùng 2 lỗi (ĐD∩NM)</th>
+                <th title="Tổng lượt lỗi = Thiếu + Sai ĐD + Ngoài miền">Tổng lượt lỗi</th>
+                <th title="Ô lỗi duy nhất = Tổng lượt lỗi - Ô trùng 2 lỗi">Ô lỗi duy nhất</th>
+                <th title="Ô lỗi nằm trên 10.788 dòng bị loại do thiếu nhãn Satisfaction">Thuộc dòng loại</th>
+                <th title="Ô lỗi nằm trên 119.092 dòng giữ lại = Chuẩn hóa giữ gốc + Điền khuyết">Được sửa (PJ21)</th>
+                <th title="Số ô lỗi chỉ sai định dạng được chuẩn hóa về đúng giá trị thực quan sát được">↳ Chuẩn hóa (Giữ gốc)</th>
+                <th title="Số ô thiếu hoặc ngoài miền trên 119.092 dòng giữ lại được điền Mode/Median/Unknown">↳ Số ô điền (Tỷ lệ %)</th>
+                <th title="Giá trị dùng để điền khuyết trên PJ21.csv">Giá trị điền</th>
+                <th title="Kiểm toán thực tế từng ô trên PJ21.csv (Thiếu / Sai ĐD / Ngoài miền)">Lỗi sau (PJ21)</th>
+                <th title="Kiểu dữ liệu trên PJ21.csv và Kiểu tối ưu bộ nhớ">Kiểu (Tối ưu)</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyAudit24"></tbody>
+            <tfoot id="tfootAudit24"></tfoot>
+          </table>
+        </div>
+
+        <div class="callout" style="margin-top: 0.75rem;">
+          <strong>Công thức đối chiếu trực tiếp trên bảng:</strong>
+          Với mọi dòng biến: <code>Tổng lượt lỗi = Thiếu + Sai ĐD + Ngoài miền</code> &nbsp;|&nbsp;
+          <code>Ô lỗi duy nhất = Tổng lượt lỗi − Trùng 2 lỗi</code> &nbsp;|&nbsp;
+          <code>Ô lỗi duy nhất = Thuộc dòng loại + Được sửa (PJ21)</code> &nbsp;|&nbsp;
+          <code>Được sửa (PJ21) = Chuẩn hóa (Giữ gốc) + Số ô điền</code>.
+          <em>Mẹo:</em> Nhấp vào tên biến bất kỳ trong bảng để chuyển sang <strong>Phần 4 (Ví dụ thực tế theo ID)</strong> của chính biến đó!
+        </div>
+      </div>
+
+      <!-- Biểu đồ trực quan 24 biến -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">📊 Biểu đồ Phân rã Kiểm toán theo 24 Biến</h3>
+            <p class="card-subtitle">So sánh trực quan cấu trúc lỗi và tỷ lệ điền khuyết giữa các biến</p>
+          </div>
+          <div class="pill-group" id="auditChartModeGroup">
+            <button type="button" class="pill-btn active" data-chartmode="disposition">Phân rã Ô lỗi duy nhất (Dòng loại vs Chuẩn hóa vs Điền khuyết)</button>
+            <button type="button" class="pill-btn" data-chartmode="error_types">Cơ cấu 3 Loại lượt lỗi (Thiếu vs Sai ĐD vs Ngoài miền)</button>
+            <button type="button" class="pill-btn" data-chartmode="impute_pct">Tỷ lệ % Ô điền khuyết trên PJ21.csv (n = 119.092)</button>
+          </div>
+        </div>
+        <div class="svg-chart-wrap" id="chartAudit24Svg"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHẦN 4: VÍ DỤ THỰC TẾ TRƯỚC / SAU THEO CÙNG ID
+         ====================================================================== -->
+    <section class="deck-section" id="sec-4" data-section="4">
+      <div class="section-banner">
+        <div class="section-banner-left">
+          <div class="section-kicker">Phần 04 / 06 • Đối chiếu Bản ghi Thực tế 1–1 theo Khóa ID</div>
+          <h2 class="section-heading">Ví dụ Thực tế Trước &amp; Sau Làm sạch theo Cùng <code>ID</code> (Không dùng dữ liệu giả)</h2>
+          <p class="section-lead">
+            Trích xuất nguyên văn từ <code>Data/raw/Du lieu khong sach.csv</code> và <code>Data/processed/PJ21.csv</code> khớp qua khóa <code>ID</code>. Phân biệt rõ <strong>Chuẩn hóa định dạng (giữ nguyên giá trị thực quan sát được)</strong> với <strong>Điền khuyết / Gán <code>Unknown</code> (thay thế ô thiếu hoặc ngoài miền <code>BOUNDS</code>)</strong>.
+          </p>
+        </div>
+        <div class="section-banner-right">
+          <span class="badge badge-blue">395 ví dụ thực tế trên 24 biến</span>
+          <span class="badge badge-teal">164 hồ sơ ID đầy đủ 24 cột</span>
+        </div>
+      </div>
+
+      <div class="grid-2-asym">
+        <!-- Cột Trái: Chọn biến & Xem bảng ví dụ Trước/Sau theo loại xử lý -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🔬 Tra cứu Ví dụ Trước/Sau theo Biến &amp; Bản chất Xử lý</h3>
+              <p class="card-subtitle">Chọn biến để xem các trường hợp thực tế từ dữ liệu gốc; bấm vào mã <code>ID</code> để soi toàn bộ 24 cột của hành khách đó</p>
+            </div>
+          </div>
+
+          <div class="toolbar-row">
+            <div class="filter-cluster">
+              <label for="selectExampleVar" style="font-size:0.84rem; font-weight:700;">Chọn biến (1–24):</label>
+              <select id="selectExampleVar" class="select-filter" style="font-weight:700; min-width:250px;"></select>
+            </div>
+
+            <div class="pill-group" id="exampleTypeFilter">
+              <button type="button" class="pill-btn active" data-extype="all">Tất cả</button>
+              <button type="button" class="pill-btn" data-extype="chuan_hoa">Chuẩn hóa (Giữ gốc)</button>
+              <button type="button" class="pill-btn" data-extype="dien_khuyet_thieu">Điền khuyết (Thiếu)</button>
+              <button type="button" class="pill-btn" data-extype="dien_khuyet_ngoai_mien">Điền khuyết (Ngoài miền)</button>
+              <button type="button" class="pill-btn" data-extype="trung_2_loi">Trùng 2 lỗi</button>
+              <button type="button" class="pill-btn" data-extype="hop_le">Hợp lệ gốc</button>
+            </div>
+          </div>
+
+          <!-- Tóm tắt nhanh biến đang chọn -->
+          <div id="exampleVarSummaryBox" class="callout callout-teal" style="margin-top:0; margin-bottom:0.85rem;"></div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Khóa ID</th>
+                  <th style="text-align:left;">Giá trị Trước (<code>Du lieu khong sach.csv</code>)</th>
+                  <th style="text-align:left;">Giá trị Sau (<code>PJ21.csv</code>)</th>
+                  <th style="text-align:left;">Phân loại Bản chất Xử lý</th>
+                  <th style="text-align:left;">Giải thích Quy tắc Áp dụng</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyVarExamples"></tbody>
+            </table>
+          </div>
+
+          <!-- Bảng ví dụ các dòng bị loại do thiếu Satisfaction -->
+          <div style="margin-top: 1.15rem;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.45rem; color:var(--brand-crimson);">
+              🗑 Ví dụ Thực tế các Bản ghi bị loại bỏ do thiếu nhãn <code>Satisfaction</code> (Trong tổng số 10.788 dòng bị loại)
+            </h4>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID thô</th>
+                    <th style="text-align:left;"><code>Satisfaction</code> thô</th>
+                    <th style="text-align:left;"><code>Gender</code> thô</th>
+                    <th style="text-align:left;"><code>Age</code> thô</th>
+                    <th style="text-align:left;"><code>Customer Type</code> thô</th>
+                    <th style="text-align:left;"><code>Class</code> thô</th>
+                    <th style="text-align:left;">Lý do loại khỏi <code>PJ21.csv</code></th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyDroppedExamples"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột Phải: Trình soi toàn bộ 24 biến của 1 hành khách theo ID -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🪪 Hồ sơ Đối chiếu 24 Biến của Hành khách theo <code>ID</code></h3>
+              <p class="card-subtitle">So sánh toàn bộ 24 trường Trước &amp; Sau của cùng một bản ghi khảo sát</p>
+            </div>
+            <div class="filter-cluster">
+              <label for="selectRecordId" style="font-size:0.8rem; font-weight:700;">Chọn ID:</label>
+              <select id="selectRecordId" class="select-filter" style="font-family:var(--font-mono); font-weight:700;"></select>
+            </div>
+          </div>
+
+          <div id="recordInspectorSummary" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;"></div>
+
+          <div class="record-inspector-grid" id="recordInspectorGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHẦN 5: KHÁM PHÁ DỮ LIỆU (EDA) & KIỂM ĐỊNH GIẢ THUYẾT (RQ1, RQ2, RQ3)
+         ====================================================================== -->
+    <section class="deck-section" id="sec-5" data-section="5">
+      <div class="section-banner">
+        <div class="section-banner-left">
+          <div class="section-kicker">Phần 05 / 06 • Mục 3.4, 3.5 &amp; 3.6 (Trả lời sơ bộ RQ1, RQ2, RQ3)</div>
+          <h2 class="section-heading">Khám phá Dữ liệu (EDA), Phân tích Độ nhạy &amp; Kiểm định Giả thuyết Thống kê</h2>
+          <p class="section-lead">
+            Mọi phân tích đều cho phép chuyển đổi giữa <strong>Toàn tập <code>PJ21.csv</code> (n = 119.092)</strong> và <strong>Chỉ ô quan sát hợp lệ trước điền khuyết</strong>, cùng các phương án xử lý <strong>mã điểm <code>0</code></strong> ở 14 tiêu chí dịch vụ. Kết quả phản ánh mối liên hệ thống kê, không suy diễn nhân quả.
+          </p>
+        </div>
+        <div class="section-banner-right">
+          <span class="badge badge-blue">Bonferroni α_Bonf,3 = 0,0167</span>
+          <span class="badge badge-purple">Bonferroni α_Bonf,5 = 0,0100</span>
+        </div>
+      </div>
+
+      <!-- Thanh chọn 3 phân hệ RQ1, RQ2, RQ3 -->
+      <div class="eda-subnav" role="tablist" aria-label="Ba câu hỏi nghiên cứu EDA">
+        <button type="button" class="eda-tab-btn active" data-edapane="rq1">
+          <div class="eda-tab-kicker">Phân hệ 5A • RQ1 (Mục 3.5.1 &amp; 3.6.1)</div>
+          <div class="eda-tab-title">Phân khúc Hành khách &amp; Kiểm định Chi-square (&chi;<sup>2</sup>, Cramér's <i>V</i>)</div>
+        </button>
+        <button type="button" class="eda-tab-btn" data-edapane="rq2">
+          <div class="eda-tab-kicker">Phân hệ 5B • RQ2 (Mục 3.4.1, 3.5.2 &amp; 3.6.2)</div>
+          <div class="eda-tab-title">Độ trễ Khởi hành/Đến, Phân phối Tuổi &amp; Mann–Whitney U</div>
+        </button>
+        <button type="button" class="eda-tab-btn" data-edapane="rq3">
+          <div class="eda-tab-kicker">Phân hệ 5C • RQ3 (Mục 3.5.3)</div>
+          <div class="eda-tab-title">Tương quan Spearman 14 Điểm Dịch vụ, Độ nhạy Mã 0 &amp; Heatmap 15×15</div>
+        </button>
+      </div>
+
+      <!-- ====================================================================
+           PHÂN HỆ 5A: RQ1 — PHÂN KHÚC HÀNH KHÁCH & CHI-SQUARE
+           ==================================================================== -->
+      <div class="eda-pane active" id="eda-pane-rq1">
+        <div class="card" style="margin-bottom: 1.15rem;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📊 Tỷ lệ Hài lòng theo 4 Biến Phân khúc Hành khách (Hình 3.2 &amp; Bảng 3.7)</h3>
+              <p class="card-subtitle">Chuyển đổi phạm vi mẫu để kiểm chứng ảnh hưởng của điền Mode (ở <code>Class</code>, <code>Gender</code>) và nhóm <code>Unknown</code> (ở <code>Customer Type</code>, <code>Type of Travel</code>)</p>
+            </div>
+            <div class="pill-group" id="segScopeGroup">
+              <button type="button" class="pill-btn active" data-segscope="compare">So sánh Song song (PJ21 vs Chỉ ô quan sát)</button>
+              <button type="button" class="pill-btn" data-segscope="full">Toàn tập PJ21.csv (n = 119.092)</button>
+              <button type="button" class="pill-btn" data-segscope="observed">Chỉ ô quan sát hợp lệ (Loại ô điền / Unknown)</button>
+            </div>
+          </div>
+
+          <div class="svg-chart-wrap" id="chartSegmentsSvg"></div>
+
+          <div class="grid-3" style="margin-top: 0.9rem; margin-bottom: 0;">
+            <div class="callout callout-teal" style="margin-top:0;">
+              <strong>1. Hạng ghế (<code>Class</code>) — Phân hóa mạnh nhất:</strong><br/>
+              Trên tập quan sát hợp lệ (n = 109.979), <code>Business</code> đạt tỷ lệ hài lòng <strong>69,45%</strong> (36.610/52.713). Khi gộp <strong>9.113 ô thiếu được điền Mode <code>Business</code></strong> (chỉ có tỷ lệ hài lòng <strong>43,90%</strong>), tỷ lệ của <code>Business</code> trên <code>PJ21.csv</code> giảm <strong>3,77 điểm %</strong> xuống còn <strong>65,69%</strong> (cao hơn <code>Economy Plus</code> 24,63% và <code>Economy</code> 18,60% tới 47,09 điểm %).
+            </div>
+            <div class="callout" style="margin-top:0;">
+              <strong>2. Mục đích chuyến đi (<code>Type of Travel</code>):</strong><br/>
+              Trên 73.485 bản ghi xác định được mục đích, <code>Business Travel</code> đạt <strong>58,16%</strong>, gấp <strong>5,60 lần</strong> <code>Personal Travel</code> (<strong>10,39%</strong>, chênh 47,77 điểm %). Nhóm <code>Unknown</code> (45.607 bản ghi = 38,30%) có tỷ lệ hài lòng <strong>43,46%</strong> (sát mức trung bình mẫu 43,45%, nhưng không đủ để kết luận khuyết ngẫu nhiên hoàn toàn MCAR).
+            </div>
+            <div class="callout callout-purple" style="margin-top:0;">
+              <strong>3. Loại khách (<code>Customer Type</code>) &amp; Giới tính (<code>Gender</code>):</strong><br/>
+              <code>Returning Customer</code> (<strong>48,06%</strong>) cao hơn <code>First-time Customer</code> (<strong>23,88%</strong>) là 24,19 điểm %; nhóm <code>Unknown</code> (40.408 bản ghi = 33,93%) đạt <strong>43,12%</strong>. Với <code>Gender</code>, <code>Male</code> (43,97%) và <code>Female</code> (43,02%) chỉ chênh nhau <strong>0,95 điểm %</strong> (<i>V</i> = 0,0102), khác biệt thực tiễn không đáng kể.
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng số liệu Phân khúc & Kiểm định Pearson Chi-square (Bảng 3.11) -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">📋 Bảng Quy mô Mẫu &amp; Tỷ lệ Hài lòng theo Phân khúc (Bảng 3.7)</h3>
+                <p class="card-subtitle">Nguồn: <code>Class.csv</code>, <code>Customer_Type.csv</code>, <code>Type_of_Travel.csv</code>, <code>Gender.csv</code> &amp; <code>ket_qua.json</code></p>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Biến phân nhóm</th>
+                    <th style="text-align:left;">Nhóm / Phạm vi</th>
+                    <th>Số bản ghi (n)</th>
+                    <th>Số hài lòng</th>
+                    <th>Tỷ lệ hài lòng (%)</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodySegmentTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">🧪 Kiểm định Độc lập Pearson Chi-square &amp; Cramér's <i>V</i> (Bảng 3.11)</h3>
+                <p class="card-subtitle"><i>H</i><sub>0</sub>: Biến phân khúc và <code>Satisfaction</code> độc lập thống kê • <i>V</i> = &radic;(&chi;<sup>2</sup> / [<i>n</i> &middot; min(<i>R</i>&minus;1, <i>C</i>&minus;1)])</p>
+              </div>
+              <span class="badge badge-green">Bác bỏ H₀ ở mọi ngưỡng Bonferroni</span>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Biến phân loại</th>
+                    <th style="text-align:left;">Phạm vi mẫu</th>
+                    <th>Cỡ mẫu (n)</th>
+                    <th>df</th>
+                    <th>Min <i>E</i><sub>ij</sub></th>
+                    <th>Pearson &chi;<sup>2</sup></th>
+                    <th><i>p</i>-value</th>
+                    <th>Cramér's <i>V</i></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong><code>Class</code></strong></td>
+                    <td style="text-align:left;">Quan sát hợp lệ (chính, 3&times;2)</td>
+                    <td>109.979</td>
+                    <td>2</td>
+                    <td>3.446,1</td>
+                    <td>28.054,1</td>
+                    <td>&lt; 10<sup>-300</sup></td>
+                    <td class="cell-zero-ok">0,5051</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Class</code></strong></td>
+                    <td style="text-align:left;">Toàn <code>PJ21.csv</code> (gồm điền Mode)</td>
+                    <td>119.092</td>
+                    <td>2</td>
+                    <td>3.449,1</td>
+                    <td>25.985,4</td>
+                    <td>&lt; 10<sup>-300</sup></td>
+                    <td><strong>0,4671</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Type of Travel</code></strong></td>
+                    <td style="text-align:left;">Quan sát hợp lệ (loại <code>Unknown</code>, 2&times;2)</td>
+                    <td>73.485</td>
+                    <td>1</td>
+                    <td>9.838,7</td>
+                    <td>14.555,7</td>
+                    <td>&lt; 10<sup>-300</sup></td>
+                    <td class="cell-zero-ok">0,4451</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Type of Travel</code></strong></td>
+                    <td style="text-align:left;">Toàn <code>PJ21.csv</code> (gồm <code>Unknown</code>, 3&times;2)</td>
+                    <td>119.092</td>
+                    <td>2</td>
+                    <td>9.840,8</td>
+                    <td>14.555,0</td>
+                    <td>&lt; 10<sup>-300</sup></td>
+                    <td><strong>0,3496</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Customer Type</code></strong></td>
+                    <td style="text-align:left;">Quan sát hợp lệ (loại <code>Unknown</code>, 2&times;2)</td>
+                    <td>78.684</td>
+                    <td>1</td>
+                    <td>6.315,7</td>
+                    <td>2.810,4</td>
+                    <td>&lt; 10<sup>-300</sup></td>
+                    <td class="cell-zero-ok">0,1890</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Customer Type</code></strong></td>
+                    <td style="text-align:left;">Toàn <code>PJ21.csv</code> (gồm <code>Unknown</code>, 3&times;2)</td>
+                    <td>119.092</td>
+                    <td>2</td>
+                    <td>6.291,3</td>
+                    <td>2.815,6</td>
+                    <td>&lt; 10<sup>-300</sup></td>
+                    <td><strong>0,1538</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Gender</code></strong></td>
+                    <td style="text-align:left;">Quan sát hợp lệ (2&times;2)</td>
+                    <td>109.575</td>
+                    <td>1</td>
+                    <td>—</td>
+                    <td>11,4</td>
+                    <td>7,36 &times; 10<sup>-4</sup></td>
+                    <td>0,0102</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Gender</code></strong></td>
+                    <td style="text-align:left;">Toàn <code>PJ21.csv</code> (gồm điền Mode)</td>
+                    <td>119.092</td>
+                    <td>1</td>
+                    <td>—</td>
+                    <td>10,8</td>
+                    <td>9,97 &times; 10<sup>-4</sup></td>
+                    <td>0,0095</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout" style="margin-top:0.65rem;">
+              <strong>Ghi chú kiểm định (Mục 3.6.1):</strong> Với bảng 2 &times; 2 trên tập quan sát của <code>Type of Travel</code> và <code>Customer Type</code>, nếu áp dụng hiệu chỉnh liên tục Yates thì &chi;<sup>2</sup><sub>Yates</sub> lần lượt là <strong>14.553,7 (<i>V</i> = 0,4450)</strong> và <strong>2.809,4 (<i>V</i> = 0,1890)</strong>. Việc giữ danh mục <code>Unknown</code> (3 &times; 2, n = 119.092) làm tăng mẫu số <i>n</i> trong khi &chi;<sup>2</sup> hầu như không đổi (do nhóm <code>Unknown</code> có tỷ lệ hài lòng sát mức chung), khiến Cramér's <i>V</i> giảm từ 0,4451 &rarr; 0,3496 và 0,1890 &rarr; 0,1538.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PHÂN HỆ 5B: RQ2 — ĐỘ TRỄ, PHÂN PHỐI TUỔI & MANN-WHITNEY U
+           ==================================================================== -->
+      <div class="eda-pane" id="eda-pane-rq2">
+        <div class="card" style="margin-bottom: 1.15rem;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">⏱ Tỷ lệ Hài lòng theo Độ trễ Khởi hành (<code>Departure Delay</code>) &amp; Độ trễ Đến (<code>Arrival Delay</code>)</h3>
+              <p class="card-subtitle">Tái hiện tương tác Hình 3.3 &amp; Bảng 3.8: Phân rã nhóm <code>0 phút</code> (Quan sát thực tế vs Ô khuyết điền 0 vs Gộp PJ21) và 3 mức trễ dương</p>
+            </div>
+            <div class="pill-group" id="delayScopeGroup">
+              <button type="button" class="pill-btn active" data-delayscope="decomposed">Phân rã nhóm 0 phút + 3 mức trễ dương (6 cột - Hình 3.3)</button>
+              <button type="button" class="pill-btn" data-delayscope="observed">Chỉ ô quan sát hợp lệ (4 nhóm)</button>
+              <button type="button" class="pill-btn" data-delayscope="full">Toàn tập PJ21.csv (4 nhóm)</button>
+            </div>
+          </div>
+
+          <div class="svg-chart-wrap" id="chartDelaySvg"></div>
+
+          <div class="grid-2" style="margin-top:0.85rem; margin-bottom:0;">
+            <div class="callout callout-teal" style="margin-top:0;">
+              <strong>Độ trễ khởi hành (<code>Departure Delay</code>):</strong><br/>
+              Trên tập quan sát hợp lệ (<i>n</i> = 77.678), tỷ lệ hài lòng giảm đơn điệu từ <strong>45,64%</strong> (<code>0 phút</code>, <i>n</i> = 44.020) xuống <strong>43,38%</strong> (<code>1–15 phút</code>), <strong>38,23%</strong> (<code>16–60 phút</code>) và <strong>35,97%</strong> (<code>Trên 60 phút</code>) — <strong>giảm 9,67 điểm %</strong>. Trên toàn <code>PJ21.csv</code>, do <strong>41.414 ô điền <code>0</code></strong> (34,77%) chỉ có tỷ lệ hài lòng <strong>43,60%</strong> nên kéo nhóm <code>0 phút</code> gộp xuống <strong>44,65%</strong> (chênh <strong>8,68 điểm %</strong> so với nhóm trên 60 phút).
+            </div>
+            <div class="callout callout-amber" style="margin-top:0;">
+              <strong>Độ trễ đến (<code>Arrival Delay</code>):</strong><br/>
+              Trên tập quan sát hợp lệ (<i>n</i> = 111.054), tỷ lệ hài lòng giảm từ <strong>47,35%</strong> (<code>0 phút</code>, <i>n</i> = 62.605) xuống <strong>41,00%</strong> (<code>1–15 phút</code>), <strong>35,83%</strong> (<code>16–60 phút</code>) và <strong>35,83%</strong> (<code>Trên 60 phút</code>) — <strong>giảm 11,52 điểm %</strong> (11,15 điểm % trên <code>PJ21.csv</code>, nơi 8.038 ô điền <code>0</code> đạt 44,13%). Mức giảm dừng lại sau ngưỡng 16 phút (35,83% vs 35,83%).
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 2 Phân hệ 5B: Phân phối Tuổi & Boxplot log(1+Arrival Delay) (Hình 3.5) + Bảng Mann-Whitney U -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">📈 Phân bố Tuổi (Đỉnh điền trung vị 40) &amp; Boxplot log(1 + Arrival Delay) (Hình 3.5)</h3>
+                <p class="card-subtitle">Đối chiếu trực tiếp phân bố trên <code>PJ21.csv</code> với tập ô quan sát hợp lệ trước điền khuyết</p>
+              </div>
+              <div class="pill-group" id="distScopeGroup">
+                <button type="button" class="pill-btn active" data-distscope="both">Hiện cả PJ21 &amp; Quan sát</button>
+                <button type="button" class="pill-btn" data-distscope="full">Toàn PJ21.csv</button>
+                <button type="button" class="pill-btn" data-distscope="observed">Chỉ ô quan sát</button>
+              </div>
+            </div>
+            <div class="svg-chart-wrap" id="chartAgeAndBoxSvg"></div>
+            <div class="callout">
+              <strong>Giải thích Hình 3.5:</strong> (Trái) Trên <code>PJ21.csv</code>, nhóm tuổi 40–44 vọt lên <strong>20.779 bản ghi</strong> vì toàn bộ <strong>9.012 ô tuổi thiếu/ngoài miền (7,57%)</strong> được điền trung vị <code>40</code> (riêng đúng tuổi 40 tăng từ 2.404 quan sát lên 11.416 bản ghi). (Phải) Trung vị độ trễ đến của cả hai nhóm hài lòng đều bằng <code>0</code>, nhưng tứ phân vị thứ ba (<i>Q</i><sub>3</sub>) của nhóm <em>Neutral or Dissatisfied</em> cao hơn rõ rệt (<i>Q</i><sub>3</sub> = 13 phút quan sát / 11 phút trên <code>PJ21.csv</code> so với <i>Q</i><sub>3</sub> = 8 phút / 7 phút ở nhóm <em>Satisfied</em>).
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">🧪 Kiểm định Mann–Whitney U (Bảng 3.12) &amp; Thống kê Mô tả Biến Vận hành (Bảng 3.6)</h3>
+                <p class="card-subtitle"><i>H</i><sub>0</sub>: Phân phối độ trễ của hai nhóm hài lòng không dịch chuyển thứ hạng (hai phía)</p>
+              </div>
+              <span class="badge badge-blue">Mục 3.4.1 &amp; 3.6.2</span>
+            </div>
+
+            <div class="table-container" style="margin-bottom: 0.85rem;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Biến độ trễ</th>
+                    <th style="text-align:left;">Phạm vi mẫu</th>
+                    <th>Cỡ mẫu (n)</th>
+                    <th>Thống kê <i>U</i></th>
+                    <th><i>p</i>-value (2 phía)</th>
+                    <th>Hệ số <i>r</i><sub>rb</sub></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong><code>Departure Delay</code></strong></td>
+                    <td style="text-align:left;">Quan sát hợp lệ (chính)</td>
+                    <td>77.678</td>
+                    <td>692.187.731,0</td>
+                    <td>7,52 &times; 10<sup>-68</sup></td>
+                    <td class="cell-highlight-warn">-0,0658</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Departure Delay</code></strong></td>
+                    <td style="text-align:left;">Toàn <code>PJ21.csv</code> (gồm điền 0)</td>
+                    <td>119.092</td>
+                    <td>1.671.189.762,5</td>
+                    <td>1,77 &times; 10<sup>-52</sup></td>
+                    <td>-0,0409</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Arrival Delay</code></strong></td>
+                    <td style="text-align:left;">Quan sát hợp lệ (chính)</td>
+                    <td>111.054</td>
+                    <td>1.354.446.404,5</td>
+                    <td>8,97 &times; 10<sup>-245</sup></td>
+                    <td class="cell-highlight-err">-0,1058</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Arrival Delay</code></strong></td>
+                    <td style="text-align:left;">Toàn <code>PJ21.csv</code> (gồm điền 0)</td>
+                    <td>119.092</td>
+                    <td>1.570.744.725,5</td>
+                    <td>3,78 &times; 10<sup>-236</sup></td>
+                    <td>-0,0985</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4 style="font-size:0.88rem; font-weight:700; margin-bottom:0.4rem;">Bảng 3.6: Thống kê mô tả 4 biến định lượng vận hành trên <code>PJ21.csv</code> (n = 119.092)</h4>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Biến</th>
+                    <th>Trung bình</th>
+                    <th>Độ lệch chuẩn</th>
+                    <th>Min</th>
+                    <th>Q1 (25%)</th>
+                    <th>Trung vị</th>
+                    <th>Q3 (75%)</th>
+                    <th>P99 (99%)</th>
+                    <th>Max</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong><code>Age</code></strong></td>
+                    <td>39,4918</td>
+                    <td>14,5398</td>
+                    <td>7</td>
+                    <td>28</td>
+                    <td>40</td>
+                    <td>50</td>
+                    <td>70</td>
+                    <td>100</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Flight Distance</code></strong></td>
+                    <td>1.135,5448</td>
+                    <td>941,6384</td>
+                    <td>31</td>
+                    <td>502</td>
+                    <td>846</td>
+                    <td>1.476</td>
+                    <td>3.883</td>
+                    <td>9.910</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Departure Delay</code></strong></td>
+                    <td>10,3205</td>
+                    <td>43,3579</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>156</td>
+                    <td>2.000</td>
+                  </tr>
+                  <tr>
+                    <td><strong><code>Arrival Delay</code></strong></td>
+                    <td>15,4135</td>
+                    <td>54,8828</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>11</td>
+                    <td>187</td>
+                    <td>2.000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout" style="margin-top:0.65rem;">
+              <strong>Nhận xét kiểm định (Mục 3.6.2):</strong> Hệ số tương quan hạng nhị phân <i>r</i><sub>rb</sub> = 2<i>U</i> / (<i>n</i><sub>1</sub><i>n</i><sub>2</sub>) &minus; 1 &lt; 0 khẳng định nhóm hài lòng có xu hướng trễ ít hơn có ý nghĩa thống kê (<i>p</i> &ll; 0,0100), nhưng cỡ hiệu ứng đơn biến nhỏ (|<i>r</i><sub>rb</sub>| = 0,0658 và 0,1058), đòi hỏi phải xét đồng thời trong mô hình đa biến ở Chương 4.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PHÂN HỆ 5C: RQ3 — TƯƠNG QUAN SPEARMAN 14 ĐIỂM DỊCH VỤ & HEATMAP 15x15
+           ==================================================================== -->
+      <div class="eda-pane" id="eda-pane-rq3">
+        <div class="card" style="margin-bottom: 1.15rem;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🏆 Tương quan Hạng Spearman (&rho;) của 14 Điểm chạm Dịch vụ với <code>Satisfaction (0/1)</code> (Bảng 3.9)</h3>
+              <p class="card-subtitle">Đánh giá độ nhạy của hệ số &rho; và thứ hạng theo cách xử lý mã điểm <code>0</code> và các ô điền trung vị (từ 7,00% đến 32,28%)</p>
+            </div>
+            <div class="pill-group" id="spearmanSchemeGroup">
+              <button type="button" class="pill-btn active" data-spmode="compare3">So sánh cả 3 Phương án &amp; Đổi hạng</button>
+              <button type="button" class="pill-btn" data-spmode="giu_0">(1) Giữ mã 0 trên PJ21 (n=119.092)</button>
+              <button type="button" class="pill-btn" data-spmode="bo_0">(2) Loại mã 0 (0 → NaN) trên PJ21</button>
+              <button type="button" class="pill-btn" data-spmode="quan_sat">(3) Chỉ ô quan sát trước điền khuyết</button>
+            </div>
+          </div>
+
+          <div class="svg-chart-wrap" id="chartSpearmanBarsSvg"></div>
+
+          <div class="grid-3" style="margin-top: 0.85rem; margin-bottom: 0;">
+            <div class="callout callout-teal" style="margin-top:0;">
+              <strong>1. Các vị trí bất biến (#1, #2, #10, #13, #14):</strong><br/>
+              Chỉ có 5 tiêu chí giữ nguyên thứ hạng ở cả 3 phương án: <strong><code>Online Boarding</code> (#1</strong>: &rho; = 0,4636 giữ 0; 0,4900 bỏ 0; 0,5513 quan sát), <strong><code>In-flight Entertainment</code> (#2</strong>: 0,3770; 0,3769; 0,4002), <code>Check-in Service</code> (#10), cùng hai biến cuối bảng gần 0 là <code>Gate Location</code> (#13: -0,0096) và <code>Time Convenience</code> (#14: -0,0503).
+            </div>
+            <div class="callout callout-amber" style="margin-top:0;">
+              <strong>2. Độ nhạy khi Loại mã điểm <code>0</code> (Phương án 2):</strong><br/>
+              Khi coi điểm <code>0</code> là <code>NaN</code>, <strong><code>In-flight Wifi Service</code></strong> (có 2.935 ô điểm 0) tăng vọt từ &rho; = 0,2689 (<strong>hạng #6</strong>) lên <strong>&rho; = 0,3383 (hạng #3)</strong>, đẩy <code>Seat Comfort</code> xuống #4 (0,3364), <code>On-board Service</code> xuống #5 (0,3147) và đẩy <code>Leg Room Service</code> xuống <strong>hạng #6</strong> (0,3059). Ở cuối bảng, <code>Ease of Online Booking</code> (3.728 ô điểm 0) tăng từ 0,1533 (#12) lên 0,1940 (#11), đổi chỗ với <code>Food and Drink</code> (#12).
+            </div>
+            <div class="callout callout-purple" style="margin-top:0;">
+              <strong>3. Độ nhạy với Ô điền trung vị (Phương án 3 - Chỉ ô quan sát):</strong><br/>
+              Khi chỉ tính trên ô quan sát hợp lệ trước điền khuyết, độ lớn |&rho;| của hầu hết tiêu chí đều cao hơn. Đáng chú ý, <strong><code>Cleanliness</code></strong> đạt &rho; = 0,3071 (<strong>hạng #6</strong> trên 80.651 ô quan sát), nhưng khi điền trung vị <code>3</code> vào <strong>38.441 ô thiếu (32,28%)</strong> trên <code>PJ21.csv</code> thì giảm còn 0,2536 (<strong>hạng #8</strong>); <code>Baggage Handling</code> cũng giảm từ #8 (0,2706) xuống #9 (0,2426).
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 2 Phân hệ 5C: Bảng 3.9 chi tiết và Ma trận nhiệt Spearman 15x15 (Hình 3.4) -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">📋 Bảng Đối chiếu Hệ số Spearman &rho; &amp; Thứ hạng 3 Phương án (Bảng 3.9)</h3>
+                <p class="card-subtitle">Nguồn: <code>outputs/chuong3/do_nhay_diem_0.csv</code></p>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tableSpearmanSensitivity">
+                <thead>
+                  <tr>
+                    <th>Tiêu chí dịch vụ</th>
+                    <th>&rho; giữ mã 0 (Hạng)</th>
+                    <th>&rho; bỏ mã 0 (Hạng)</th>
+                    <th>&rho; chỉ quan sát (Hạng)</th>
+                    <th>Đổi hạng</th>
+                    <th>Số ô &ne; 0 (Ô = 0)</th>
+                    <th>Số ô quan sát (Điền)</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodySpearmanSensitivity"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">🔥 Ma trận Nhiệt Tương quan Spearman 15 &times; 15 trên <code>PJ21.csv</code> (Hình 3.4)</h3>
+                <p class="card-subtitle">Nguồn: <code>outputs/chuong3/tuong_quan_spearman.csv</code> (n = 119.092) • Di chuột vào ô để xem cặp tương quan</p>
+              </div>
+              <span class="badge badge-purple">Đa cộng tuyến nội bộ &rho; &le; 0,53</span>
+            </div>
+
+            <div id="heatmapHoverInfo" class="callout" style="margin-top:0; margin-bottom:0.65rem; padding:0.55rem 0.85rem;">
+              <strong>Di chuột lên ô bất kỳ trong ma trận 15 &times; 15:</strong> Các cặp tương quan nội bộ đáng chú ý gồm <code>In-flight Service</code> – <code>Baggage Handling</code> (&rho; = 0,5265 &approx; 0,53), <code>In-flight Wifi Service</code> – <code>Ease of Online Booking</code> (0,5248 &approx; 0,52), <code>Seat Comfort</code> – <code>In-flight Entertainment</code> (0,5233 &approx; 0,52), <code>In-flight Service</code> – <code>On-board Service</code> (0,5153 &approx; 0,52) và <code>Cleanliness</code> – <code>In-flight Entertainment</code> (0,5097 &approx; 0,51).
+            </div>
+
+            <div class="heatmap-grid-wrap" id="heatmapContainer"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHẦN 6: NGUỒN DỮ LIỆU, MÃ BĂM SHA-256, ĐỐI CHIẾU TOÁN HỌC & HẠN CHẾ
+         ====================================================================== -->
+    <section class="deck-section" id="sec-6" data-section="6">
+      <div class="section-banner">
+        <div class="section-banner-left">
+          <div class="section-kicker">Phần 06 / 06 • Mục 3.1.1, 3.3.4, 3.6.3 &amp; 3.7</div>
+          <h2 class="section-heading">Nguồn Dữ liệu, Xác thực SHA-256, Kiểm chứng Đẳng thức &amp; Hạn chế Nghiên cứu</h2>
+          <p class="section-lead">
+            Đảm bảo tính tái lập 100%, truy xuất nguồn gốc từng bảng/biểu đồ về tệp thực tế trong dự án <code>PRJ 21</code>, minh bạch phạm vi kiểm tra và các giới hạn suy luận trước khi chuyển sang Chương 4.
+          </p>
+        </div>
+        <div class="section-banner-right">
+          <span class="badge badge-green">✓ Toàn vẹn SHA-256: 100%</span>
+          <span class="badge badge-blue">Python 3.12.10 • pandas 3.0.5 • numpy 2.5.3</span>
+        </div>
+      </div>
+
+      <!-- Hàng 1: SHA-256 & Kiểm chứng 8 Đẳng thức Toán học -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🔐 Xác thực Toàn vẹn Tệp Đầu vào bằng Mã băm SHA-256</h3>
+              <p class="card-subtitle">Kiểm chứng trước và sau khi chạy <code>src/phan_tich_chuong3.py</code> &amp; <code>lam_sach_du_lieu.py</code> (Không sửa tệp gốc)</p>
+            </div>
+            <span class="badge badge-green">assert hashes_before == hashes_after</span>
+          </div>
+
+          <div class="sha-card">
+            <div class="sha-file-header">
+              <strong>1. Tệp dữ liệu chưa làm sạch: <code>Data/raw/Du lieu khong sach.csv</code></strong>
+              <span class="badge badge-amber">129.880 dòng × 24 cột (13.404.783 bytes)</span>
+            </div>
+            <div class="sha-hash-box">
+              <span id="shaRawText">c70d2b1a2fb89ae1d4d5befe76c01867afc18be0d62e45d33aea34e53c5001e4</span>
+              <button type="button" class="btn-action" data-copy="c70d2b1a2fb89ae1d4d5befe76c01867afc18be0d62e45d33aea34e53c5001e4" style="padding:0.2rem 0.5rem; font-size:0.74rem;">Sao chép</button>
+            </div>
+          </div>
+
+          <div class="sha-card">
+            <div class="sha-file-header">
+              <strong>2. Tệp dữ liệu đã làm sạch chuẩn: <code>Data/processed/PJ21.csv</code></strong>
+              <span class="badge badge-green">119.092 dòng × 24 cột (12.881.921 bytes)</span>
+            </div>
+            <div class="sha-hash-box">
+              <span id="shaCleanText">baa89213a9cd76be3baa239731ad6035f1544ce4c94f3ab4a8c545bb4adc3e3a</span>
+              <button type="button" class="btn-action" data-copy="baa89213a9cd76be3baa239731ad6035f1544ce4c94f3ab4a8c545bb4adc3e3a" style="padding:0.2rem 0.5rem; font-size:0.74rem;">Sao chép</button>
+            </div>
+          </div>
+
+          <div class="callout callout-teal">
+            <strong>Vai trò của <code>Data/original/airline_passenger_satisfaction.csv</code>:</strong> Chỉ dùng làm mốc đối chứng độc lập trong giai đoạn kiểm toán quy tắc phát hiện lỗi (Giai đoạn 1 - <code>kiem_toan_du_lieu.py</code>), <strong>tuyệt đối không dùng để khôi phục dữ liệu, không dùng làm đầu vào làm sạch và không dùng để tính EDA Chương 3</strong>.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🧮 Bảng Kiểm chứng Đối chiếu Tổng &amp; Tỷ lệ (Reconciliation Audit)</h3>
+              <p class="card-subtitle">Tự động kiểm tra chéo các tổng hàng/cột từ <code>ket_qua.json</code> và <code>kiem_tra_chat_luong.csv</code></p>
+            </div>
+            <span class="badge badge-green">8 / 8 Đẳng thức Khớp Tuyệt đối</span>
+          </div>
+
+          <div id="reconciliationList">
+            <div class="reconcile-item">
+              <span><strong>1. Cân bằng số bản ghi (dòng):</strong></span>
+              <span class="reconcile-eq">129.880 (thô) − 10.788 (thiếu nhãn) = 119.092 (PJ21.csv)</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>2. Cân bằng tổng số ô (× 24 cột):</strong></span>
+              <span class="reconcile-eq">3.117.120 − 258.912 = 2.858.208 ô</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>3. Phân rã 410.614 ô thiếu ban đầu:</strong></span>
+              <span class="reconcile-eq">269.947 (ô trống CSV) + 140.667 (mã thiếu ẩn) = 410.614</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>4. Tổng lượt lỗi phát hiện (3 nhóm):</strong></span>
+              <span class="reconcile-eq">410.614 (Thiếu) + 419.228 (Sai ĐD) + 128.076 (Ngoài miền) = 957.918</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>5. Khử trùng lặp ô vừa Sai ĐD vừa Ngoài miền:</strong></span>
+              <span class="reconcile-eq">957.918 (lượt lỗi) − 37.748 (trùng 2 lỗi) = 920.170 (ô lỗi duy nhất)</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>6. Phân bổ 920.170 ô lỗi duy nhất theo dòng:</strong></span>
+              <span class="reconcile-eq">83.037 (thuộc 10.788 dòng loại) + 837.133 (trên 119.092 dòng giữ lại) = 920.170</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>7. Phân rã 837.133 ô được sửa trên <code>PJ21.csv</code>:</strong></span>
+              <span class="reconcile-eq">353.139 (chuẩn hóa giữ giá trị gốc) + 483.994 (điền khuyết/Unknown) = 837.133</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+            <div class="reconcile-item">
+              <span><strong>8. Cơ cấu 2 lớp nhãn <code>Satisfaction</code> trên <code>PJ21.csv</code>:</strong></span>
+              <span class="reconcile-eq">51.740 (Satisfied: 43,4454%) + 67.352 (Neutral/Dissatisfied: 56,5546%) = 119.092</span>
+              <span class="badge badge-green">✓ Khớp 100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng 2: Nguồn từng Bảng/Biểu đồ & Tổng hợp RQ1-RQ3 + Giới hạn dữ liệu -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📂 Truy xuất Nguồn Từng Bảng &amp; Biểu đồ trên Dashboard</h3>
+              <p class="card-subtitle">Đối chiếu trực tiếp với tệp kết quả trong <code>outputs/chuong3/</code> và bản thảo <code>outputs/chuong3_ban_thao.qmd</code></p>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Hạng mục trên Dashboard</th>
+                  <th style="text-align:left;">Tệp dữ liệu nguồn (CSV / JSON)</th>
+                  <th style="text-align:left;">Script sinh dữ liệu</th>
+                  <th style="text-align:left;">Mục / Bảng / Hình trong QMD</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tổng quan &amp; Bộ nhớ RAM</strong></td>
+                  <td style="text-align:left;"><code>outputs/chuong3/ket_qua.json</code>, <code>kieu_du_lieu_toi_uu.csv</code></td>
+                  <td style="text-align:left;"><code>src/phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.1, 3.2 (Bảng 3.1, 3.2)</td>
+                </tr>
+                <tr>
+                  <td><strong>Cơ cấu Nhãn mục tiêu</strong></td>
+                  <td style="text-align:left;"><code>outputs/chuong3/nguon_goc_nhan.csv</code>, <code>PJ21.csv</code></td>
+                  <td style="text-align:left;"><code>src/phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.4.2 (Hình 3.1 <code>01_co_cau_nhan.png</code>)</td>
+                </tr>
+                <tr>
+                  <td><strong>Bảng Kiểm toán 24 biến</strong></td>
+                  <td style="text-align:left;"><code>outputs/chuong3/kiem_tra_chat_luong.csv</code>, <code>outputs/Bao_cao_lam_sach_du_lieu.csv</code></td>
+                  <td style="text-align:left;"><code>lam_sach_du_lieu.py</code>, <code>phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.3.1, 3.3.2 (Bảng 3.3, Bảng 3.4)</td>
+                </tr>
+                <tr>
+                  <td><strong>Ngoại lai IQR &amp; Thống kê mô tả</strong></td>
+                  <td style="text-align:left;"><code>outputs/chuong3/ngoai_lai_iqr.csv</code>, <code>thong_ke_mo_ta.csv</code></td>
+                  <td style="text-align:left;"><code>src/phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.3.3, 3.4.1 (Bảng 3.5, Bảng 3.6, Hình 3.5)</td>
+                </tr>
+                <tr>
+                  <td><strong>Ví dụ Thực tế theo ID</strong></td>
+                  <td style="text-align:left;"><code>Data/raw/Du lieu khong sach.csv</code> ⋈ <code>Data/processed/PJ21.csv</code></td>
+                  <td style="text-align:left;">Đối chiếu trực tiếp qua khóa <code>ID</code></td>
+                  <td style="text-align:left;">Mục 3.3.1, 3.3.2</td>
+                </tr>
+                <tr>
+                  <td><strong>RQ1: Phân khúc &amp; Chi-square</strong></td>
+                  <td style="text-align:left;"><code>Class.csv</code>, <code>Customer_Type.csv</code>, <code>Type_of_Travel.csv</code>, <code>Gender.csv</code>, <code>ket_qua.json</code></td>
+                  <td style="text-align:left;"><code>src/phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.5.1, 3.6.1 (Bảng 3.7, 3.11, Hình 3.2)</td>
+                </tr>
+                <tr>
+                  <td><strong>RQ2: Độ trễ &amp; Mann–Whitney U</strong></td>
+                  <td style="text-align:left;"><code>nhom_do_tre_khoi_hanh.csv</code>, <code>nhom_do_tre.csv</code>, <code>ket_qua.json</code></td>
+                  <td style="text-align:left;"><code>src/phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.5.2, 3.6.2 (Bảng 3.8, 3.12, Hình 3.3)</td>
+                </tr>
+                <tr>
+                  <td><strong>RQ3: Spearman &amp; Độ nhạy mã 0</strong></td>
+                  <td style="text-align:left;"><code>do_nhay_diem_0.csv</code>, <code>tuong_quan_spearman.csv</code></td>
+                  <td style="text-align:left;"><code>src/phan_tich_chuong3.py</code></td>
+                  <td style="text-align:left;">Mục 3.5.3 (Bảng 3.9, Hình 3.4 <code>04_heatmap.png</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">⚠ Phạm vi Kiểm tra, Giới hạn Dữ liệu &amp; Hàm ý cho Chương 4 (Mục 3.6.3 &amp; 3.7)</h3>
+              <p class="card-subtitle">Nguyên tắc trung thực học thuật: Không suy đoán siêu dữ liệu thiếu, không tuyên bố nhân quả</p>
+            </div>
+            <span class="badge badge-amber">4 Giới hạn &amp; 4 Hàm ý Modeling</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:0.65rem; font-size:0.85rem;">
+            <div class="callout callout-amber" style="margin-top:0;">
+              <strong>1. Các thông tin ghi nhận là “Chưa xác minh từ tệp cục bộ” (Không suy đoán):</strong><br/>
+              Hồ sơ dữ liệu cục bộ không lưu URL Kaggle gốc, giấy phép (License), ngày tải, thời điểm khảo sát, mã hãng bay, tuyến bay, đơn vị đo gốc của <code>Flight Distance</code> (còn 178 bản ghi hợp lệ từ 5.001 đến 9.910) cũng như quy ước nghiệp vụ chính thức của điểm <code>0</code> ở 14 tiêu chí dịch vụ. Do đó, kết quả chỉ đại diện cho mẫu khảo sát hiện có, <strong>không tự động suy rộng cho thị trường hàng không Việt Nam</strong>.
+            </div>
+
+            <div class="callout" style="margin-top:0;">
+              <strong>2. Giới hạn của “0 lỗi sau xử lý” &amp; Ảnh hưởng của điền khuyết toàn tập:</strong><br/>
+              “0 lỗi sau xử lý” chỉ chứng minh <code>PJ21.csv</code> tuân thủ quy tắc kỹ thuật <code>BOUNDS</code>, <strong>không</strong> chứng minh 483.994 ô được điền/gán <code>Unknown</code> phản ánh đúng giá trị thực. Việc điền Mode/Median trên toàn bộ 119.092 dòng làm co phương sai ở các biến khuyết nhiều (như <code>Departure Delay</code> 34,77%, <code>Cleanliness</code> 32,28%) và làm giảm tỷ lệ hài lòng của hạng <code>Business</code> 3,77 điểm %.
+            </div>
+
+            <div class="callout callout-purple" style="margin-top:0;">
+              <strong>3. Không tuyên bố quan hệ nhân quả từ phân tích đơn biến / hai biến:</strong><br/>
+              Chương 3 chỉ đánh giá mối liên hệ thống kê đơn biến và hai biến. Sự sụt giảm hài lòng theo độ trễ đến (11,52 điểm %) lớn hơn theo độ trễ khởi hành (9,67 điểm %), nhưng hai biến độ trễ có liên hệ vận hành chặt chẽ và cỡ mẫu quan sát khác nhau nên không kết luận độ trễ đến có tác động nhân quả mạnh hơn.
+            </div>
+
+            <div class="callout callout-teal" style="margin-top:0;">
+              <strong>4. Thiết kế <code>Pipeline</code> chống rò rỉ dữ liệu cho Chương 4 (Mục 3.6.3):</strong><br/>
+              (i) Dùng 119.092 bản ghi có nhãn thực tế, loại <code>ID</code> khỏi ma trận đặc trưng <i>X</i>; (ii) Giữ nguyên nhóm <code>Unknown</code> của <code>Customer Type</code> và <code>Type of Travel</code> khi One-Hot Encoding; (iii) Khôi phục mặt nạ ô thiếu/ngoài miền từ tệp thô theo khóa <code>ID</code> trước khi chia tập 80/20 phân tầng (<code>stratify=y, random_state=42</code>), chỉ <code>fit</code> bộ điền khuyết và <code>StandardScaler</code> trên tập <code>Train</code>; (iv) Kết hợp Logistic Regression có điều chuẩn với Decision Tree và Random Forest.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Tooltip nổi toàn cục cho Biểu đồ & Heatmap -->
+  <div id="floatingTooltip" class="floating-tooltip" role="tooltip"></div>
+
+  <!-- Chân trang -->
+  <footer class="deck-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>Dự án PRJ 21 — Chương 3:</strong> Tổ chức, xử lý và khám phá dữ liệu về sự hài lòng của hành khách hàng không • Bản bàn giao độc lập <code>outputs/dashboard_anti/</code>
+      </div>
+      <div>
+        Phím tắt thuyết trình:
+        <kbd>←</kbd> <kbd>→</kbd> Chuyển phần &nbsp;•&nbsp;
+        <kbd>1</kbd>–<kbd>6</kbd> Nhảy tới phần &nbsp;•&nbsp;
+        <kbd>Space</kbd> Tự chạy / Tạm dừng &nbsp;•&nbsp;
+        <kbd>M</kbd> Đổi chế độ Slide/Cuộn &nbsp;•&nbsp;
+        <kbd>T</kbd> Sáng/Tối &nbsp;•&nbsp;
+        <kbd>F</kbd> Toàn màn hình
+      </div>
+    </div>
+  </footer>
+
+  <!-- Nạp gói dữ liệu thực 100% và logic ứng dụng (Hoạt động hoàn toàn ngoại tuyến) -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

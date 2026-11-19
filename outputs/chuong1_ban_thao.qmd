@@ -1,0 +1,137 @@
+---
+title: "CHƯƠNG 1: TỔNG QUAN VỀ BÀI TOÁN PHÂN TÍCH SỰ HÀI LÒNG CỦA HÀNH KHÁCH HÀNG KHÔNG"
+number-offset: [0]
+---
+
+# Chương 1. Tổng quan về bài toán phân tích sự hài lòng của hành khách hàng không {#sec-chuong1}
+
+## 1.1. Bối cảnh ngành hàng không và sự cần thiết của nghiên cứu mức độ hài lòng {#sec-1-1}
+
+### 1.1.1. Bối cảnh phát triển ngành hàng không và yêu cầu nâng cao chất lượng dịch vụ
+
+Trong bối cảnh nền kinh tế phát triển và nhu cầu di chuyển, giao thương, du lịch không ngừng mở rộng, ngành hàng không giữ vai trò quan trọng trong việc kết nối các khu vực và thúc đẩy hoạt động kinh tế. Bên cạnh yêu cầu về an toàn và hiệu quả vận hành, chất lượng dịch vụ và trải nghiệm khách hàng ngày càng trở thành yếu tố đáng chú ý trong quản trị của các hãng hàng không.
+
+Trải nghiệm của hành khách được hình thành qua nhiều điểm tiếp xúc trong toàn bộ hành trình, từ đặt vé, làm thủ tục, lên máy bay, sử dụng dịch vụ trong chuyến bay đến nhận hành lý. Mỗi giai đoạn có thể tác động đến đánh giá tổng thể của hành khách về chất lượng dịch vụ.
+
+Theo Hiệp hội Vận tải Hàng không Quốc tế (International Air Transport Association – IATA, 2025), hành khách ngày càng chú trọng đến tốc độ, sự thuận tiện và khả năng ứng dụng công nghệ trong quá trình di chuyển. Điều này cho thấy việc nghiên cứu trải nghiệm khách hàng và xác định các yếu tố liên hệ với mức độ hài lòng là cần thiết đối với quản trị dịch vụ hàng không.
+
+Nghiên cứu của Namukasa (2013) về ngành hàng không tại Uganda đã xem xét mối quan hệ giữa chất lượng dịch vụ, sự hài lòng và lòng trung thành của hành khách. Tại Việt Nam, Nguyen và cộng sự (2026) nhấn mạnh vai trò của chất lượng dịch vụ và sự thuận tiện đối với sự hài lòng của khách hàng trong lĩnh vực hàng không. Những nghiên cứu này là cơ sở để tiếp tục phân tích sự hài lòng của hành khách bằng các phương pháp định lượng và kỹ thuật Khoa học Dữ liệu.
+
+### 1.1.2. Tính cấp thiết và ý nghĩa thực tiễn của đề tài
+
+Cải thiện chất lượng dịch vụ hàng không cần dựa trên thông tin phản ánh trải nghiệm thực tế của hành khách. Tuy nhiên, khi dữ liệu khảo sát có quy mô lớn và gồm nhiều tiêu chí đánh giá, việc nhận diện các yếu tố quan trọng bằng quan sát thủ công hoặc thống kê đơn giản gặp nhiều hạn chế.
+
+Sự phát triển của Khoa học Dữ liệu và các thư viện Python tạo điều kiện thuận lợi cho việc thu thập, xử lý, trực quan hóa và xây dựng mô hình dự đoán trên dữ liệu lớn. Thông qua Pandas, NumPy, Matplotlib, Seaborn và Scikit-learn, dữ liệu khảo sát có thể được chuyển hóa thành thông tin hỗ trợ ra quyết định.
+
+Bộ dữ liệu *Airline Passenger Satisfaction* được lựa chọn có quy mô ban đầu 129.880 bản ghi, chứa thông tin về đặc điểm hành khách, hành trình bay, đánh giá dịch vụ và mức độ hài lòng tổng thể. Với nhiều biến định lượng và định tính, bộ dữ liệu phù hợp để thực hiện phân tích khám phá dữ liệu, kiểm định thống kê và xây dựng mô hình phân loại.
+
+Từ những lý do trên, nhóm lựa chọn đề tài **“Phân tích Mức độ Hài lòng và Hành vi của Hành khách Hàng không (Airline Passenger Satisfaction Big Dataset)”** nhằm vận dụng kiến thức lập trình Python cho Khoa học Dữ liệu vào một bài toán có ý nghĩa thực tiễn trong quản trị dịch vụ.
+
+## 1.2. Cơ sở xác định bài toán nghiên cứu sự hài lòng của hành khách hàng không {#sec-1-2}
+
+### 1.2.1. Nhận diện các yếu tố liên quan đến mức độ hài lòng của hành khách
+
+Mức độ hài lòng của hành khách có thể liên quan đến nhiều yếu tố như hạng vé, mục đích chuyến đi, chất lượng dịch vụ trên máy bay, sự thuận tiện trong thủ tục và thời gian trễ chuyến bay. Các nhóm yếu tố này có thể có mức độ liên hệ khác nhau với sự hài lòng tổng thể. Vấn đề đặt ra là xác định những yếu tố nổi bật từ dữ liệu khảo sát, đánh giá sự khác biệt giữa các nhóm hành khách và xây dựng mô hình phân loại mức độ hài lòng dựa trên thông tin được ghi nhận.
+
+Về phương diện kinh doanh, nghiên cứu hướng đến việc cung cấp bằng chứng định lượng để hỗ trợ các hãng hàng không nhận diện những điểm chạm dịch vụ cần ưu tiên cải thiện. Về phương diện kỹ thuật, nghiên cứu tập trung xây dựng quy trình phân tích dữ liệu bằng Python, gồm xử lý dữ liệu, phân tích khám phá, xây dựng mô hình học máy và đánh giá hiệu năng mô hình.
+
+### 1.2.2. Xây dựng hệ thống câu hỏi nghiên cứu về chất lượng dịch vụ và sự hài lòng của hành khách
+
+Đề tài tập trung giải quyết năm câu hỏi nghiên cứu chính:
+
+**RQ1:** Mức độ hài lòng tổng thể của hành khách được phân bố như thế nào và có sự khác biệt ra sao giữa các nhóm hành khách theo hạng vé, loại khách hàng và mục đích chuyến đi?
+
+**RQ2:** Thời gian trễ khởi hành và trễ đến có mối liên hệ như thế nào với mức độ hài lòng của hành khách?
+
+**RQ3:** Những tiêu chí chất lượng dịch vụ nào có mối liên hệ nổi bật với mức độ hài lòng tổng thể và cần được ưu tiên xem xét trong hoạt động quản trị?
+
+**RQ4:** Các mô hình phân loại như Logistic Regression, Decision Tree và Random Forest có khả năng dự đoán mức độ hài lòng của hành khách với hiệu năng như thế nào?
+
+**RQ5:** Từ kết quả phân tích dữ liệu và mô hình học máy, có thể đề xuất những giải pháp quản trị nào nhằm hỗ trợ cải thiện trải nghiệm và mức độ hài lòng của hành khách?
+
+Các câu hỏi được xây dựng theo trình tự từ mô tả thực trạng, phân tích mối liên hệ, dự đoán đến đề xuất giải pháp. Việc đánh giá các yếu tố liên quan không đồng nghĩa với việc khẳng định quan hệ nhân quả giữa yếu tố dịch vụ và sự hài lòng.
+
+## 1.3. Định hướng và mục tiêu nghiên cứu dựa trên phương pháp Khoa học Dữ liệu {#sec-1-3}
+
+### 1.3.1. Mục tiêu tổng quát
+
+Mục tiêu tổng quát của đề tài là ứng dụng ngôn ngữ lập trình Python và các phương pháp Khoa học Dữ liệu để phân tích mức độ hài lòng của hành khách hàng không, xác định những đặc trưng có liên hệ nổi bật với sự hài lòng, xây dựng mô hình phân loại và đề xuất giải pháp quản trị dịch vụ dựa trên kết quả phân tích.
+
+### 1.3.2. Mục tiêu cụ thể
+
+Để đạt được mục tiêu tổng quát, nghiên cứu đề ra năm mục tiêu cụ thể:
+
+**Thứ nhất,** xây dựng tập dữ liệu phục vụ phân tích thông qua kiểm tra cấu trúc, tích hợp dữ liệu, đánh giá chất lượng, xử lý các vấn đề về dữ liệu và tối ưu hóa bộ nhớ, bảo đảm dữ liệu đầu vào sử dụng được cho các bước tiếp theo và đáp ứng yêu cầu tối thiểu 100.000 quan sát của học phần.
+
+**Thứ hai,** thực hiện thống kê mô tả và phân tích khám phá dữ liệu (Exploratory Data Analysis – EDA) để xác định phân bố mức độ hài lòng, so sánh các nhóm hành khách và khảo sát mối liên hệ giữa đặc điểm chuyến bay, đánh giá dịch vụ với sự hài lòng tổng thể.
+
+**Thứ ba,** sử dụng các phương pháp phân tích thống kê và trực quan hóa dữ liệu để xác định ít nhất 3–5 phát hiện có ý nghĩa thực tiễn, kèm số liệu định lượng làm cơ sở cho việc giải thích và đề xuất giải pháp.
+
+**Thứ tư,** xây dựng và so sánh ít nhất ba mô hình phân loại gồm Logistic Regression, Decision Tree và Random Forest. Hiệu năng được đánh giá trên dữ liệu kiểm tra thông qua các chỉ số Accuracy, Precision, Recall, F1-score và ROC-AUC.
+
+**Thứ năm,** phân tích mức độ quan trọng của các đặc trưng trong mô hình, kết hợp kết quả EDA để đề xuất giải pháp cải thiện chất lượng dịch vụ hàng không và thảo luận những giới hạn khi ứng dụng kết quả vào thực tế.
+
+Các mục tiêu trên được triển khai trong phạm vi thời gian thực hiện đồ án cuối kỳ, với kết quả được kiểm chứng thông qua mã nguồn, bảng thống kê, biểu đồ và các chỉ số đánh giá mô hình.
+
+## 1.4. Đối tượng và phạm vi nghiên cứu {#sec-1-4}
+
+### 1.4.1. Đối tượng nghiên cứu và đơn vị quan sát trong dữ liệu khảo sát hành khách
+
+Đối tượng nghiên cứu là mức độ hài lòng của hành khách đối với trải nghiệm dịch vụ hàng không và những yếu tố được ghi nhận trong bộ dữ liệu có thể liên quan đến mức độ hài lòng đó.
+
+Đơn vị quan sát là một bản ghi khảo sát về trải nghiệm của hành khách, gồm đặc điểm cá nhân, thông tin chuyến bay, đánh giá dịch vụ và kết quả hài lòng tổng thể.
+
+Trong bài toán học máy, biến mục tiêu là `Satisfaction`, phản ánh hai nhóm kết quả: hài lòng (*Satisfied*) và trung lập hoặc không hài lòng (*Neutral or Dissatisfied*). Do đó, bài toán dự đoán được xác định là bài toán phân loại nhị phân (Binary Classification).
+
+### 1.4.2. Nguồn dữ liệu và phạm vi phân tích mức độ hài lòng của hành khách hàng không
+
+Nghiên cứu sử dụng bộ dữ liệu thứ cấp *Airline Passenger Satisfaction*, được cung cấp công khai trên nền tảng Kaggle và sử dụng cho đề tài PRJ-21 của học phần. Bộ dữ liệu ban đầu gồm 129.880 quan sát và 24 cột: mã định danh, các biến mô tả hành khách, đặc điểm chuyến bay, tiêu chí đánh giá dịch vụ và biến mục tiêu về mức độ hài lòng.
+
+Các nhóm biến được xem xét gồm:
+
+- **Đặc điểm hành khách:** giới tính, độ tuổi, loại khách hàng và mục đích chuyến đi.
+- **Đặc điểm hành trình:** hạng vé, khoảng cách bay, thời gian trễ khởi hành và thời gian trễ đến.
+- **Đánh giá dịch vụ:** sự thoải mái của ghế ngồi, dịch vụ Wifi, đồ ăn và thức uống, giải trí trên chuyến bay, thủ tục check-in, dịch vụ hành lý và các tiêu chí khác được ghi nhận trong dữ liệu.
+- **Biến mục tiêu:** mức độ hài lòng tổng thể của hành khách.
+
+Phân tích chính thức sử dụng tập dữ liệu chuẩn `Data/processed/PJ21.csv` gồm **119.092 bản ghi hợp lệ** và **24 thuộc tính** (sau khi loại bỏ 10.788 bản ghi thiếu biến mục tiêu `Satisfaction` từ 129.880 bản ghi ban đầu của `Data/raw/Du lieu khong sach.csv`). Quy mô, cấu trúc và kết quả kiểm toán chất lượng của tập dữ liệu này được báo cáo chi tiết tại Chương 3.
+
+### 1.4.3. Phương pháp phân tích dữ liệu và định hướng xây dựng mô hình học máy
+
+Đề tài được thực hiện bằng Python, kết hợp các thư viện hỗ trợ xử lý, phân tích, trực quan hóa và mô hình hóa dữ liệu. Quy trình nghiên cứu được tổ chức theo định hướng CRISP-DM và các giai đoạn xử lý dữ liệu theo yêu cầu của học phần: hiểu bài toán kinh doanh, thu thập và tích hợp dữ liệu, làm sạch, EDA, chuẩn bị đặc trưng, mô hình hóa, đánh giá kết quả và đề xuất giải pháp.
+
+Các phương pháp chính gồm thống kê mô tả, trực quan hóa dữ liệu, kiểm định giả thuyết thống kê, phân loại bằng học máy và phân tích mức độ quan trọng của đặc trưng.
+
+### 1.4.4. Giới hạn dữ liệu và phạm vi suy luận của kết quả nghiên cứu
+
+Nghiên cứu được thực hiện trên bộ dữ liệu thứ cấp có sẵn, không trực tiếp thu thập khảo sát mới từ hành khách hoặc tiếp cận dữ liệu vận hành nội bộ của một hãng hàng không cụ thể.
+
+Do thông tin về thời gian, địa điểm, hãng vận chuyển và điều kiện thu thập khảo sát chưa được xác minh đầy đủ, kết quả phân tích không được mặc nhiên xem là đại diện cho toàn bộ hành khách hàng không trên thế giới hoặc tại Việt Nam.
+
+Ngoài ra, các mối liên hệ phát hiện qua phân tích thống kê và mô hình học máy chủ yếu mang ý nghĩa mô tả, dự đoán và hỗ trợ ra quyết định; không đủ cơ sở để khẳng định quan hệ nhân quả nếu thiếu thiết kế nghiên cứu phù hợp.
+
+## 1.5. Giá trị khoa học và khả năng ứng dụng của kết quả nghiên cứu {#sec-1-5}
+
+### 1.5.1. Giá trị phương pháp luận trong ứng dụng Khoa học Dữ liệu vào phân tích sự hài lòng
+
+Đề tài minh họa khả năng ứng dụng các phương pháp Khoa học Dữ liệu trong nghiên cứu sự hài lòng của khách hàng đối với dịch vụ hàng không. Thông qua xử lý dữ liệu, thống kê mô tả, phân tích đa biến và xây dựng mô hình phân loại, nghiên cứu làm rõ cách kết hợp kiến thức lập trình Python, thống kê và học máy trong một quy trình nghiên cứu dữ liệu tương đối hoàn chỉnh.
+
+Bên cạnh đó, việc so sánh các thuật toán phân loại và phân tích mức độ quan trọng của đặc trưng giúp làm rõ sự khác biệt giữa khả năng dự đoán của mô hình và khả năng diễn giải các yếu tố liên quan đến biến mục tiêu.
+
+### 1.5.2. Ý nghĩa thực tiễn
+
+Về quản trị dịch vụ, kết quả nghiên cứu có thể cung cấp thông tin tham khảo giúp các hãng hàng không nhận diện những tiêu chí có liên hệ đáng chú ý với sự hài lòng của hành khách. Phân tích sự khác biệt giữa các nhóm khách hàng có thể hỗ trợ xây dựng chính sách dịch vụ phù hợp hơn với đặc điểm và nhu cầu của từng nhóm.
+
+Về vận hành, phân tích mối liên hệ giữa thời gian trễ chuyến bay và sự hài lòng có thể cung cấp thêm căn cứ để xem xét các giải pháp nâng cao chất lượng phục vụ trong những tình huống chậm trễ.
+
+Về ứng dụng công nghệ, mô hình phân loại trong nghiên cứu có thể là nền tảng tham khảo cho các hệ thống hỗ trợ đánh giá mức độ hài lòng, với điều kiện được kiểm định thêm trên dữ liệu thực tế phù hợp trước khi triển khai.
+
+Đối với nhóm thực hiện, đề tài tạo cơ hội vận dụng kiến thức môn Lập trình Python cho Khoa học Dữ liệu, đồng thời rèn luyện kỹ năng quản lý dữ liệu, lập trình, kiểm chứng kết quả, diễn giải thông tin và trình bày báo cáo khoa học, qua đó kết nối kiến thức kỹ thuật với bài toán kinh doanh và lấy dữ liệu làm cơ sở cho đề xuất giải pháp quản trị.
+
+## Tài liệu tham khảo sử dụng trong Chương 1 {.unnumbered}
+
+International Air Transport Association. (2025). *Global Passenger Survey (GPS).* <https://www.iata.org/en/publications/manuals/global-passenger-survey/>
+
+Namukasa, J. (2013). The influence of airline service quality on passenger satisfaction and loyalty: The case of Uganda airline industry. *The TQM Journal, 25*(5), 520–532. <https://doi.org/10.1108/TQM-11-2012-0092>
+
+Nguyen, H. K., Hoang, T. D. L., & Hoang, T. T. (2026). The significant impact of service quality and service convenience on customer satisfaction: An empirical study from the airline industry in Vietnam. *The Open Transportation Journal, 20*, e26671212403437. <https://doi.org/10.2174/0126671212403437251112114208>
